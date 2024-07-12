@@ -1,3 +1,4 @@
+import IDValidator from '@/middleware/idValidator';
 import express from 'express';
 import Controller from './organization.controller';
 import {
@@ -24,5 +25,10 @@ router
 	.route('/invite-to-organization')
 	.all(InviteToOrganizationValidator)
 	.post(Controller.inviteToOrganization);
+
+router
+	.route('/remove-from-organization/:id')
+	.all(IDValidator)
+	.post(Controller.removeFromOrganization);
 
 export default router;

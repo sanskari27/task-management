@@ -94,6 +94,24 @@ async function inviteToOrganization(req: Request, res: Response, next: NextFunct
 	});
 }
 
+async function removeFromOrganization(req: Request, res: Response, next: NextFunction) {
+	const { id, employeeService } = req.locals;
+
+	if (!employeeService) {
+		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
+	}
+
+	await employeeService.removeFromOrganization(id);
+
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			message: 'User invited to organization successfully.',
+		},
+	});
+}
+
 async function reconfigurePositions(req: Request, res: Response, next: NextFunction) {
 	const { employeeService } = req.locals;
 	const data = req.locals.data as ReconfigurePositionsType;
@@ -123,6 +141,7 @@ async function reconfigurePositions(req: Request, res: Response, next: NextFunct
 const Controller = {
 	createOrganization,
 	inviteToOrganization,
+	removeFromOrganization,
 	reconfigurePositions,
 	updateDetails,
 };

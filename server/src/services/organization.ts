@@ -1,3 +1,4 @@
+import { removeFromCache } from '@/config/cache';
 import { EmployeeDB, IOrganization, OrganizationDB } from '@/db';
 import { COMMON_ERRORS, CustomError } from '@/errors';
 import { IDType } from '@/types';
@@ -94,5 +95,24 @@ export default class OrganizationService {
 	}): Promise<EmployeeService> {
 		const employee = await EmployeeService.createEmployee(this._o_id, data);
 		return employee;
+	}
+
+	static async deleteOrganizationByOwnerID(org_id: IDType, owner_id: IDType) {
+		const result = await OrganizationDB.deleteOne({
+			_id: org_id,
+			owner: owner_id,
+		});
+		if (result.deletedCount > 0) {
+			const employees = await EmployeeDB.find({
+				organization: org_id,
+			});
+			const employees_id = employees.map((emp) => emp._id);
+			await EmployeeDB.deleteMany({
+				organization: org_id,
+			});
+			for (const emp_id of employees_id) {
+				removeFromCache(`managed_employees_${emp_id}`);
+			}
+		}
 	}
 }

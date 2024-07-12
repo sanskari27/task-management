@@ -3,6 +3,7 @@ import { EmployeeDB, IEmployee } from '@/db';
 import { AUTH_ERRORS, COMMON_ERRORS, CustomError } from '@/errors';
 import { IDType } from '@/types';
 import { filterUndefinedKeys } from '@/utils/ExpressUtils';
+import OrganizationService from './organization';
 import UserService from './user';
 
 export default class EmployeeService {
@@ -87,6 +88,23 @@ export default class EmployeeService {
 		removeFromCache(`managed_employees_${this._e_id}`);
 
 		return service;
+	}
+
+	async removeFromOrganization(emp_id: IDType) {
+		const managedEmployees = await EmployeeService.managedEmployees(this._e_id);
+		managedEmployees.push(this._e_id);
+
+		if (!managedEmployees.includes(emp_id)) {
+			throw new CustomError(AUTH_ERRORS.PERMISSION_DENIED);
+		}
+
+		await EmployeeDB.deleteOne({
+			organization: this._o_id,
+			_id: emp_id,
+		});
+
+		removeFromCache(`managed_employees_${this._e_id}`);
+		OrganizationService.deleteOrganizationByOwnerID(this._o_id, emp_id);
 	}
 
 	async getUserService() {
