@@ -20,13 +20,30 @@ export async function sendPasswordResetEmail(to: string, token: string) {
 	return true;
 }
 
-export async function sendLoginCredentialsEmail(to: string, username: string, password: string) {
+export async function sendWelcomeEmail(to: string, username: string, password: string) {
 	const { error } = await resend.emails.send({
 		from: 'Wautopilot <no-reply@wautopilot.com>',
 		to: [to],
-		subject: 'Login Credentials for Wautopilot',
+		subject: 'Welcome ! Wautopilot',
 		html: LoginCredentialsTemplate(username, password),
 	});
+
+	if (error) {
+		Logger.error('Resend Error', error, { ...error, details: 'Error Sending reset message' });
+		return false;
+	}
+	return true;
+}
+
+export async function sendOrganizationInviteEmail(to: string, organization_name: string) {
+	const { error } = await resend.emails.send({
+		from: 'Wautopilot <no-reply@wautopilot.com>',
+		to: [to],
+		subject: `Added to ${organization_name} on Wautopilot`,
+		html: `<div>abc</div>`,
+	});
+
+	//LoginCredentialsTemplate(username, password),
 
 	if (error) {
 		Logger.error('Resend Error', error, { ...error, details: 'Error Sending reset message' });

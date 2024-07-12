@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const getDate = (format = 'YYYY-MM-DD') => {
 	return moment().format(format);
@@ -105,6 +105,8 @@ function fromUnixTime(unixTime: number) {
 	return moment.unix(unixTime);
 }
 
+const timezones = moment.tz.names();
+
 export default {
 	getDate,
 	getMonth,
@@ -122,4 +124,5 @@ export default {
 	isTimeBetween,
 	getBetween,
 	fromUnixTime,
+	timezones,
 };

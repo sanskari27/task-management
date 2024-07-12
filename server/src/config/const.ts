@@ -30,8 +30,7 @@ export enum Cookie {
 	Refresh = 'refresh-cookie',
 }
 export enum UserLevel {
-	Agent = 10,
-	Admin = 20,
+	USER = 20,
 	WhiteLabel = 30,
 	Master = 100,
 }

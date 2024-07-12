@@ -132,3 +132,11 @@ export function intersection<T>(arr1: T[], arr2: T[]) {
 	const res = arr1.map((e) => String(e)).filter((item) => set.has(String(item)));
 	return [...new Set(res)];
 }
+
+export function parseZodMessage(msgObj: z.SafeParseError<unknown>) {
+	return msgObj.error.issues
+		.map((err) => err.path)
+		.flat()
+		.filter((item, pos, arr) => arr.indexOf(item) == pos)
+		.join(', ');
+}

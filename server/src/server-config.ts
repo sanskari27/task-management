@@ -3,14 +3,11 @@ import cors from 'cors';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import useragent from 'express-useragent';
 import fs from 'fs';
-import cron from 'node-cron';
 import routes from './modules';
 
 import Logger from 'n23-logger';
 import { IS_PRODUCTION, IS_WINDOWS, Path } from './config/const';
 import { CustomError } from './errors';
-import BroadcastService from './services/broadcast';
-import SchedulerService from './services/scheduler';
 
 const allowlist = [
 	'http://localhost:5173',
@@ -120,16 +117,6 @@ export default function (app: Express) {
 			message: err.message,
 		});
 		next();
-	});
-	cron.schedule('*/2 * * * * *', () => {
-		SchedulerService.sendScheduledTemplateMessages();
-		SchedulerService.sendScheduledNormalMessages();
-		SchedulerService.sendScheduledInteractiveMessages();
-	});
-
-	//0 0 * * *
-	cron.schedule('30 0 * * *', function () {
-		BroadcastService.sendRecursiveBroadcastMessages();
 	});
 	createDir();
 }

@@ -1,7 +1,6 @@
-import { SessionDB } from '../../mongo';
-import ISession from '../../mongo/types/session';
-import { CustomError, ERRORS } from '../errors';
-import { IDType } from '../types';
+import { ISession, SessionDB } from '@/db';
+import { COMMON_ERRORS, CustomError } from '@/errors';
+import { IDType } from '@/types';
 
 type SessionDetails = {
 	ipAddress?: string;
@@ -21,7 +20,7 @@ export default class SessionService {
 	static async findSessionById(id: IDType) {
 		const history = await SessionDB.findById(id);
 		if (!history) {
-			throw new CustomError(ERRORS.NOT_FOUND);
+			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
 
 		return new SessionService(history);
@@ -32,7 +31,7 @@ export default class SessionService {
 			refreshToken: token,
 		});
 		if (!history) {
-			throw new CustomError(ERRORS.NOT_FOUND);
+			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
 
 		return new SessionService(history);

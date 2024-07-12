@@ -1,10 +1,8 @@
 /* eslint-disable no-var */
 
+import EmployeeService from '@/services/employee';
 import { Types } from 'mongoose';
-import IAccount from '../../mongo/types/account';
 import { UserService } from '../services';
-import AgentLogService from '../services/agentLogs';
-import WhatsappLinkService from '../services/whatsappLink';
 
 declare global {
 	var __basedir: string;
@@ -26,12 +24,9 @@ export interface LocalVariables {
 	query: any;
 	data: any;
 	id: IDType;
-	agent_id: IDType;
-	serviceAccount: IAccount;
-	serviceUser: UserService;
+	user_id: IDType;
 	user: UserService;
-	device: WhatsappLinkService;
-	agentLogService?: AgentLogService;
+	employeeService?: EmployeeService;
 }
 
 export { default as ServerError } from './serverError';

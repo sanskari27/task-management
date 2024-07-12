@@ -5,8 +5,8 @@ dotenv.config();
 import express from 'express';
 import configServer from './server-config';
 
+import connectDB from '@/db';
 import Logger from 'n23-logger';
-import connectDB from '../mongo';
 import { DATABASE_URL, PORT } from './config/const';
 import SocketServer from './socket';
 
