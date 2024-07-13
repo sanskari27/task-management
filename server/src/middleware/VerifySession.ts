@@ -2,7 +2,7 @@ import EmployeeService from '@/services/employee';
 import { NextFunction, Request, Response } from 'express';
 import { JwtPayload, verify } from 'jsonwebtoken';
 import { Cookie, JWT_SECRET, REFRESH_SECRET, SESSION_EXPIRE_TIME } from '../config/const';
-import { CustomError } from '../errors';
+import { COMMON_ERRORS, CustomError } from '../errors';
 import AUTH_ERRORS from '../errors/auth-errors';
 import { SessionService, UserService } from '../services';
 import { idValidator, setCookie } from '../utils/ExpressUtils';
@@ -10,14 +10,11 @@ import { idValidator, setCookie } from '../utils/ExpressUtils';
 export default async function VerifySession(req: Request, res: Response, next: NextFunction) {
 	const _auth_id = req.cookies[Cookie.Auth];
 	const _refresh_id = req.cookies[Cookie.Refresh];
-	const org_id = idValidator(req.headers['X-Organization-ID'] as string);
-	const emp_id = idValidator(req.headers['X-Employee-ID'] as string);
+	const org_id = idValidator(req.headers['x-organization-id'] as string);
+	const emp_id = idValidator(req.headers['x-employee-id'] as string);
 
 	let session;
 
-	if (!_auth_id) {
-		return next(new CustomError(AUTH_ERRORS.SESSION_INVALIDATED));
-	}
 	try {
 		const decoded = verify(_auth_id, JWT_SECRET) as JwtPayload;
 		session = await SessionService.findSessionById(decoded.id);
@@ -38,17 +35,15 @@ export default async function VerifySession(req: Request, res: Response, next: N
 	req.locals.user = await UserService.getUserService(session.userId);
 	req.locals.user_id = req.locals.user.account._id;
 
-	if (req.headers['X-Organization-ID'] || req.headers['X-Employee-ID']) {
-		if (org_id[0] && emp_id[0]) {
-			req.locals.employeeService = await EmployeeService.getEmployeeService(org_id[1], emp_id[1]);
-		} else {
-			return next(
-				new CustomError({
-					STATUS: 400,
-					TITLE: 'INVALID_HEADER',
-					MESSAGE: 'Invalid X-Organization-ID & X-Employee-ID in headers.',
-				})
-			);
+	if (req.headers['x-organization-id'] || req.headers['x-employee-id']) {
+		try {
+			if (org_id[0] && emp_id[0]) {
+				req.locals.employeeService = await EmployeeService.getEmployeeService(org_id[1], emp_id[1]);
+			} else {
+				throw new Error();
+			}
+		} catch (err) {
+			return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 		}
 	}
 

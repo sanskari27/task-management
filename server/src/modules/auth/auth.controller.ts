@@ -3,6 +3,7 @@ import { StorageDB } from '@/db';
 import { AUTH_ERRORS, COMMON_ERRORS, CustomError } from '@/errors';
 import { sendPasswordResetEmail } from '@/provider/email';
 import { UserService } from '@/services';
+import EmployeeService from '@/services/employee';
 import { Respond, setCookie } from '@/utils/ExpressUtils';
 import { NextFunction, Request, Response } from 'express';
 import { JwtPayload, verify } from 'jsonwebtoken';
@@ -89,12 +90,13 @@ async function resetPassword(req: Request, res: Response, next: NextFunction) {
 async function register(req: Request, res: Response, next: NextFunction) {
 	const { email, name, phone, password } = req.locals.data as RegisterValidationResult;
 	try {
-		await UserService.register(email, {
+		const userService = await UserService.register(email, {
 			name,
 			phone,
+			password,
 		});
 
-		const { authToken, refreshToken } = await UserService.login(email, password, {
+		const { authToken, refreshToken } = await userService.login({
 			platform: req.useragent?.platform || '',
 			browser: req.useragent?.browser || '',
 		});
@@ -128,14 +130,19 @@ async function validateAuth(req: Request, res: Response, next: NextFunction) {
 }
 
 async function details(req: Request, res: Response, next: NextFunction) {
-	const { user } = req.locals;
+	const { user, user_id } = req.locals;
 	const details = await user.getDetails();
+	const employees = await EmployeeService.getEmployeesByUser(user_id);
 
 	return Respond({
 		res,
 		status: 200,
 		data: {
 			account: details,
+			organizations: employees.map((emp) => ({
+				org_id: emp.organization_id,
+				emp_id: emp.employee_id,
+			})),
 		},
 	});
 }

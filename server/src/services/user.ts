@@ -71,6 +71,16 @@ export default class UserService {
 		};
 	}
 
+	async login(opts: SessionDetails) {
+		const session = await SessionService.createSession(this._user_id, opts);
+
+		return {
+			authToken: session.authToken,
+			refreshToken: session.refreshToken,
+			userService: this,
+		};
+	}
+
 	getUser() {
 		return this._account;
 	}
@@ -91,7 +101,7 @@ export default class UserService {
 		};
 	}
 
-	async getDetails() {
+	getDetails() {
 		const details = {
 			name: this._account.name,
 			email: this._account.email,
@@ -106,17 +116,23 @@ export default class UserService {
 		opts: {
 			name?: string;
 			phone?: string;
+			password?: string;
 		}
 	) {
 		try {
+			const password = opts.password ?? generateNewPassword();
 			const user = await AccountDB.create({
 				email,
-				password: generateNewPassword(),
+				password,
 				name: opts.name,
 				phone: opts.phone,
 			});
 
-			sendWelcomeEmail(email, email, 'password'); // SEND A LINK TO SET A NEW PASSWORD
+			if (!opts.password) {
+				sendWelcomeEmail(email, email, password); // SEND A LINK TO SET A NEW PASSWORD
+			} else {
+				sendWelcomeEmail(email, email, 'password'); // SEND A LINK TO SET A NEW PASSWORD
+			}
 			return new UserService(user);
 		} catch (err) {
 			throw new CustomError(AUTH_ERRORS.USER_ALREADY_EXISTS);

@@ -8,11 +8,11 @@ const client = createClient({
 
 // Handle connection events
 client.on('connect', () => {
-	console.log('Connected to Redis server');
+	Logger.info('Running Status', 'Connected to Redis server');
 });
 
 client.on('error', (err) => {
-	console.error('Redis error:', err);
+	Logger.error('Running Status', err);
 });
 
 export async function getOrCache<T>(key: string, cb: () => Promise<T>) {

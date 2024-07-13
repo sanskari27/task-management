@@ -140,3 +140,7 @@ export function parseZodMessage(msgObj: z.SafeParseError<unknown>) {
 		.filter((item, pos, arr) => arr.indexOf(item) == pos)
 		.join(', ');
 }
+
+export function mongoArrayIncludes(arr: Types.ObjectId[], value: Types.ObjectId) {
+	return arr.some((item) => item.toString().localeCompare(value.toString()) === 0);
+}

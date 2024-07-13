@@ -1,5 +1,7 @@
 import express from 'express';
 import SessionRoute from './auth/auth.route';
+import OrganizationRoute from './organization/organization.route';
+import TasksRoute from './tasks/tasks.route';
 import UploadsRoute from './uploads/uploads.route';
 
 import { COMMON_ERRORS, CustomError } from '@/errors';
@@ -11,8 +13,10 @@ const router = express.Router();
 
 // Next routes will be webhooks routes
 
-router.use('/sessions', SessionRoute);
-router.use('/:device_id/uploads', VerifySession, UploadsRoute);
+router.use('/auth', SessionRoute);
+router.use('/organization', VerifySession, OrganizationRoute);
+router.use('/tasks', VerifySession, TasksRoute);
+router.use('/uploads', VerifySession, UploadsRoute);
 
 router
 	.route('/conversation-message-key')

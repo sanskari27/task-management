@@ -14,15 +14,13 @@ router
 	.route('/create-organization')
 	.post(CreateOrganizationValidator, Controller.createOrganization);
 
-router.route('/update-details').post(UpdateOrganizationValidator, Controller.updateDetails);
-
 router
 	.route('/reconfigure-positions')
 	.all(ReconfigurePositionsValidator)
 	.post(Controller.reconfigurePositions);
 
 router
-	.route('/invite-to-organization')
+	.route('/add-to-organization')
 	.all(InviteToOrganizationValidator)
 	.post(Controller.inviteToOrganization);
 
@@ -30,5 +28,11 @@ router
 	.route('/remove-from-organization/:id')
 	.all(IDValidator)
 	.post(Controller.removeFromOrganization);
+
+router.route('/list-employees').get(Controller.listEmployees);
+
+router
+	.route('/:id/update-details')
+	.post(IDValidator, UpdateOrganizationValidator, Controller.updateDetails);
 
 export default router;

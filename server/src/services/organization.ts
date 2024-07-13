@@ -50,6 +50,7 @@ export default class OrganizationService {
 
 	get organizationDetails() {
 		return {
+			id: this._o_id,
 			name: this._org.name,
 			industry: this._org.industry,
 			domain: this._org.domain,
@@ -65,6 +66,35 @@ export default class OrganizationService {
 		});
 
 		return employees.map((employee) => new EmployeeService(employee));
+	}
+
+	async getOrganizationTree() {
+		const employees = await EmployeeDB.find({
+			organization: this.org_id,
+		});
+
+		const services = employees.map((employee) => new EmployeeService(employee));
+		const details = await Promise.all(services.map((emp) => emp.getDetails()));
+
+		const idMap = new Map();
+		const root: typeof details = [];
+
+		details.forEach((item) => {
+			const { employee_id } = item;
+			idMap.set(employee_id.toString(), { ...item, children: [] });
+		});
+
+		details.forEach((item) => {
+			const { employee_id, parent_id } = item;
+			const node = idMap.get(employee_id.toString());
+			if (parent_id) {
+				idMap.get(parent_id.toString()).children.push(node);
+			} else {
+				root.push(node);
+			}
+		});
+
+		return root;
 	}
 
 	async updateDetails(opts: Partial<OrganizationData>) {

@@ -5,6 +5,7 @@ dotenv.config();
 import express from 'express';
 import configServer from './server-config';
 
+import cache from '@/config/cache';
 import connectDB from '@/db';
 import Logger from 'n23-logger';
 import { DATABASE_URL, PORT } from './config/const';
@@ -17,6 +18,7 @@ configServer(app);
 connectDB(DATABASE_URL)
 	.then(async () => {
 		Logger.info('Running Status', 'Database connected');
+		await cache.connect();
 	})
 	.catch((err) => {
 		Logger.critical('Database Connection Failed', err);

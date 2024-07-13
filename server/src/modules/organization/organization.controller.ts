@@ -34,13 +34,10 @@ async function createOrganization(req: Request, res: Response, next: NextFunctio
 }
 
 async function updateDetails(req: Request, res: Response, next: NextFunction) {
-	const { employeeService } = req.locals;
+	const { id } = req.locals;
 	const data = req.locals.data as UpdateOrganizationType;
 
-	if (!employeeService) {
-		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
-	}
-	const org = await OrganizationService.getInstance(employeeService.organization_id);
+	const org = await OrganizationService.getInstance(id);
 
 	const details = await org.updateDetails(data);
 
@@ -53,45 +50,62 @@ async function updateDetails(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function listEmployees(req: Request, res: Response, next: NextFunction) {
+	const { employeeService } = req.locals;
+	if (!employeeService) {
+		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
+	}
+
+	const org = await employeeService.getOrganizationService();
+
+	const employees = await org.getEmployees();
+	const details = await Promise.all(employees.map(async (emp) => await emp.getDetails()));
+
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			employees: details,
+			tree: await org.getOrganizationTree(),
+		},
+	});
+}
+
 async function inviteToOrganization(req: Request, res: Response, next: NextFunction) {
-	const { id, employeeService } = req.locals;
+	const { employeeService } = req.locals;
 	const data = req.locals.data as InviteToOrganizationType;
 
 	if (!employeeService) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 	}
 
-	let org, user;
 	try {
-		org = await OrganizationService.getInstance(id);
+		const org = await OrganizationService.getInstance(employeeService.organization_id);
+		const user = await UserService.getOrCreate(data.email);
+
+		await employeeService.invite(user.userId, {
+			parent: data.parent_id,
+			can_create_others: data.can_create_others,
+			can_let_others_create: data.can_let_others_create,
+		});
+
+		sendOrganizationInviteEmail(data.email, org.organizationDetails.name);
+
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				message: 'User invited to organization successfully.',
+			},
+		});
 	} catch (err) {
 		if (err instanceof CustomError) {
 			return next(err);
 		}
-		return next(new CustomError(COMMON_ERRORS.NOT_FOUND));
+		console.log(err);
+
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
 	}
-
-	try {
-		user = await UserService.getOrCreate(data.email);
-	} catch (err) {
-		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR));
-	}
-
-	await employeeService.invite(user.userId, {
-		parent: data.parent_id,
-		can_create_others: data.can_create_others,
-		can_let_others_create: data.can_let_others_create,
-	});
-
-	await sendOrganizationInviteEmail(data.email, org.organizationDetails.name);
-
-	return Respond({
-		res,
-		status: 200,
-		data: {
-			message: 'User invited to organization successfully.',
-		},
-	});
 }
 
 async function removeFromOrganization(req: Request, res: Response, next: NextFunction) {
@@ -107,7 +121,7 @@ async function removeFromOrganization(req: Request, res: Response, next: NextFun
 		res,
 		status: 200,
 		data: {
-			message: 'User invited to organization successfully.',
+			message: 'User removed from organization successfully.',
 		},
 	});
 }
@@ -144,6 +158,7 @@ const Controller = {
 	removeFromOrganization,
 	reconfigurePositions,
 	updateDetails,
+	listEmployees,
 };
 
 export default Controller;
