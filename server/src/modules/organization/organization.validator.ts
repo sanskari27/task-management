@@ -181,3 +181,24 @@ export async function ReconfigurePositionsValidator(
 		})
 	);
 }
+
+export async function CategoriesValidator(req: Request, res: Response, next: NextFunction) {
+	const reqValidator = z.object({
+		categories: z.array(z.string()),
+	});
+
+	const reqValidatorResult = reqValidator.safeParse(req.body);
+
+	if (reqValidatorResult.success) {
+		req.locals.data = reqValidatorResult.data.categories;
+		return next();
+	}
+
+	return next(
+		new CustomError({
+			STATUS: 400,
+			TITLE: 'INVALID_FIELDS',
+			MESSAGE: parseZodMessage(reqValidatorResult),
+		})
+	);
+}

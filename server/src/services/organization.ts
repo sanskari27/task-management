@@ -48,6 +48,10 @@ export default class OrganizationService {
 		return this._o_id;
 	}
 
+	get owner_id() {
+		return this._org.owner;
+	}
+
 	get organizationDetails() {
 		return {
 			id: this._o_id,
@@ -57,6 +61,7 @@ export default class OrganizationService {
 			logo: this._org.logo,
 			address: this._org.address,
 			timezone: this._org.timezone,
+			categories: this._org.categories,
 		};
 	}
 
@@ -115,6 +120,17 @@ export default class OrganizationService {
 		this._org.timezone = update.timezone ?? this._org.timezone;
 
 		return this.organizationDetails;
+	}
+
+	async updateCategories(categories: string[]) {
+		await OrganizationDB.updateOne(
+			{
+				_id: this._o_id,
+			},
+			{
+				categories,
+			}
+		);
 	}
 
 	async addEmployee(data: {

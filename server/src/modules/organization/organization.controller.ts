@@ -1,4 +1,4 @@
-import { COMMON_ERRORS, CustomError } from '@/errors';
+import { AUTH_ERRORS, COMMON_ERRORS, CustomError } from '@/errors';
 import { sendOrganizationInviteEmail } from '@/provider/email';
 import { UserService } from '@/services';
 import OrganizationService from '@/services/organization';
@@ -34,20 +34,30 @@ async function createOrganization(req: Request, res: Response, next: NextFunctio
 }
 
 async function updateDetails(req: Request, res: Response, next: NextFunction) {
-	const { id } = req.locals;
+	const { id, user_id } = req.locals;
 	const data = req.locals.data as UpdateOrganizationType;
+	try {
+		const org = await OrganizationService.getInstance(id);
 
-	const org = await OrganizationService.getInstance(id);
+		if (org.owner_id !== user_id) {
+			return next(new CustomError(AUTH_ERRORS.PERMISSION_DENIED));
+		}
 
-	const details = await org.updateDetails(data);
+		const details = await org.updateDetails(data);
 
-	return Respond({
-		res,
-		status: 200,
-		data: {
-			organization: details,
-		},
-	});
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				organization: details,
+			},
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
 }
 
 async function listEmployees(req: Request, res: Response, next: NextFunction) {
@@ -114,16 +124,22 @@ async function removeFromOrganization(req: Request, res: Response, next: NextFun
 	if (!employeeService) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 	}
+	try {
+		await employeeService.removeFromOrganization(id);
 
-	await employeeService.removeFromOrganization(id);
-
-	return Respond({
-		res,
-		status: 200,
-		data: {
-			message: 'User removed from organization successfully.',
-		},
-	});
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				message: 'User removed from organization successfully.',
+			},
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
 }
 
 async function reconfigurePositions(req: Request, res: Response, next: NextFunction) {
@@ -133,23 +149,89 @@ async function reconfigurePositions(req: Request, res: Response, next: NextFunct
 	if (!employeeService) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 	}
-
-	const promises = data.positions.map(async ({ emp_id, parent_id }) => {
-		await employeeService.reconfigurePosition({
-			emp_id,
-			parent: parent_id,
+	try {
+		const promises = data.positions.map(async ({ emp_id, parent_id }) => {
+			await employeeService.reconfigurePosition({
+				emp_id,
+				parent: parent_id,
+			});
 		});
-	});
 
-	await Promise.all(promises);
+		await Promise.all(promises);
 
-	return Respond({
-		res,
-		status: 200,
-		data: {
-			message: 'Positions reconfigured successfully.',
-		},
-	});
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				message: 'Positions reconfigured successfully.',
+			},
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
+}
+
+async function details(req: Request, res: Response, next: NextFunction) {
+	const { id } = req.locals;
+	try {
+		const org = await OrganizationService.getInstance(id);
+
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				details: org.organizationDetails,
+			},
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
+}
+
+async function categories(req: Request, res: Response, next: NextFunction) {
+	const { id } = req.locals;
+
+	try {
+		const org = await OrganizationService.getInstance(id);
+
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				categories: org.organizationDetails.categories,
+			},
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
+}
+
+async function updateCategories(req: Request, res: Response, next: NextFunction) {
+	const { id, data } = req.locals;
+
+	try {
+		const org = await OrganizationService.getInstance(id);
+		await org.updateCategories(data as string[]);
+
+		return Respond({
+			res,
+			status: 200,
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
 }
 
 const Controller = {
@@ -159,6 +241,9 @@ const Controller = {
 	reconfigurePositions,
 	updateDetails,
 	listEmployees,
+	details,
+	categories,
+	updateCategories,
 };
 
 export default Controller;

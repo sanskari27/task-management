@@ -14,6 +14,7 @@ export default interface IOrganization extends Document {
 		country: string;
 	};
 	timezone: string;
+	categories: string[];
 
 	owner: Types.ObjectId;
 }

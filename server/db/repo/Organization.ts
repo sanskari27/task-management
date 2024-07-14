@@ -1,3 +1,4 @@
+import { DEFAULT_CATEGORIES } from '@/config/const';
 import mongoose from 'mongoose';
 import IOrganization from '../types/organization';
 import { AccountDB_name } from './Account';
@@ -38,6 +39,11 @@ const schema = new mongoose.Schema<IOrganization>({
 		},
 	},
 	timezone: String,
+
+	categories: {
+		type: [String],
+		default: DEFAULT_CATEGORIES,
+	},
 
 	owner: {
 		type: mongoose.Schema.Types.ObjectId,

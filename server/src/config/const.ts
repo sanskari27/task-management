@@ -115,12 +115,31 @@ export enum MESSAGE_SCHEDULER_TYPE {
 	INDIVIDUAL = 'INDIVIDUAL',
 }
 
-export enum BOT_TRIGGER_OPTIONS {
-	INCLUDES_IGNORE_CASE = 'INCLUDES_IGNORE_CASE',
-	INCLUDES_MATCH_CASE = 'INCLUDES_MATCH_CASE',
-	EXACT_IGNORE_CASE = 'EXACT_IGNORE_CASE',
-	EXACT_MATCH_CASE = 'EXACT_MATCH_CASE',
-}
+export const DEFAULT_CATEGORIES = [
+	'Accounting',
+	'Banking',
+	'Consulting',
+	'Education',
+	'Engineering',
+	'Finance',
+	'Healthcare',
+	'Human Resources',
+	'Information Technology',
+	'Legal',
+	'Marketing',
+	'Media',
+	'Non-profit',
+	'Public Relations',
+	'Real Estate',
+	'Retail',
+	'Sales',
+	'Science',
+	'Social Media',
+	'Telecommunications',
+	'Transportation',
+	'Travel',
+	'Other',
+];
 export enum TaskStatus {
 	COMPLETED = 'completed',
 	IN_PROGRESS = 'in_progress',
