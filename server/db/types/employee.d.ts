@@ -9,4 +9,8 @@ export default interface IEmployee extends Document {
 
 	can_create_others: boolean;
 	can_let_others_create: boolean;
+
+	name: string;
+	email: string;
+	phone: string;
 }

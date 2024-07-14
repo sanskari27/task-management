@@ -1,6 +1,22 @@
 import mongoose from 'mongoose';
-export { AccountDB, EmployeeDB, OrganizationDB, PermissionDB, SessionDB, StorageDB } from './repo';
-export type { IAccount, IEmployee, IOrganization, IPermission, ISession, IStorage } from './types';
+export {
+	AccountDB,
+	EmployeeDB,
+	OrganizationDB,
+	PermissionDB,
+	SessionDB,
+	StorageDB,
+	TaskDB,
+} from './repo';
+export type {
+	IAccount,
+	IEmployee,
+	IOrganization,
+	IPermission,
+	ISession,
+	IStorage,
+	ITask,
+} from './types';
 
 export default function connectDB(database_url: string) {
 	return new Promise((resolve, reject) => {

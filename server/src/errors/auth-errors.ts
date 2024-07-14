@@ -27,8 +27,8 @@ const AUTH_ERRORS = {
 		MESSAGE: 'The user already exists with given email or phone.',
 	},
 	PERMISSION_DENIED: {
-		STATUS: 400,
-		TITLE: 'PERMISSION_DENIED',
+		STATUS: 403,
+		TITLE: 'FORBIDDEN',
 		MESSAGE: 'The user does not have permission to perform this action.',
 	},
 } satisfies {

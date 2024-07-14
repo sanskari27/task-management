@@ -131,8 +131,8 @@ async function validateAuth(req: Request, res: Response, next: NextFunction) {
 
 async function details(req: Request, res: Response, next: NextFunction) {
 	const { user, user_id } = req.locals;
-	const details = await user.getDetails();
-	const employees = await EmployeeService.getEmployeesByUser(user_id);
+	const details = user.getDetails();
+	const employees = await EmployeeService.getInstancesOfUser(user_id);
 
 	return Respond({
 		res,
@@ -142,6 +142,8 @@ async function details(req: Request, res: Response, next: NextFunction) {
 			organizations: employees.map((emp) => ({
 				org_id: emp.organization_id,
 				emp_id: emp.employee_id,
+				can_create_others: emp.can_create_others,
+				can_let_others_create: emp.can_let_others_create,
 			})),
 		},
 	});

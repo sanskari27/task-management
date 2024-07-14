@@ -45,12 +45,15 @@ export default class EmployeeService {
 			can_let_others_create?: boolean;
 		}
 	) {
+		const user = await UserService.getUserService(data.account_id);
+
 		const emp = await EmployeeDB.create({
 			organization: _o_id,
 			account_id: data.account_id,
 			parent: data.parent,
 			can_create_others: data.can_create_others ?? false,
 			can_let_others_create: data.can_let_others_create ?? false,
+			...user.getDetails(),
 		});
 
 		return new EmployeeService(emp);
@@ -202,7 +205,11 @@ export default class EmployeeService {
 		};
 	}
 
-	static async getEmployeesByUser(user_id: IDType) {
+	async managedEmployees() {
+		return await EmployeeService.managedEmployees(this._e_id);
+	}
+
+	static async getInstancesOfUser(user_id: IDType) {
 		const employees = await EmployeeDB.find({
 			account_id: user_id,
 		});

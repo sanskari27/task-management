@@ -121,8 +121,8 @@ export enum BOT_TRIGGER_OPTIONS {
 	EXACT_IGNORE_CASE = 'EXACT_IGNORE_CASE',
 	EXACT_MATCH_CASE = 'EXACT_MATCH_CASE',
 }
-export enum BOT_TRIGGER_TO {
-	ALL = 'ALL',
-	SAVED_CONTACTS = 'SAVED_CONTACTS',
-	NON_SAVED_CONTACTS = 'NON_SAVED_CONTACTS',
+export enum TaskStatus {
+	COMPLETED = 'completed',
+	IN_PROGRESS = 'in_progress',
+	PENDING = 'pending',
 }
