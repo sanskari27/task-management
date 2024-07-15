@@ -7,6 +7,7 @@ import AuthService from '@/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { z } from 'zod';
@@ -38,9 +39,15 @@ export default function ResetPassword() {
 		if (success) {
 			router.push('/dashboard');
 		} else {
-			setError('password', { message: 'Invalid Credentials' });
+			setError('password', { message: 'Invalid password reset token.' });
 		}
 	}
+
+	useEffect(() => {
+		if (!searchParams.get('code')) {
+			router.push('/auth/login');
+		}
+	}, [searchParams, router]);
 
 	return (
 		<Centered>
