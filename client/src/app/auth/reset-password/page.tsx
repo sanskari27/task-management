@@ -36,7 +36,7 @@ export default function ResetPassword() {
 		}
 		const success = await AuthService.resetPassword(code, values.password);
 		if (success) {
-			router.push(searchParams.get('callback') ?? '/');
+			router.push('/dashboard');
 		} else {
 			setError('password', { message: 'Invalid Credentials' });
 		}
