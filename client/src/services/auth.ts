@@ -38,4 +38,25 @@ export default class AuthService {
 			return false;
 		}
 	}
+
+	static async forgotPassword(email: string) {
+		try {
+			await api.post('/auth/forgot-password', {
+				email,
+				callbackURL: `${window.location.origin}/auth/reset-password`,
+			});
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
+
+	static async resetPassword(token: string, password: string) {
+		try {
+			await api.post(`/auth/reset-password/${token}`, { password, keep_logged_in: true });
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
 }

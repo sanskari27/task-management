@@ -169,6 +169,8 @@ export default class UserService {
 		await StorageDB.deleteOne({
 			key: token,
 		});
+
+		return new UserService(user);
 	}
 
 	static async markLogout(token: string) {

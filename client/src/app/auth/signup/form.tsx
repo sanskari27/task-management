@@ -8,8 +8,7 @@ import AuthService from '@/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { signupSchema } from './schema';
@@ -45,10 +44,12 @@ export default function SignupPage() {
 
 	return (
 		<Centered>
-			<Card className='mx-auto max-w-md'>
+			<Card className='mx-auto max-w-md w-[90%] md:w-full'>
 				<CardHeader>
-					<CardTitle className='text-xl'>Sign Up</CardTitle>
-					<CardDescription>Enter your information to create an account</CardDescription>
+					<CardTitle className='text-xl text-center'>Sign Up</CardTitle>
+					<CardDescription className='text-center'>
+						Enter your information to create an account
+					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form method='post' onSubmit={handleSubmit(formSubmit)}>
@@ -104,7 +105,7 @@ export default function SignupPage() {
 									onChange={() => resetErrors()}
 									isInvalid={!!errors.email?.message}
 								/>
-								<span className='text-red-700 text-sm text-center'>{errors.email?.message}</span>
+								<span className='text-red-500 text-sm text-center'>{errors.email?.message}</span>
 							</div>
 							<Button type='submit' className='w-full'>
 								Create an account

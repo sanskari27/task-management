@@ -69,14 +69,33 @@ async function forgotPassword(req: Request, res: Response, next: NextFunction) {
 
 async function resetPassword(req: Request, res: Response, next: NextFunction) {
 	const user_id = await StorageDB.getString(req.params.id);
-	const { password } = req.locals.data as UpdatePasswordValidationResult;
+	const { password, keep_logged_in } = req.locals.data as UpdatePasswordValidationResult;
 
 	try {
 		if (!user_id) {
 			return res.send('Error resetting password');
 		}
 
-		await UserService.saveResetPassword(req.params.id, password);
+		const userService = await UserService.saveResetPassword(req.params.id, password);
+
+		if (keep_logged_in) {
+			const { authToken, refreshToken } = await userService.login({
+				platform: req.useragent?.platform || '',
+				browser: req.useragent?.browser || '',
+			});
+
+			setCookie(res, {
+				key: Cookie.Auth,
+				value: authToken,
+				expires: JWT_EXPIRE_TIME,
+			});
+
+			setCookie(res, {
+				key: Cookie.Refresh,
+				value: refreshToken,
+				expires: SESSION_EXPIRE_TIME,
+			});
+		}
 
 		return Respond({
 			res,
