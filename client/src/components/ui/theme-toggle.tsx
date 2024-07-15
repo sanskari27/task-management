@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 
 export function ThemeToggle() {
 	const { theme, setTheme } = useTheme();
-	console.log(theme);
 
 	const handleClick = () => {
 		setTheme(theme === 'light' ? 'dark' : 'light');

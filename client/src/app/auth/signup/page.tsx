@@ -3,9 +3,16 @@
 import Centered from '@/components/containers/centered';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Label } from '@radix-ui/react-label';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -23,7 +30,9 @@ export default function SignupPage() {
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof signupSchema>) {}
+	const onSubmit = (data: z.infer<typeof signupSchema>) => {
+		console.log(data);
+	};
 
 	return (
 		<Centered>
@@ -33,42 +42,93 @@ export default function SignupPage() {
 					<CardDescription>Enter your information to create an account</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<div className='grid gap-4'>
-						<div className='grid grid-cols-2 gap-4'>
-							<div className='grid gap-2'>
-								<Label htmlFor='first-name'>First name</Label>
-								<Input id='first-name' placeholder='Max' required />
+					<Form {...form}>
+						<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+							<div className='grid grid-cols-2 gap-4'>
+								<FormField
+									control={form.control}
+									name='firstName'
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>First Name</FormLabel>
+											<FormControl>
+												<Input required placeholder='John' {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name='lastName'
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Last Name</FormLabel>
+											<FormControl>
+												<Input required placeholder='Doe' {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 							</div>
-							<div className='grid gap-2'>
-								<Label htmlFor='last-name'>Last name</Label>
-								<Input id='last-name' placeholder='Robinson' required />
+							<FormField
+								control={form.control}
+								name='email'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Email</FormLabel>
+										<FormControl>
+											<Input required placeholder='m@example.com' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='phone'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Phone</FormLabel>
+										<FormControl>
+											<Input required placeholder='91890XXXXX78' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='password'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Password</FormLabel>
+										<FormControl>
+											<Input required type='password' placeholder='*********' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<Button type='submit' className='w-full'>
+								Create an account
+							</Button>
+							<Button variant='outline' className='w-full'>
+								Continue with Google
+							</Button>
+							<div className='mt-4 text-center text-sm'>
+								Already have an account?{' '}
+								<Link href='/auth/login' className='underline'>
+									Sign in
+								</Link>
 							</div>
-						</div>
-						<div className='grid gap-2'>
-							<Label htmlFor='email'>Email</Label>
-							<Input id='email' type='email' placeholder='m@example.com' required />
-						</div>
-						<div className='grid gap-2'>
-							<Label htmlFor='email'>Phone</Label>
-							<Input id='phone' type='tel' placeholder='91890XXXXX78' required />
-						</div>
-						<div className='grid gap-2'>
-							<Label htmlFor='password'>Password</Label>
-							<Input id='password' type='password' />
-						</div>
-						<Button type='submit' className='w-full'>
-							Create an account
-						</Button>
-						<Button variant='outline' className='w-full'>
-							Continue with Google
-						</Button>
-					</div>
-					<div className='mt-4 text-center text-sm'>
-						Already have an account?{' '}
-						<Link href='/auth/login' className='underline'>
-							Sign in
-						</Link>
-					</div>
+						</form>
+					</Form>
+					{/* <form className='grid gap-4' onSubmit={form.handleSubmit(onSubmit)}>
+						<div className='grid gap-4'>
+						
+					</form> */}
 				</CardContent>
 			</Card>
 		</Centered>
