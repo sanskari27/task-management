@@ -15,26 +15,15 @@ export default function SignupPage() {
 	const form = useForm<z.infer<typeof signupSchema>>({
 		resolver: zodResolver(signupSchema),
 		defaultValues: {
-			address: {
-				street: '',
-				city: '',
-				state: '',
-				country: '',
-				zip: '',
-			},
-			domain: '',
 			email: '',
-			industry: '',
-			logo: '',
-			timeZone: '',
+			password: '',
+			firstName: '',
+			lastName: '',
+			phone: '',
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof signupSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		console.log(values);
-	}
+	function onSubmit(values: z.infer<typeof signupSchema>) {}
 
 	return (
 		<Centered>

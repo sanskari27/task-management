@@ -2,15 +2,8 @@ import { z } from 'zod';
 
 export const signupSchema = z.object({
 	email: z.string().email(),
-	industry: z.string(),
-	domain: z.string(),
-	logo: z.string(),
-	timeZone: z.string(),
-	address: z.object({
-		street: z.string(),
-		city: z.string(),
-		state: z.string(),
-		country: z.string(),
-		zip: z.string(),
-	}),
+	password: z.string().min(8),
+	firstName: z.string(),
+	lastName: z.string(),
+	phone: z.string().min(10),
 });
