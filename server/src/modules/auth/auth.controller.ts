@@ -158,12 +158,21 @@ async function details(req: Request, res: Response, next: NextFunction) {
 		status: 200,
 		data: {
 			account: details,
-			organizations: employees.map((emp) => ({
-				org_id: emp.organization_id,
-				emp_id: emp.employee_id,
-				can_create_others: emp.can_create_others,
-				can_let_others_create: emp.can_let_others_create,
-			})),
+			organizations: await Promise.all(
+				employees.map(async (emp) => {
+					const org = await emp.getOrganizationService();
+					return {
+						org_id: emp.organization_id,
+						emp_id: emp.employee_id,
+						name: org.organizationDetails.name,
+						domain: org.organizationDetails.domain,
+						industry: org.organizationDetails.industry,
+						logo: org.organizationDetails.logo,
+						can_create_others: emp.can_create_others,
+						can_let_others_create: emp.can_let_others_create,
+					};
+				})
+			),
 		},
 	});
 }

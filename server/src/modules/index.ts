@@ -55,9 +55,9 @@ router.post('/upload-media', async function (req, res, next) {
 	}
 });
 
-router.get('/media/:path/:filename', async function (req, res, next) {
+router.get('/media/:filename', async function (req, res, next) {
 	try {
-		const path = __basedir + '/static/' + req.params.path + '/' + req.params.filename;
+		const path = __basedir + '/static/' + req.params.filename;
 		return RespondFile({
 			res,
 			filename: req.params.filename,

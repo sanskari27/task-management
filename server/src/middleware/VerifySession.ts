@@ -11,7 +11,6 @@ export default async function VerifySession(req: Request, res: Response, next: N
 	const _auth_id = req.cookies[Cookie.Auth];
 	const _refresh_id = req.cookies[Cookie.Refresh];
 	const org_id = idValidator(req.headers['x-organization-id'] as string);
-	const emp_id = idValidator(req.headers['x-employee-id'] as string);
 
 	let session;
 
@@ -35,10 +34,13 @@ export default async function VerifySession(req: Request, res: Response, next: N
 	req.locals.user = await UserService.getUserService(session.userId);
 	req.locals.user_id = req.locals.user.account._id;
 
-	if (req.headers['x-organization-id'] || req.headers['x-employee-id']) {
+	if (req.headers['x-organization-id']) {
 		try {
-			if (org_id[0] && emp_id[0]) {
-				req.locals.employeeService = await EmployeeService.getEmployeeService(org_id[1], emp_id[1]);
+			if (org_id[0]) {
+				req.locals.employeeService = await EmployeeService.getEmployeeService(
+					org_id[1],
+					req.locals.user_id
+				);
 			} else {
 				throw new Error();
 			}

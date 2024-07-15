@@ -24,10 +24,10 @@ export default class EmployeeService {
 		this._can_let_others_create = employee.can_let_others_create;
 	}
 
-	static async getEmployeeService(org_id: IDType, emp_id: IDType) {
+	static async getEmployeeService(org_id: IDType, a_id: IDType) {
 		const employee = await EmployeeDB.findOne({
 			organization: org_id,
-			_id: emp_id,
+			account_id: a_id,
 		});
 		if (!employee) {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);

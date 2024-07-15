@@ -21,7 +21,7 @@ export interface MultipleFileUploadOptions {
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		const tempDir = path.join(global.__basedir, 'static', 'misc');
+		const tempDir = path.join(global.__basedir, 'static');
 
 		cb(null, tempDir); //you tell where to upload the files,
 	},
