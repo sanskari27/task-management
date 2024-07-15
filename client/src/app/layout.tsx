@@ -21,7 +21,7 @@ export default function RootLayout({
 		<html lang='en'>
 			<body className={cn(inter.className)}>
 				<Providers>
-					<div className='absolute'>
+					<div className='absolute top-3 right-3'>
 						<ThemeToggle />
 					</div>
 					{children}
