@@ -48,7 +48,7 @@ export default function SignupPage() {
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className='space-y-8 w-full border-zinc-400 border-2 rounded-xl p-4'
+						className='space-y-8 my-auto w-full border-zinc-400 border-2 rounded-xl p-4'
 					>
 						<FormField
 							control={form.control}

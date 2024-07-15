@@ -1,3 +1,5 @@
+import { BackgroundBeams } from '../ui/background-beams';
+
 export default function PageLayout({
 	children,
 	className = '',
@@ -6,10 +8,9 @@ export default function PageLayout({
 	className?: string;
 }) {
 	return (
-		<div
-			className={`flex items-center justify-center min-h-screen w-full bg-zinc-800 ${className}`}
-		>
+		<div className={`flex h-screen w-screen items-center justify-center ${className}`}>
 			{children}
+			<BackgroundBeams />
 		</div>
 	);
 }
