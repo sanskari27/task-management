@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={cn('h-screen w-screen', inter.className)}>
+			<body className={cn('h-screen w-screen overflow-x-hidden', inter.className)}>
 				<Providers>
 					<div className='absolute top-3 right-3'>
 						<ThemeToggle />

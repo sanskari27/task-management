@@ -8,7 +8,7 @@ export default function PageLayout({
 	className?: string;
 }) {
 	return (
-		<div className={`flex h-screen w-screen items-center justify-center ${className}`}>
+		<div className={`flex flex-col ${className}`}>
 			{children}
 			<BackgroundBeams />
 		</div>
