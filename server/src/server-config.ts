@@ -10,12 +10,7 @@ import { IS_PRODUCTION, IS_WINDOWS, Path } from './config/const';
 import { CustomError } from './errors';
 
 const allowlist = [
-	'http://localhost:5173',
-	'http://localhost:5273',
-	'http://localhost:5274',
-	'http://localhost:5275',
-	'http://localhost:5276',
-	'http://localhost:5277',
+	'http://localhost:3000',
 	'https://wautopilot.com',
 	'https://agent.wautopilot.com',
 	'https://agent.wautopilot.com',
