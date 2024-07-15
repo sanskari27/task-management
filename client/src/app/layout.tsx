@@ -1,3 +1,4 @@
+import { BackgroundBeams } from '@/components/ui/background-beams';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
@@ -19,13 +20,14 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={cn(inter.className)}>
+			<body className={cn(inter.className, 'h-screen w-screen')}>
 				<Providers>
 					<div className='absolute top-3 right-3'>
 						<ThemeToggle />
 					</div>
 					{children}
 				</Providers>
+				<BackgroundBeams />
 			</body>
 		</html>
 	);
