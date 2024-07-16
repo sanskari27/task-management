@@ -17,7 +17,7 @@ const AUTH_ERRORS = {
 		MESSAGE: 'The device was not found. Please try again later.',
 	},
 	SESSION_INVALIDATED: {
-		STATUS: 404,
+		STATUS: 401,
 		TITLE: 'SESSION_INVALIDATED',
 		MESSAGE: 'The session was invalidated. Please login again.',
 	},
