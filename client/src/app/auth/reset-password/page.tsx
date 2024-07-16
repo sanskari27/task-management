@@ -37,7 +37,7 @@ export default function ResetPassword() {
 		}
 		const success = await AuthService.resetPassword(code, values.password);
 		if (success) {
-			router.push('/dashboard');
+			router.push('/organizations');
 		} else {
 			setError('password', { message: 'Invalid password reset token.' });
 		}

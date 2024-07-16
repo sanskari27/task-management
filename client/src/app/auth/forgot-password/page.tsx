@@ -10,7 +10,7 @@ export default async function ForgotPassword({
 	const success = await AuthService.isUserAuthenticated();
 
 	if (success) {
-		const redirectUrl = (searchParams['callback'] as string) ?? '/dashboard';
+		const redirectUrl = (searchParams['callback'] as string) ?? '/organizations';
 		redirect(redirectUrl, RedirectType.replace);
 	}
 

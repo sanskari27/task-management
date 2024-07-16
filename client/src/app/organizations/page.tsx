@@ -18,7 +18,7 @@ export default async function Dashboard() {
 					</p>
 					<p className='text-md tracking-tight lg:text-lg'>Here are the list of organizations</p>
 				</div>
-				<Link href='/organization/create'>
+				<Link href='/organizations/create'>
 					<Button>Create own organization</Button>
 				</Link>
 			</div>
@@ -30,13 +30,13 @@ export default async function Dashboard() {
 						</CardHeader>
 						<CardContent>
 							<div className='flex items-center space-x-4 rounded-md'>
-								<div className='h-[60px] w-[60px]'>
-									<Avatar className='h-full w-full'>
+								<div className='h-[60px] w-[60px]  text-center'>
+									<Avatar className='inline-flex justify-center  items-center h-full w-full '>
 										<AvatarImage
 											className='h-full w-full rounded-full'
 											src={`${process.env.NEXT_PUBLIC_API_URL}/media/${org.logo}`}
 										/>
-										<AvatarFallback >
+										<AvatarFallback className='rounded-full border inline-flex justify-center items-center h-full w-full '>
 											{org.name
 												.split(' ')
 												.map((name) => name.charAt(0))
@@ -54,7 +54,7 @@ export default async function Dashboard() {
 									</LinkPreview>
 									<p className='text-sm text-muted-foreground'>{org.industry}</p>
 								</div>
-								<Link href={`/dashboard/${org.org_id}`}>
+								<Link href={`/organizations/${org.org_id}`}>
 									<Button variant={'outline'}>Manage</Button>
 								</Link>
 							</div>
