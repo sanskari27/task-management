@@ -2,22 +2,20 @@
 
 import Centered from '@/components/containers/centered';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AuthService from '@/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { organizationSchema } from './organizationSchema';
-import Image from 'next/image';
-import { useState } from 'react';
-
+import { DEFAULT_GALLERY } from '@/assets/image';
 
 export default function CreateOrganizationForm() {
-    const [logoFile, setLogoFile] = useState<File | null>(null);
+	const [logoFile, setLogoFile] = useState<File | null>(null);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const {
@@ -29,18 +27,18 @@ export default function CreateOrganizationForm() {
 	} = useForm<z.infer<typeof organizationSchema>>({
 		resolver: zodResolver(organizationSchema),
 		defaultValues: {
-            address: {
-                city: '',
-                country: '',
-                state: '',
-                street: '',
-                zip: '',
-            },
-            domain: '',
-            industry: '',
-            logo: '',
-            name: '',
-            timezone: '',
+			address: {
+				city: '',
+				country: '',
+				state: '',
+				street: '',
+				zip: '',
+			},
+			domain: '',
+			industry: '',
+			logo: '',
+			name: '',
+			timezone: '',
 		},
 	});
 
@@ -58,10 +56,12 @@ export default function CreateOrganizationForm() {
 			<Card className='mx-auto max-w-md w-[90%] md:w-full'>
 				<CardHeader>
 					<CardTitle className='text-xl text-center'>Organization Details</CardTitle>
-                    <Centered>
-                        <Image src={logoFile ? logoFile : ''} alt='Organization Logo' className='w-24 h-24' />
-                        <Input type='file' />
-                    </Centered>
+					<Centered>
+						<Label htmlFor='logo'>
+							<Image src={logoFile ? logoFile : DEFAULT_GALLERY} alt='Organization Logo' className='w-24 h-24 rounded-full border' />
+						</Label>
+						<Input id='logo' className='hidden' type='file' />
+					</Centered>
 				</CardHeader>
 				<CardContent>
 					<form method='post' onSubmit={handleSubmit(formSubmit)}>
@@ -122,15 +122,6 @@ export default function CreateOrganizationForm() {
 							<Button type='submit' className='w-full'>
 								Create an account
 							</Button>
-							<Button variant='outline' className='w-full'>
-								Continue with Google
-							</Button>
-						</div>
-						<div className='mt-4 text-center text-sm'>
-							Already have an account?{' '}
-							<Link href='/auth/login' className='underline'>
-								Sign in
-							</Link>
 						</div>
 					</form>
 				</CardContent>
