@@ -31,6 +31,9 @@ const schema = new mongoose.Schema<IEmployee>({
 		type: Boolean,
 		default: false,
 	},
+	name: String,
+	email: String,
+	phone: String,
 });
 
 schema.index({ account_id: 1, organization: 1 }, { unique: true });

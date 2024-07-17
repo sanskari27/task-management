@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-export default async function Dashboard() {
+export default async function Organizations() {
 	const success = await AuthService.isUserAuthenticated();
 
 	if (!success) {
@@ -51,8 +51,8 @@ export default async function Dashboard() {
 											<div className='h-[60px] w-[60px]  text-center'>
 												<Avatar className='inline-flex justify-center  items-center h-full w-full '>
 													<AvatarImage
-														className='h-full w-full rounded-full'
-														src={`${process.env.NEXT_PUBLIC_API_URL}/media/${org.logo}`}
+														className='h-full w-full rounded-full border-gray-50 border'
+														src={`${process.env.NEXT_PUBLIC_API_URL}media/${org.logo}`}
 													/>
 													<AvatarFallback className='rounded-full border inline-flex justify-center items-center h-full w-full '>
 														{org.name

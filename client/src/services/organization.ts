@@ -1,4 +1,6 @@
 import api from '@/lib/api';
+import { organizationDetailsSchema } from '@/schema/organization';
+import { z } from 'zod';
 
 export default class OrganizationService {
 	static async getOrganizationDetails(id: string) {
@@ -23,6 +25,24 @@ export default class OrganizationService {
 			};
 		} catch (error) {
 			//ignore
+		}
+	}
+
+	static async createOrganization(details: z.infer<typeof organizationDetailsSchema>) {
+		try {
+			const { data } = await api.post('/organization/create-organization', details);
+			return data.organization.id;
+		} catch (error) {
+			return null;
+		}
+	}
+
+	static async updateOrganization(id:string,details: z.infer<typeof organizationDetailsSchema>) {
+		try {
+			const { data } = await api.post(`/organization/${id}/update-details`, details);
+			return data.organization.id;
+		} catch (error) {
+			return null;
 		}
 	}
 }

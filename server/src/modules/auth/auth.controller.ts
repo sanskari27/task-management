@@ -153,28 +153,35 @@ async function details(req: Request, res: Response, next: NextFunction) {
 	const details = user.getDetails();
 	const employees = await EmployeeService.getInstancesOfUser(user_id);
 
-	return Respond({
-		res,
-		status: 200,
-		data: {
-			account: details,
-			organizations: await Promise.all(
-				employees.map(async (emp) => {
-					const org = await emp.getOrganizationService();
-					return {
-						org_id: emp.organization_id,
-						emp_id: emp.employee_id,
-						name: org.organizationDetails.name,
-						domain: org.organizationDetails.domain,
-						industry: org.organizationDetails.industry,
-						logo: org.organizationDetails.logo,
-						can_create_others: emp.can_create_others,
-						can_let_others_create: emp.can_let_others_create,
-					};
-				})
-			),
-		},
-	});
+	try {
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				account: details,
+				organizations: await Promise.all(
+					employees.map(async (emp) => {
+						const org = await emp.getOrganizationService();
+						return {
+							org_id: emp.organization_id,
+							emp_id: emp.employee_id,
+							name: org.organizationDetails.name,
+							domain: org.organizationDetails.domain,
+							industry: org.organizationDetails.industry,
+							logo: org.organizationDetails.logo,
+							can_create_others: emp.can_create_others,
+							can_let_others_create: emp.can_let_others_create,
+						};
+					})
+				),
+			},
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
 }
 
 async function logout(req: Request, res: Response, next: NextFunction) {

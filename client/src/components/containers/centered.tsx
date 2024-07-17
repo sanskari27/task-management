@@ -6,6 +6,8 @@ export default function Centered({
 	className?: string;
 }) {
 	return (
-		<div className={`flex items-center justify-center h-full w-full ${className} `}>{children}</div>
+		<div className={`flex flex-col items-center justify-center h-full w-full ${className} `}>
+			{children}
+		</div>
 	);
 }

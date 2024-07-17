@@ -4,6 +4,26 @@ const nextConfig = {
 		domains: [
 			'api.microlink.io', // Microlink Image Preview
 		],
+		remotePatterns: [
+			{
+				protocol: 'http',
+				hostname: 'localhost',
+				port: '8567',
+				pathname: '/media/**',
+			},
+			{
+				protocol: 'https',
+				hostname: 'api.keethjewels.com',
+				port: '',
+				pathname: '/media/**',
+			},
+			{
+				protocol: 'https',
+				hostname: 'assets.aceternity.com',
+				port: '',
+				pathname: '/**',
+			},
+		],
 	},
 };
 

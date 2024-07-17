@@ -1,8 +1,10 @@
 import OrganizationService from '@/services/organization';
+import { redirect } from 'next/navigation';
 
-export default async function OrganizationDetails({ params }: { params: { org_id: string } }) {
-	
-	
+export default async function Dashboard({ params }: { params: { org_id: string } }) {
 	const details = await OrganizationService.getOrganizationDetails(params.org_id);
-	console.log(details);
+	if (!details) {
+		redirect('/organizations');
+	}
+	return <>Dashboard</>;
 }

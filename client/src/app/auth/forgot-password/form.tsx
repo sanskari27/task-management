@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { forgotSchema } from '@/schema/auth';
 import AuthService from '@/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
@@ -12,9 +13,8 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { z } from 'zod';
-import { resetSchema } from './schema';
 
-export default function LoginForm() {
+export default function ForgotPassword() {
 	const router = useRouter();
 	const {
 		handleSubmit,
@@ -23,13 +23,13 @@ export default function LoginForm() {
 		clearErrors: resetErrors,
 		formState: { errors },
 	} = useForm({
-		resolver: zodResolver(resetSchema),
+		resolver: zodResolver(forgotSchema),
 		defaultValues: {
 			email: '',
 		},
 	});
 
-	async function formSubmit(values: z.infer<typeof resetSchema>) {
+	async function formSubmit(values: z.infer<typeof forgotSchema>) {
 		const success = await AuthService.forgotPassword(values.email);
 		if (success) {
 			toast.success('Password reset link sent to your email');

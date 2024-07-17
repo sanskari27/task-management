@@ -54,6 +54,7 @@ const config = {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
 				},
+				'oil-black':"#0c0c0c"
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -69,10 +70,19 @@ const config = {
 					from: { height: 'var(--radix-accordion-content-height)' },
 					to: { height: '0' },
 				},
+				meteor: {
+					'0%': { transform: 'rotate(215deg) translateX(0)', opacity: '1' },
+					'70%': { opacity: '1' },
+					'100%': {
+						transform: 'rotate(215deg) translateX(-500px)',
+						opacity: '0',
+					},
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
+				'meteor-effect': 'meteor 5s linear infinite',
 			},
 		},
 	},

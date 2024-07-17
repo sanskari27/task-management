@@ -1,4 +1,3 @@
-import { BackgroundBeams } from '@/components/ui/background-beams';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
@@ -27,7 +26,6 @@ export default function RootLayout({
 					</div>
 					{children}
 				</Providers>
-				<BackgroundBeams />
 			</body>
 		</html>
 	);

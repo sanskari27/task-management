@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-export const organizationSchema = z.object({
+export const organizationDetailsSchema = z.object({
 	name: z.string().min(1),
 	industry: z.string().min(1),
 	domain: z.string().optional(),
-	logo: z.string().min(1),
+	logo: z.string().optional(),
 	address: z
 		.object({
 			street: z.string().default(''),

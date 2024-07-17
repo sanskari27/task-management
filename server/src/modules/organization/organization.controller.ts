@@ -39,7 +39,7 @@ async function updateDetails(req: Request, res: Response, next: NextFunction) {
 	try {
 		const org = await OrganizationService.getInstance(id);
 
-		if (org.owner_id !== user_id) {
+		if (org.owner_id.toString() !== user_id.toString()) {
 			return next(new CustomError(AUTH_ERRORS.PERMISSION_DENIED));
 		}
 
@@ -65,20 +65,26 @@ async function listEmployees(req: Request, res: Response, next: NextFunction) {
 	if (!employeeService) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 	}
+	try {
+		const org = await employeeService.getOrganizationService();
 
-	const org = await employeeService.getOrganizationService();
+		const employees = await org.getEmployees();
+		const details = await Promise.all(employees.map(async (emp) => await emp.getDetails()));
 
-	const employees = await org.getEmployees();
-	const details = await Promise.all(employees.map(async (emp) => await emp.getDetails()));
-
-	return Respond({
-		res,
-		status: 200,
-		data: {
-			employees: details,
-			tree: await org.getOrganizationTree(),
-		},
-	});
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				employees: details,
+				tree: await org.getOrganizationTree(),
+			},
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
 }
 
 async function inviteToOrganization(req: Request, res: Response, next: NextFunction) {
