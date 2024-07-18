@@ -1,4 +1,5 @@
 import PageLayout from '@/components/containers/page-layout';
+import Navbar from '@/components/elements/Navbar';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 import { Metadata } from 'next';
 

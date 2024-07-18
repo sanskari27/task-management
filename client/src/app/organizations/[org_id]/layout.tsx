@@ -1,5 +1,5 @@
 import PageLayout from '@/components/containers/page-layout';
-import { BackgroundBeams } from '@/components/ui/background-beams';
+import Navbar from '@/components/elements/Navbar';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,9 +14,9 @@ export default function Layout({
 	params: { org_id: string };
 }>) {
 	return (
-		<PageLayout className='w-screen h-screen'>
-			{children}
-			<BackgroundBeams />
-		</PageLayout>
+		<>
+			<Navbar params={org_id} />
+			<PageLayout className='w-screen h-screen'>{children}</PageLayout>
+		</>
 	);
 }

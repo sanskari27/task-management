@@ -1,3 +1,4 @@
+import Navbar from '@/components/elements/Navbar';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
@@ -21,9 +22,6 @@ export default function RootLayout({
 		<html lang='en'>
 			<body className={cn('h-screen w-screen overflow-x-hidden', inter.className)}>
 				<Providers>
-					<div className='absolute top-3 right-3'>
-						<ThemeToggle />
-					</div>
 					{children}
 				</Providers>
 			</body>
