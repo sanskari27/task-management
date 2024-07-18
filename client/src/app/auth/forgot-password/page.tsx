@@ -1,4 +1,4 @@
-import AuthService from '@/services/auth';
+import AuthService from '@/services/auth.service';
 import { redirect, RedirectType } from 'next/navigation';
 import ForgotPasswordForm from './form';
 

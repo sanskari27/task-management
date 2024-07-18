@@ -1,5 +1,5 @@
-import OrganizationService from '@/services/organization';
-import TasksService from '@/services/tasks';
+import OrganizationService from '@/services/organization.service';
+import TasksService from '@/services/tasks.service';
 import { redirect } from 'next/navigation';
 
 export default async function Dashboard({ params }: { params: { org_id: string } }) {

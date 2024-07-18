@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { TIMEZONES } from '@/lib/const';
 import { cn } from '@/lib/utils';
 import { organizationDetailsSchema } from '@/schema/organization';
-import MediaService from '@/services/media';
+import MediaService from '@/services/media.service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';

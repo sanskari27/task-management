@@ -29,7 +29,7 @@ const defaultValues = {
 	remainders: [],
 };
 
-export default function CreateTasks() {
+export default function CreateTasks({ params }: { params: { org_id: string } }) {
 	const [isLoading, setLoading] = useState(false);
 
 	async function handleSubmit(values: z.infer<typeof taskDetailsSchema>) {
@@ -48,6 +48,7 @@ export default function CreateTasks() {
 		<TasksLayout>
 			<Centered>
 				<TaskDetailsForm
+					org_id={params.org_id}
 					defaultValues={defaultValues}
 					isLoading={isLoading}
 					onSubmit={handleSubmit}

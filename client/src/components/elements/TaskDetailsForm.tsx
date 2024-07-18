@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { taskDetailsSchema } from '@/schema/task';
+import OrganizationService from '@/services/organization.service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Textarea } from '../ui/textarea';
@@ -15,10 +17,12 @@ export default function TaskDetailsForm({
 	defaultValues,
 	onSubmit,
 	isLoading = false,
+	org_id,
 }: {
 	defaultValues?: z.infer<typeof taskDetailsSchema>;
 	onSubmit: (values: z.infer<typeof taskDetailsSchema>) => void;
 	isLoading?: boolean;
+	org_id: string;
 }) {
 	const {
 		handleSubmit,
@@ -46,6 +50,16 @@ export default function TaskDetailsForm({
 		console.log(values);
 		onSubmit(values);
 	}
+
+	async function getEmployees() {
+		const employees = await OrganizationService.employeeList(org_id);
+
+		console.log(employees);
+	}
+
+	useEffect(() => {
+		getEmployees();
+	}, []);
 
 	return (
 		<Card className='mx-auto max-w-[40%] w-[90%] md:w-full'>

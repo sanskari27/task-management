@@ -2,7 +2,7 @@
 import Centered from '@/components/containers/centered';
 import PageLayout from '@/components/containers/page-layout';
 import { organizationDetailsSchema } from '@/schema/organization';
-import OrganizationService from '@/services/organization';
+import OrganizationService from '@/services/organization.service';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

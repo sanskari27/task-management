@@ -1,7 +1,7 @@
 'use client';
 import OrganizationDetailsForm from '@/components/elements/OrganizationDetailsForm';
 import { organizationDetailsSchema } from '@/schema/organization';
-import OrganizationService from '@/services/organization';
+import OrganizationService from '@/services/organization.service';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';

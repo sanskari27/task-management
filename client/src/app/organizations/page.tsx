@@ -5,7 +5,7 @@ import Show from '@/components/containers/show';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { LinkPreview } from '@/components/ui/link-preview';
-import AuthService from '@/services/auth';
+import AuthService from '@/services/auth.service';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';

@@ -37,10 +37,25 @@ export default class OrganizationService {
 		}
 	}
 
-	static async updateOrganization(id:string,details: z.infer<typeof organizationDetailsSchema>) {
+	static async updateOrganization(id: string, details: z.infer<typeof organizationDetailsSchema>) {
 		try {
 			const { data } = await api.post(`/organization/${id}/update-details`, details);
 			return data.organization.id;
+		} catch (error) {
+			return null;
+		}
+	}
+
+	static async employeeList(organizationId: string) {
+		try {
+			const { data } = await api.get('/organization/employee-list', {
+				headers: {
+					'X-Organization-ID': organizationId,
+				},
+			});
+
+			console.log(data.employees);
+			return data.employees;
 		} catch (error) {
 			return null;
 		}
