@@ -18,13 +18,13 @@ const defaultValues = {
 	priority: 'low',
 	isRecurring: false,
 	recurrence: {
-		frequency: '',
-		start_date: '',
-		end_date: '',
+		frequency: 'daily',
+		start_date: new Date(),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 365)),
 		weekdays: [],
 		monthdays: [],
 	},
-	due_date: '',
+	due_date: new Date(),
 	links: [],
 	files: [],
 	voice_notes: [],
@@ -35,21 +35,21 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 	const [isLoading, setLoading] = useState(false);
 	const [employees, setEmployees] = useState([]);
 	const [details, setDetails] = useState<{
-		id: any;
-		name: any;
-		domain: any;
-		industry: any;
-		logo: any;
-		timezone: any;
+		id: string;
+		name: string;
+		domain: string;
+		industry: string;
+		logo: string;
+		timezone: string;
 		address: {
-			street: any;
-			city: any;
-			state: any;
-			country: any;
-			zip: any;
-			_id: any;
+			street: string;
+			city: string;
+			state: string;
+			country: string;
+			zip: string;
+			_id: string;
 		};
-		categories: any;
+		categories: string[];
 	}>();
 
 	const getEmployees = useCallback(async () => {
@@ -84,9 +84,9 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 	}
 	return (
 		<TasksLayout>
-			<Centered>
+			<Centered className='mt-[5%]'>
 				<TaskDetailsForm
-					categories={details?.categories}
+					categories={details?.categories as string[]}
 					employees={employees}
 					defaultValues={defaultValues}
 					isLoading={isLoading}
