@@ -9,11 +9,12 @@ export default async function EditOrganization({ params }: { params: { org_id: s
 	if (!details) {
 		redirect('/organizations');
 	}
+
 	return (
 		<PageLayout>
 			<div className='m-6'></div>
 			<Centered>
-				<EditOrganizationForm id={params.org_id} details={details} />
+				<EditOrganizationForm id={params.org_id} details={details} canEdit={details.is_owner} />
 			</Centered>
 		</PageLayout>
 	);

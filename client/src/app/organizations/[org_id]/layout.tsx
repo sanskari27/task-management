@@ -1,5 +1,6 @@
 import PageLayout from '@/components/containers/page-layout';
 import Navbar from '@/components/elements/Navbar';
+import { InviteDialog } from '@/components/ui/invite_dialog';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function Layout({
 		<>
 			<Navbar params={org_id} />
 			<PageLayout className='w-screen h-screen'>{children}</PageLayout>
+			<InviteDialog />
 		</>
 	);
 }

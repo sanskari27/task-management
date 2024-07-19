@@ -55,6 +55,7 @@ export default function CreateOrganization() {
 					defaultValues={defaultValues}
 					onSubmit={handleSubmit}
 					isLoading={isLoading}
+					canEdit
 				/>
 			</Centered>
 		</PageLayout>

@@ -171,6 +171,7 @@ async function details(req: Request, res: Response, next: NextFunction) {
 							logo: org.organizationDetails.logo,
 							can_create_others: emp.can_create_others,
 							can_let_others_create: emp.can_let_others_create,
+							is_owner: org.organizationDetails.owner.toString() === user_id.toString(),
 						};
 					})
 				),

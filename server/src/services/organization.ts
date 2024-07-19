@@ -62,6 +62,7 @@ export default class OrganizationService {
 			address: this._org.address,
 			timezone: this._org.timezone,
 			categories: this._org.categories,
+			owner: this._org.owner,
 		};
 	}
 
@@ -82,11 +83,24 @@ export default class OrganizationService {
 		const details = await Promise.all(services.map((emp) => emp.getDetails()));
 
 		const idMap = new Map();
-		const root: typeof details = [];
+		const root: {
+			name: string;
+			attributes: any;
+			children: any[];
+		}[] = [];
 
 		details.forEach((item) => {
 			const { employee_id } = item;
-			idMap.set(employee_id.toString(), { ...item, children: [] });
+			idMap.set(employee_id.toString(), {
+				name: item.name,
+				attributes: {
+					Email: item.email,
+					Phone: item.phone,
+					'Can Create Others': item.can_create_others,
+					'Can Let Others Create': item.can_let_others_create,
+				},
+				children: [],
+			});
 		});
 
 		details.forEach((item) => {
@@ -99,7 +113,11 @@ export default class OrganizationService {
 			}
 		});
 
-		return root;
+		return {
+			name: root[0].name,
+			attributes: root[0].attributes,
+			children: root[0].children,
+		};
 	}
 
 	async updateDetails(opts: Partial<OrganizationData>) {

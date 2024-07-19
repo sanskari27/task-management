@@ -10,14 +10,20 @@ import { z } from 'zod';
 export default function EditOrganizationForm({
 	id,
 	details,
+	canEdit = false,
 }: {
 	id: string;
 	details: z.infer<typeof organizationDetailsSchema>;
+	canEdit?: boolean;
 }) {
 	const [isLoading, setLoading] = useState(false);
 	const router = useRouter();
 
 	async function handleSubmit(values: z.infer<typeof organizationDetailsSchema>) {
+		if (!canEdit) {
+			toast.error('You do not have permission to edit this organization');
+			return;
+		}
 		setLoading(true);
 		const generated_id = await OrganizationService.updateOrganization(id, values);
 		if (!generated_id) {
@@ -34,6 +40,7 @@ export default function EditOrganizationForm({
 			defaultValues={details}
 			onSubmit={handleSubmit}
 			isLoading={isLoading}
+			canEdit={canEdit}
 		/>
 	);
 }

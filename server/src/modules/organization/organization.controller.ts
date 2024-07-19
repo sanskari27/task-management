@@ -28,7 +28,11 @@ async function createOrganization(req: Request, res: Response, next: NextFunctio
 		res,
 		status: 200,
 		data: {
-			organization: org.organizationDetails,
+			organization: {
+				...org.organizationDetails,
+				is_owner: org.organizationDetails.owner.toString() === user_id.toString(),
+				owner: undefined,
+			},
 		},
 	});
 }
@@ -181,7 +185,7 @@ async function reconfigurePositions(req: Request, res: Response, next: NextFunct
 }
 
 async function details(req: Request, res: Response, next: NextFunction) {
-	const { id } = req.locals;
+	const { id, user_id } = req.locals;
 	try {
 		const org = await OrganizationService.getInstance(id);
 
@@ -189,7 +193,11 @@ async function details(req: Request, res: Response, next: NextFunction) {
 			res,
 			status: 200,
 			data: {
-				details: org.organizationDetails,
+				details: {
+					...org.organizationDetails,
+					is_owner: org.organizationDetails.owner.toString() === user_id.toString(),
+					owner: undefined,
+				},
 			},
 		});
 	} catch (err) {

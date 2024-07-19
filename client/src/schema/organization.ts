@@ -22,3 +22,10 @@ export const organizationDetailsSchema = z.object({
 		}),
 	timezone: z.string(),
 });
+
+export const inviteSchema = z.object({
+	email: z.string().email(),
+	parent_id: z.string().optional(),
+	can_create_others: z.boolean().default(false),
+	can_let_others_create: z.boolean().default(false),
+});
