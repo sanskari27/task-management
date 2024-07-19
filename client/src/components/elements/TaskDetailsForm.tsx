@@ -190,7 +190,9 @@ export default function TaskDetailsForm({
 								/>
 							</div>
 							<div className={`${watch('isRecurring') ? 'grid' : 'hidden'} gap-4`}>
-								<div className={`grid gap-2 grid-cols-1 md:grid-cols-2 items-center justify-between`}>
+								<div
+									className={`grid gap-2 grid-cols-1 md:grid-cols-2 items-center justify-between`}
+								>
 									<Label htmlFor='frequency'>Frequency</Label>
 									<ToggleGroup
 										type='single'

@@ -17,15 +17,11 @@ export default function Navbar({ params }: { params: string }) {
 				<NavigationMenuItem>
 					<NavigationMenuTrigger>Organizations</NavigationMenuTrigger>
 					<NavigationMenuContent>
-						<ul className='grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
-							<ListItem
-								href={`/organizations/${params}/edit`}
-								title='Organization details'
-								description='Description'
-							/>
-							<ListItem href={'/peo'} title='People' description='Description' />
-							<ListItem href={'/manage'} title='Manage employee' description='Description' />
-							<ListItem href={'/invite'} title='Invite people' description='Description' />
+						<ul className='grid w-[400px] gap-1.5 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
+							<ListItem href={`/organizations/${params}/edit`} title='Organization Details' />
+							<ListItem href={`/organizations/${params}/employees`} title='Peoples' />
+							<ListItem href={`/organizations/${params}/employees/manage`} title='Manage Employee' />
+							<ListItem href={`/organizations/${params}/edit`} title='Invite Others' />
 						</ul>
 					</NavigationMenuContent>
 				</NavigationMenuItem>
@@ -36,14 +32,10 @@ export default function Navbar({ params }: { params: string }) {
 					</NavigationMenuTrigger>
 					<NavigationMenuContent>
 						<ul className='grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
-							<ListItem href={'/details'} title='Assigned to me' description='Description' />
-							<ListItem href={'/peo'} title='Assigned by' description='Description' />
-							<ListItem href={'/manage'} title='All tasks' description='Description' />
-							<ListItem
-								href={`/organizations/${params}/tasks/create`}
-								title='Create tasks'
-								description='Description'
-							/>
+							<ListItem href={'/details'} title='Assigned to me' />
+							<ListItem href={'/peo'} title='Assigned by' />
+							<ListItem href={'/manage'} title='All tasks' />
+							<ListItem href={`/organizations/${params}/tasks/create`} title='Create tasks' />
 						</ul>
 					</NavigationMenuContent>
 				</NavigationMenuItem>

@@ -7,7 +7,6 @@ import OrganizationService from '@/services/organization.service';
 import { redirect } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { z } from 'zod';
-import TasksLayout from './layout';
 
 const defaultValues = {
 	title: '',
@@ -83,16 +82,14 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 		// router.push(`/organizations/${generated_id}`);
 	}
 	return (
-		<TasksLayout>
-			<Centered className='mt-[5%]'>
-				<TaskDetailsForm
-					categories={details?.categories as string[]}
-					employees={employees}
-					defaultValues={defaultValues}
-					isLoading={isLoading}
-					onSubmit={handleSubmit}
-				/>
-			</Centered>
-		</TasksLayout>
+		<Centered>
+			<TaskDetailsForm
+				categories={details?.categories as string[]}
+				employees={employees}
+				defaultValues={defaultValues}
+				isLoading={isLoading}
+				onSubmit={handleSubmit}
+			/>
+		</Centered>
 	);
 }
