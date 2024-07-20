@@ -1,11 +1,11 @@
 'use client';
 
 import Centered from '@/components/containers/centered';
+import { useEmployees } from '@/components/context/employees';
+import { useOrganizationDetails } from '@/components/context/organization-details';
 import TaskDetailsForm from '@/components/elements/TaskDetailsForm';
 import { taskDetailsSchema } from '@/schema/task';
-import OrganizationService from '@/services/organization.service';
-import { redirect } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
 
 const defaultValues = {
@@ -32,42 +32,8 @@ const defaultValues = {
 
 export default function CreateTasks({ params }: { params: { org_id: string } }) {
 	const [isLoading, setLoading] = useState(false);
-	const [employees, setEmployees] = useState([]);
-	const [details, setDetails] = useState<{
-		id: string;
-		name: string;
-		domain: string;
-		industry: string;
-		logo: string;
-		timezone: string;
-		address: {
-			street: string;
-			city: string;
-			state: string;
-			country: string;
-			zip: string;
-			_id: string;
-		};
-		categories: string[];
-	}>();
-
-	const getEmployees = useCallback(async () => {
-		const employees = await OrganizationService.employeeList(params.org_id);
-		setEmployees(employees);
-	}, [params.org_id]);
-
-	const getOrganizationDetails = useCallback(async () => {
-		const details = await OrganizationService.getOrganizationDetails(params.org_id);
-		if (!details) {
-			redirect('/organizations');
-		}
-		setDetails(details);
-	}, [params.org_id]);
-
-	useEffect(() => {
-		getOrganizationDetails();
-		getEmployees();
-	}, [getEmployees, getOrganizationDetails]);
+	const employees = useEmployees();
+	const { categories } = useOrganizationDetails();
 
 	async function handleSubmit(values: z.infer<typeof taskDetailsSchema>) {
 		console.log(values);
@@ -81,10 +47,11 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 		// toast.success('Organization updated successfully');
 		// router.push(`/organizations/${generated_id}`);
 	}
+
 	return (
 		<Centered>
 			<TaskDetailsForm
-				categories={details?.categories as string[]}
+				categories={categories}
 				employees={employees}
 				defaultValues={defaultValues}
 				isLoading={isLoading}

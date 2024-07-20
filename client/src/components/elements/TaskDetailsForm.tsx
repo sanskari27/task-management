@@ -33,8 +33,7 @@ export default function TaskDetailsForm({
 	onSubmit: (values: z.infer<typeof taskDetailsSchema>) => void;
 	isLoading?: boolean;
 	employees: {
-		employee_id: string;
-		organization_id: string;
+		id: string;
 		can_create_others: boolean;
 		can_let_others_create: boolean;
 		name: string;
@@ -117,6 +116,7 @@ export default function TaskDetailsForm({
 									placeholder='Ex. ABC Corp'
 									{...register('title', { required: true })}
 									onChange={() => setError('title', { message: '' })}
+									isInvalid={!!errors.title?.message}
 								/>
 							</div>
 							<div className='grid gap-2'>
@@ -158,7 +158,6 @@ export default function TaskDetailsForm({
 							<div className='grid gap-2 '>
 								<Label htmlFor='assign_to'>Assign to</Label>
 								<ComboboxEmployee
-									items={employees}
 									onChange={(value) => setValue('assigned_to', value)}
 									placeholder='Select employee'
 									value={watch('assigned_to')}
@@ -167,7 +166,6 @@ export default function TaskDetailsForm({
 							<div className='grid gap-2'>
 								<Label htmlFor='assign_to'>Categories</Label>
 								<ComboboxCategories
-									items={categories}
 									onChange={(value) => setValue('category', value)}
 									placeholder='Select category'
 									value={watch('category')}

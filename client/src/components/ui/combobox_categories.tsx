@@ -15,19 +15,19 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import Each from '../containers/each';
+import { useOrganizationDetails } from '../context/organization-details';
 
 export default function ComboboxCategories({
 	placeholder,
-	items,
 	value,
 	onChange,
 }: {
 	placeholder: string;
-	items: string[];
 	value: string;
 	onChange: (value: string) => void;
 }) {
 	const [open, setOpen] = React.useState(false);
+	const { categories: items } = useOrganizationDetails();
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -50,9 +50,8 @@ export default function ComboboxCategories({
 						<CommandGroup>
 							<Each
 								items={items}
-								render={(item, index) => (
+								render={(item) => (
 									<CommandItem
-										key={index}
 										value={item}
 										onSelect={(currentValue) => {
 											if (currentValue === value) {

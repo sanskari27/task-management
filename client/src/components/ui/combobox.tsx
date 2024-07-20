@@ -44,7 +44,7 @@ export default function Combobox({
 			<PopoverContent className='min-w-max p-0' align='start'>
 				<Command>
 					<CommandInput placeholder={placeholder} />
-					<CommandEmpty>No framework found.</CommandEmpty>
+					<CommandEmpty>No entries found.</CommandEmpty>
 					<CommandList>
 						<CommandGroup>
 							{items.map((framework) => (

@@ -15,27 +15,19 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import Each from '../containers/each';
+import { useEmployees } from '../context/employees';
 
 export default function ComboboxEmployee({
 	placeholder,
-	items,
 	value,
 	onChange,
 }: {
 	placeholder: string;
-	items: {
-		employee_id: string;
-		organization_id: string;
-		can_create_others: boolean;
-		can_let_others_create: boolean;
-		name: string;
-		email: string;
-		phone: string;
-	}[];
 	value: string[];
 	onChange: (value: string[]) => void;
 }) {
 	const [open, setOpen] = React.useState(false);
+	const items = useEmployees();
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -60,7 +52,7 @@ export default function ComboboxEmployee({
 								items={items}
 								render={(item) => (
 									<CommandItem
-										key={item.employee_id}
+										key={item.id}
 										value={item.name}
 										onSelect={(currentValue) => {
 											if (value.includes(currentValue)) {
