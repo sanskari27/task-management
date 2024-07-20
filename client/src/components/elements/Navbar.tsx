@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
 	NavigationMenu,
 	NavigationMenuContent,
@@ -12,8 +13,19 @@ import { LogoutButton } from './logout-button';
 
 export default function Navbar({ params }: { params: string }) {
 	return (
-		<NavigationMenu className='mx-[1rem] sticky top-1 max-w-screen justify-between backdrop-blur-sm bg-transparent p-[1rem] justify-self-center'>
-			<div></div>
+		<NavigationMenu className='mx-2 md:mx-[1rem] sticky top-1 max-w-screen justify-between backdrop-blur-sm bg-transparent  p-[1rem] justify-self-center flex-col md:flex-row '>
+			<div className='flex items-center'>
+				<Link
+					href='/organizations'
+					className='p-[0.5rem] dark:hover:bg-zinc-800 hover:bg-slate-100 rounded-lg'
+				>
+					Switch Organization
+				</Link>
+				<div className='md:hidden block border-l border-gray-400 ml-2 pl-2'>
+					<ThemeToggle />
+					<LogoutButton />
+				</div>
+			</div>
 			<NavigationMenuList>
 				<NavigationMenuItem>
 					<NavigationMenuTrigger>Organizations</NavigationMenuTrigger>
@@ -49,7 +61,7 @@ export default function Navbar({ params }: { params: string }) {
 					</NavigationMenuContent>
 				</NavigationMenuItem>
 			</NavigationMenuList>
-			<div>
+			<div className='hidden md:block'>
 				<ThemeToggle />
 				<LogoutButton />
 			</div>
