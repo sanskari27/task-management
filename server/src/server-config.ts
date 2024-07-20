@@ -69,13 +69,15 @@ export default function (app: Express) {
 		res.locals = {
 			...res.locals,
 		};
-		const { headers, body, url } = req;
 
-		Logger.http(url, {
-			type: 'request',
-			headers,
-			body,
-		});
+		if (req.method !== 'GET') {
+			const { headers, body, url } = req;
+			Logger.http(url, {
+				type: 'request',
+				headers,
+				body,
+			});
+		}
 		next();
 	});
 
