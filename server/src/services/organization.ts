@@ -96,8 +96,8 @@ export default class OrganizationService {
 				attributes: {
 					Email: item.email,
 					Phone: item.phone,
-					'Can Create Others': item.can_create_others,
-					'Can Let Others Create': item.can_let_others_create,
+					'Can Create Others': item.can_create_others ? 'Yes' : 'No',
+					'Can Let Others Create': item.can_let_others_create ? 'Yes' : 'No',
 				},
 				children: [],
 			});

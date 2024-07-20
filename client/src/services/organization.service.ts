@@ -1,6 +1,6 @@
-import { Employee } from '@/app/organizations/[org_id]/employees/table';
 import api from '@/lib/api';
 import { organizationDetailsSchema } from '@/schema/organization';
+import { TEmployee } from '@/types/employee';
 import { z } from 'zod';
 
 export default class OrganizationService {
@@ -48,11 +48,17 @@ export default class OrganizationService {
 		}
 	}
 
-	static async employeeList(organizationId: string): Promise<Employee[] | null> {
+	static async employeeList(
+		organizationId: string,
+		opts?: { managed: boolean }
+	): Promise<TEmployee[] | null> {
 		try {
 			const { data } = await api.get('/organization/list-employees', {
 				headers: {
 					'X-Organization-ID': organizationId,
+				},
+				params: {
+					managed: opts?.managed ?? false,
 				},
 			});
 
@@ -60,6 +66,7 @@ export default class OrganizationService {
 				return {
 					id: (employee.employee_id as string) ?? '',
 					organization_id: (employee.organization_id as string) ?? '',
+					parent_id: (employee.parent_id as string) ?? '',
 					can_create_others: (employee.can_create_others as boolean) ?? false,
 					can_let_other_create: (employee.can_let_other_create as boolean) ?? false,
 					name: (employee.name as string) ?? '',
@@ -105,6 +112,29 @@ export default class OrganizationService {
 					'X-Organization-ID': org_id,
 				},
 			});
+
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
+
+	static async reconfigureOrganizationTree(
+		org_id: string,
+		updates: { emp_id: string; parent_id: string }[]
+	) {
+		try {
+			await api.post(
+				'/organization/reconfigure-positions',
+				{
+					positions: updates,
+				},
+				{
+					headers: {
+						'X-Organization-ID': org_id,
+					},
+				}
+			);
 
 			return true;
 		} catch (error) {

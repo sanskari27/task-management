@@ -1,6 +1,7 @@
 import { AUTH_ERRORS, COMMON_ERRORS, CustomError } from '@/errors';
 import { sendOrganizationInviteEmail } from '@/provider/email';
 import { UserService } from '@/services';
+import EmployeeService from '@/services/employee';
 import OrganizationService from '@/services/organization';
 import { Respond } from '@/utils/ExpressUtils';
 import { NextFunction, Request, Response } from 'express';
@@ -66,14 +67,25 @@ async function updateDetails(req: Request, res: Response, next: NextFunction) {
 
 async function listEmployees(req: Request, res: Response, next: NextFunction) {
 	const { employeeService } = req.locals;
+	const managed = req.query.managed === 'true';
 	if (!employeeService) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 	}
 	try {
 		const org = await employeeService.getOrganizationService();
 
-		const employees = await org.getEmployees();
-		const details = await Promise.all(employees.map(async (emp) => await emp.getDetails()));
+		let details;
+		if (managed) {
+			const ids = await employeeService.managedEmployees();
+			ids.push(employeeService.employee_id);
+			const employees = await Promise.all(
+				ids.map(async (emp) => await EmployeeService.getServiceByID(emp))
+			);
+			details = await Promise.all(employees.map(async (emp) => await emp.getDetails()));
+		} else {
+			const employees = await org.getEmployees();
+			details = await Promise.all(employees.map(async (emp) => await emp.getDetails()));
+		}
 
 		return Respond({
 			res,

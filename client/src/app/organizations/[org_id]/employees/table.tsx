@@ -22,6 +22,7 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
+import { useEmployees } from '@/components/context/employees';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -46,19 +47,9 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { useEmployees } from '@/components/context/employees';
+import { TEmployee } from '@/types/employee';
 
-export type Employee = {
-	id: string;
-	name: string;
-	email: string;
-	phone: string;
-	can_create_others: boolean;
-	can_let_others_create: boolean;
-	children?: Employee[];
-};
-
-export const columns: ColumnDef<Employee>[] = [
+export const columns: ColumnDef<TEmployee>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (

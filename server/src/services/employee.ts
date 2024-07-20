@@ -36,6 +36,15 @@ export default class EmployeeService {
 		return new EmployeeService(employee);
 	}
 
+	static async getServiceByID(e_id: IDType) {
+		const employee = await EmployeeDB.findById(e_id);
+		if (!employee) {
+			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		return new EmployeeService(employee);
+	}
+
 	static async createEmployee(
 		_o_id: IDType,
 		data: {

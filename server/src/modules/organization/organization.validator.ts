@@ -141,7 +141,7 @@ export async function InviteToOrganizationValidator(
 export type ReconfigurePositionsType = {
 	positions: {
 		emp_id: Types.ObjectId;
-		parent_id?: Types.ObjectId | undefined;
+		parent_id: Types.ObjectId;
 	}[];
 };
 
@@ -160,8 +160,7 @@ export async function ReconfigurePositionsValidator(
 				parent_id: z
 					.string()
 					.refine((val) => Types.ObjectId.isValid(val))
-					.transform((val) => new Types.ObjectId(val))
-					.optional(),
+					.transform((val) => new Types.ObjectId(val)),
 			})
 		),
 	});
