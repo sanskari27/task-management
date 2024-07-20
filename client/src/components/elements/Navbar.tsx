@@ -17,7 +17,7 @@ export default function Navbar({ params }: { params: string }) {
 				<NavigationMenuItem>
 					<NavigationMenuTrigger>Organizations</NavigationMenuTrigger>
 					<NavigationMenuContent>
-						<ul className='grid w-[400px] gap-1.5 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
+						<ul className='grid w-[400px] gap-x-1.5 gap-y-0.5 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
 							<ListItem href={`/organizations/${params}/edit`} title='Organization Details' />
 							<ListItem href={`/organizations/${params}/employees/manage`} title='Manage Members' />
 							<ListItem href={`/organizations/${params}/employees`} title='Members Data' />
@@ -39,7 +39,7 @@ export default function Navbar({ params }: { params: string }) {
 						Tasks
 					</NavigationMenuTrigger>
 					<NavigationMenuContent>
-						<ul className='grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
+						<ul className='grid w-[400px] gap-x-1.5 gap-y-0.5 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
 							<ListItem href={'/details'} title='Assigned to me' />
 							<ListItem href={'/peo'} title='Assigned by' />
 							<ListItem href={'/manage'} title='All tasks' />

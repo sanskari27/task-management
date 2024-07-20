@@ -48,7 +48,7 @@ export default async function Organizations() {
 								<Card className='pt-8'>
 									<CardContent>
 										<div className='flex items-center space-x-4 rounded-md'>
-											<div className='h-[60px] w-[60px]  text-center'>
+											<div className='h-[48px] md:h-[60px] w-[48px] md:w-[60px]  text-center'>
 												<Avatar className='inline-flex justify-center  items-center h-full w-full '>
 													<AvatarImage
 														className='h-full w-full rounded-full border-gray-50 border'
@@ -66,14 +66,14 @@ export default async function Organizations() {
 											<div className='flex-1 flex-col gap-6'>
 												<CardTitle>{org.name}</CardTitle>
 
-												<div className='flex items-center gap-3 mt-2'>
+												<div className='flex flex-col md:flex-row md:items-center gap-x-3 mt-2'>
 													<LinkPreview
 														url={org.domain}
-														className='font-bold bg-clip-text text-transparent bg-gradient-to-br from-purple-500 to-pink-500'
+														className='font-medium md:font-semibold text-sm md:text-base bg-clip-text text-transparent bg-gradient-to-br from-purple-500 to-pink-500'
 													>
 														{org.domain}
 													</LinkPreview>
-													<span className='h-[6px] w-[6px] rounded-full bg-gray-300 dark:bg-gray-400'></span>
+													<span className='h-[6px] w-[6px] rounded-full bg-gray-300 dark:bg-gray-400 hidden md:block'></span>
 													<p className='text-sm text-muted-foreground'>{org.industry}</p>
 												</div>
 											</div>

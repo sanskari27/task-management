@@ -73,7 +73,7 @@ export function RemoveForm() {
 				}
 			}}
 		>
-			<DialogContent className='sm:max-w-[425px] md:max-w-lg'>
+			<DialogContent className='max-w-sm md:max-w-lg'>
 				<DialogHeader>
 					<DialogTitle>Remove People</DialogTitle>
 					<DialogDescription>

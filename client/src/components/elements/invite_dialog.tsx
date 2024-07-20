@@ -86,7 +86,7 @@ export function InviteForm() {
 				}
 			}}
 		>
-			<DialogContent className='sm:max-w-[425px] md:max-w-lg'>
+			<DialogContent className='max-w-sm md:max-w-lg'>
 				<DialogHeader>
 					<DialogTitle>Invite People</DialogTitle>
 					<DialogDescription>

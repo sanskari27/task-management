@@ -86,7 +86,7 @@ export default function OrganizationDetailsForm({
 	}
 
 	return (
-		<Card className='mx-auto max-w-[60%] w-[90%] md:w-full'>
+		<Card className='mx-auto md:max-w-[60%] w-[90%] md:w-full'>
 			<CardHeader>
 				<CardTitle className='text-xl text-center'>Organization Details</CardTitle>
 			</CardHeader>
@@ -131,8 +131,8 @@ export default function OrganizationDetailsForm({
 					/>
 				</Centered>
 				<form method='post' onSubmit={handleSubmit(formSubmit)} className='mt-6 '>
-					<div className='flex flex-col md:flex-row '>
-						<div className='flex flex-1 flex-col border-r-0 border-b md:border-b-0 md:border-r border-dashed px-4 '>
+					<div className='flex flex-col md:flex-row gap-y-3'>
+						<div className='flex flex-1 flex-col border-r-0 border-b md:border-b-0 md:border-r border-dashed px-4 pb-3'>
 							<div className='grid gap-4'>
 								<div className='grid gap-2'>
 									<Label htmlFor='name'>Name</Label>

@@ -83,41 +83,45 @@ export default function ManageEmployees({ params: { org_id } }: { params: { org_
 	return (
 		<section className='mx-[2%] md:mx-[7%] mt-3'>
 			<div className='flex md:justify-between'>
-				<h2 className='text-3xl font-bold'>Manage Organization Tree</h2>
+				<h2 className='text-xl md:text-3xl font-bold'>Manage Organization Tree</h2>
 			</div>
-			<div className='flex items-end my-4 gap-4'>
-				<div className='grid gap-2 w-[400px]'>
-					<Label htmlFor='email'>Select Employee</Label>
-					<Combobox
-						placeholder='Select employee...'
-						items={employeeList}
-						value={emp_id}
-						onChange={(value) => setEmpId(value)}
-					/>
+			<div className='flex flex-col md:flex-row  md:items-end items-center my-4 gap-4'>
+				<div className='flex flex-col md:flex-row  gap-y-4'>
+					<div className='grid gap-2 w-[400px]'>
+						<Label htmlFor='email'>Select Employee</Label>
+						<Combobox
+							placeholder='Select employee...'
+							items={employeeList}
+							value={emp_id}
+							onChange={(value) => setEmpId(value)}
+						/>
+					</div>
+					<div className='grid gap-2 w-[400px]'>
+						<Label htmlFor='email'>Updated Reporting Person</Label>
+						<Combobox
+							placeholder='Select reporting person...'
+							items={employeeList}
+							value={parent_id}
+							onChange={(value) => setParentId(value)}
+						/>
+					</div>
 				</div>
-				<div className='grid gap-2 w-[400px]'>
-					<Label htmlFor='email'>Updated Reporting Person</Label>
-					<Combobox
-						placeholder='Select reporting person...'
-						items={employeeList}
-						value={parent_id}
-						onChange={(value) => setParentId(value)}
-					/>
-				</div>
-				<div className='grid gap-2 w-[200px]'>
-					<Button variant={'outline'} className='w-full' onClick={applyChanges}>
-						Apply
-					</Button>
-				</div>
-				<div className='grid gap-2 w-[200px] '>
-					<Button
-						onClick={saveChanges}
-						className='w-full'
-						disabled={loading || updates.length === 0}
-					>
-						{loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-						Save
-					</Button>
+				<div className='flex flex-1 md:justify-between gap-x-3'>
+					<div className='grid gap-2 w-[150px] md:w-[200px]'>
+						<Button variant={'outline'} className='w-full' onClick={applyChanges}>
+							Apply
+						</Button>
+					</div>
+					<div className='grid gap-2 w-[150px] md:w-[200px] '>
+						<Button
+							onClick={saveChanges}
+							className='w-full'
+							disabled={loading || updates.length === 0}
+						>
+							{loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+							Save
+						</Button>
+					</div>
 				</div>
 			</div>
 			<div id='treeWrapper' className='w-full mt-6 h-[75vh] bg-white rounded-2xl' ref={targetRef}>
