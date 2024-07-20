@@ -8,6 +8,7 @@ import {
 } from '../ui/navigation-menu';
 import { ThemeToggle } from '../ui/theme-toggle';
 import ListItem from './ListItem';
+import { LogoutButton } from './logout-button';
 
 export default function Navbar({ params }: { params: string }) {
 	return (
@@ -50,6 +51,7 @@ export default function Navbar({ params }: { params: string }) {
 			</NavigationMenuList>
 			<div>
 				<ThemeToggle />
+				<LogoutButton />
 			</div>
 		</NavigationMenu>
 	);

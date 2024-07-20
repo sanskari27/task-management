@@ -97,4 +97,12 @@ export default class AuthService {
 			};
 		}
 	}
+	static async logout() {
+		try {
+			const { data } = await api.post('/auth/logout');
+			return data.success;
+		} catch (error) {
+			return false;
+		}
+	}
 }

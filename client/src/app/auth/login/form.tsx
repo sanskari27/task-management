@@ -34,7 +34,7 @@ export default function LoginForm() {
 	async function formSubmit(values: z.infer<typeof loginSchema>) {
 		const success = await AuthService.login(values.email, values.password);
 		if (success) {
-			router.push(searchParams.get('callback') ?? '/');
+			router.push(searchParams.get('callback') ?? '/organizations');
 		} else {
 			setError('password', { message: 'Invalid Credentials' });
 		}

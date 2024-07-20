@@ -36,7 +36,7 @@ export default function SignupPage() {
 	async function formSubmit(values: z.infer<typeof signupSchema>) {
 		const success = await AuthService.register(values);
 		if (success) {
-			router.push(searchParams.get('callback') ?? '/');
+			router.push(searchParams.get('callback') ?? '/organizations');
 		} else {
 			setError('email', { message: 'User already exists...' });
 		}
