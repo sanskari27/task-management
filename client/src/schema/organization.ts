@@ -29,3 +29,7 @@ export const inviteSchema = z.object({
 	can_create_others: z.boolean().default(false),
 	can_let_others_create: z.boolean().default(false),
 });
+
+export const removeSchema = z.object({
+	email: z.string().email(),
+});

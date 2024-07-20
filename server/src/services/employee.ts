@@ -139,6 +139,38 @@ export default class EmployeeService {
 		OrganizationService.deleteOrganizationByOwnerID(this._o_id, emp_id);
 	}
 
+	async removeFromOrganizationFromEmail(email: string) {
+		const user = await UserService.getUserService(email);
+
+		const emp = await EmployeeDB.findOne({
+			organization: this._o_id,
+			account_id: user.userId,
+		});
+
+		if (!emp) {
+			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		const managedEmployees = await EmployeeService.managedEmployees(this._e_id);
+		managedEmployees.push(this._e_id);
+
+		if (!mongoArrayIncludes(managedEmployees, emp._id)) {
+			throw new CustomError(AUTH_ERRORS.PERMISSION_DENIED);
+		}
+
+		await EmployeeDB.deleteOne({
+			organization: this._o_id,
+			_id: emp._id,
+		});
+
+		this.allEmployeesInOrganization().then((employees) => {
+			employees.forEach((emp) => {
+				removeFromCache(`managed_employees_${emp._e_id}`);
+			});
+		});
+		OrganizationService.deleteOrganizationByOwnerID(this._o_id, emp._id);
+	}
+
 	async getUserService() {
 		return await UserService.getUserService(this._u_id);
 	}

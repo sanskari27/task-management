@@ -19,12 +19,14 @@ export default function Combobox({
 	placeholder,
 	items,
 	value,
+	disabled,
 	onChange,
 }: {
 	placeholder: string;
 	items: { value: string; label: string }[];
 	value: string;
 	onChange: (value: string) => void;
+	disabled?: boolean;
 }) {
 	const [open, setOpen] = React.useState(false);
 
@@ -34,6 +36,7 @@ export default function Combobox({
 				<Button
 					variant='outline'
 					role='combobox'
+					disabled={disabled}
 					aria-expanded={open}
 					className='w-full justify-between'
 				>

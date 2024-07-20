@@ -119,6 +119,24 @@ export default class OrganizationService {
 		}
 	}
 
+	static async removeEmployee(org_id: string, emp_id: string) {
+		try {
+			await api.post(
+				`/organization/remove-from-organization/${emp_id}`,
+				{},
+				{
+					headers: {
+						'X-Organization-ID': org_id,
+					},
+				}
+			);
+
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
+
 	static async reconfigureOrganizationTree(
 		org_id: string,
 		updates: { emp_id: string; parent_id: string }[]

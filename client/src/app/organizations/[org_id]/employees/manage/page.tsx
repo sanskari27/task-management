@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import Combobox from '@/components/ui/combobox';
 import { Label } from '@/components/ui/label';
-import useManagedEMployees from '@/hooks/useManagedEmployees';
+import useManagedEmployees from '@/hooks/useManagedEmployees';
 import { generateOrganizationTree } from '@/lib/utils';
 import OrganizationService from '@/services/organization.service';
 import { Loader2 } from 'lucide-react';
@@ -16,7 +16,7 @@ export default function ManageEmployees({ params: { org_id } }: { params: { org_
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-	const employees = useManagedEMployees(org_id);
+	const employees = useManagedEmployees(org_id);
 	const [updates, setUpdates] = useState<
 		{
 			emp_id: string;

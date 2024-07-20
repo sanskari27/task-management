@@ -20,8 +20,8 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 import { useEmployees } from '../context/employees';
-import Combobox from './combobox';
-import { Switch } from './switch';
+import Combobox from '../ui/combobox';
+import { Switch } from '../ui/switch';
 
 export function InviteDialog() {
 	const searchParams = useSearchParams();

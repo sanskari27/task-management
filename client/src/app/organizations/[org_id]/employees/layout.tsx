@@ -1,4 +1,5 @@
-import { InviteDialog } from '@/components/ui/invite_dialog';
+import { InviteDialog } from '@/components/elements/invite_dialog';
+import { RemoveDialog } from '@/components/elements/remove_dialog';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export default function EmployeesLayout({
 		<>
 			{children}
 			<InviteDialog />
+			<RemoveDialog />
 		</>
 	);
 }

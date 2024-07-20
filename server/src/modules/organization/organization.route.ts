@@ -6,6 +6,7 @@ import {
 	CreateOrganizationValidator,
 	InviteToOrganizationValidator,
 	ReconfigurePositionsValidator,
+	RemoveFromOrganizationValidator,
 	UpdateOrganizationValidator,
 } from './organization.validator';
 
@@ -29,6 +30,11 @@ router
 	.route('/remove-from-organization/:id')
 	.all(IDValidator)
 	.post(Controller.removeFromOrganization);
+
+router
+	.route('/remove-from-organization')
+	.all(RemoveFromOrganizationValidator)
+	.post(Controller.removeFromOrganizationByEmail);
 
 router.route('/list-employees').get(Controller.listEmployees);
 

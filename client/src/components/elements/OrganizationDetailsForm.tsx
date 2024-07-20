@@ -53,6 +53,7 @@ export default function OrganizationDetailsForm({
 	} = useForm<z.infer<typeof organizationDetailsSchema>>({
 		resolver: zodResolver(organizationDetailsSchema),
 		defaultValues,
+		disabled: !canEdit,
 	});
 	const tz = watch('timezone');
 
@@ -91,7 +92,7 @@ export default function OrganizationDetailsForm({
 			</CardHeader>
 			<CardContent>
 				<Centered>
-					<Label htmlFor='logo' className='cursor-pointer'>
+					<Label htmlFor='logo' className={cn(canEdit ? 'cursor-pointer' : 'cursor-not-allowed')}>
 						{logoFile ? (
 							<Image
 								src={logoFile.preview}
@@ -126,9 +127,10 @@ export default function OrganizationDetailsForm({
 						ref={fileInputRef}
 						onChange={handleFileChange}
 						accept='image/*'
+						disabled={!canEdit}
 					/>
 				</Centered>
-				<form method='post' onSubmit={handleSubmit(formSubmit)} className='mt-6'>
+				<form method='post' onSubmit={handleSubmit(formSubmit)} className='mt-6 '>
 					<div className='flex flex-col md:flex-row '>
 						<div className='flex flex-1 flex-col border-r-0 border-b md:border-b-0 md:border-r border-dashed px-4 '>
 							<div className='grid gap-4'>
@@ -159,13 +161,16 @@ export default function OrganizationDetailsForm({
 										onChange={() => setError('domain', { message: '' })}
 									/>
 								</div>
-								<div className='grid gap-2'>
+								<div
+									className={cn('grid gap-2', canEdit ? 'cursor-pointer' : 'cursor-not-allowed')}
+								>
 									<Label htmlFor='timezone'>Timezone</Label>
 									<Combobox
 										placeholder='Select timezone'
 										items={timezones}
 										value={tz}
 										onChange={(value) => setValue('timezone', value)}
+										disabled={!canEdit}
 									/>
 								</div>
 							</div>

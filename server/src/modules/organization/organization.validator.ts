@@ -138,6 +138,31 @@ export async function InviteToOrganizationValidator(
 	);
 }
 
+export async function RemoveFromOrganizationValidator(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const reqValidator = z.object({
+		email: z.string().email(),
+	});
+
+	const reqValidatorResult = reqValidator.safeParse(req.body);
+
+	if (reqValidatorResult.success) {
+		req.locals.data = reqValidatorResult.data.email;
+		return next();
+	}
+
+	return next(
+		new CustomError({
+			STATUS: 400,
+			TITLE: 'INVALID_FIELDS',
+			MESSAGE: parseZodMessage(reqValidatorResult),
+		})
+	);
+}
+
 export type ReconfigurePositionsType = {
 	positions: {
 		emp_id: Types.ObjectId;

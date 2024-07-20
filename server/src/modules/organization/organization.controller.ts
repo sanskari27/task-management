@@ -164,6 +164,31 @@ async function removeFromOrganization(req: Request, res: Response, next: NextFun
 	}
 }
 
+async function removeFromOrganizationByEmail(req: Request, res: Response, next: NextFunction) {
+	const { employeeService, data: email } = req.locals;
+
+	if (!employeeService) {
+		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
+	}
+
+	try {
+		await employeeService.removeFromOrganization(email);
+
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				message: 'User removed from organization successfully.',
+			},
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
+}
+
 async function reconfigurePositions(req: Request, res: Response, next: NextFunction) {
 	const { employeeService } = req.locals;
 	const data = req.locals.data as ReconfigurePositionsType;
@@ -264,6 +289,7 @@ const Controller = {
 	createOrganization,
 	inviteToOrganization,
 	removeFromOrganization,
+	removeFromOrganizationByEmail,
 	reconfigurePositions,
 	updateDetails,
 	listEmployees,

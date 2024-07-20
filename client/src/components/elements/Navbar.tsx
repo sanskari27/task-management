@@ -19,14 +19,16 @@ export default function Navbar({ params }: { params: string }) {
 					<NavigationMenuContent>
 						<ul className='grid w-[400px] gap-1.5 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
 							<ListItem href={`/organizations/${params}/edit`} title='Organization Details' />
-							<ListItem href={`/organizations/${params}/employees`} title='Peoples' />
-							<ListItem
-								href={`/organizations/${params}/employees/manage`}
-								title='Manage Employee'
-							/>
+							<ListItem href={`/organizations/${params}/employees/manage`} title='Manage Members' />
+							<ListItem href={`/organizations/${params}/employees`} title='Members Data' />
 							<ListItem
 								href={`/organizations/${params}/employees?invite=true`}
-								title='Invite Peoples'
+								title='Invite Member'
+							/>
+							<div />
+							<ListItem
+								href={`/organizations/${params}/employees?remove=true`}
+								title='Remove Member'
 							/>
 						</ul>
 					</NavigationMenuContent>
