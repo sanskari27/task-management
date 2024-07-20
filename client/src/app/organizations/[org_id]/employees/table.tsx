@@ -46,6 +46,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
+import { useEmployees } from '@/components/context/employees';
 
 export type Employee = {
 	id: string;
@@ -142,11 +143,12 @@ export const columns: ColumnDef<Employee>[] = [
 	},
 ];
 
-export function EmployeeDataTable({ data }: { data: Employee[] }) {
+export function EmployeeDataTable() {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = React.useState({});
+	const data = useEmployees();
 
 	const table = useReactTable({
 		data,

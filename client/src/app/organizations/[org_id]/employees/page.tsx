@@ -1,15 +1,8 @@
-import OrganizationService from '@/services/organization.service';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import { EmployeeDataTable } from './table';
 
 export default async function EmployeesPage({ params }: { params: { org_id: string } }) {
-	const employees = await OrganizationService.employeeList(params.org_id);
-	if (!employees) {
-		redirect('/organizations');
-	}
-
 	return (
 		<section className='mx-[2%] md:mx-[7%] mt-3'>
 			<div className='flex md:justify-between'>
@@ -32,7 +25,7 @@ export default async function EmployeesPage({ params }: { params: { org_id: stri
 					</Link>
 				</div>
 			</div>
-			<EmployeeDataTable data={employees} />
+			<EmployeeDataTable />
 		</section>
 	);
 }
