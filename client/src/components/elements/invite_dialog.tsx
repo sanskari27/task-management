@@ -22,6 +22,7 @@ import { z } from 'zod';
 import { useEmployees } from '../context/employees';
 import Combobox from '../ui/combobox';
 import { Switch } from '../ui/switch';
+import useManagedEmployees from '@/hooks/useManagedEmployees';
 
 export function InviteDialog() {
 	const searchParams = useSearchParams();
@@ -35,7 +36,7 @@ export function InviteDialog() {
 export function InviteForm() {
 	const pathname = usePathname();
 	const org_id = pathname.split('/')[2];
-	const employeeList = useEmployees();
+	const employeeList = useManagedEmployees(org_id);
 	const [isLoading, setLoading] = useState(false);
 
 	const router = useRouter();
