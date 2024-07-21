@@ -1,6 +1,7 @@
 import AuthService from '@/services/auth.service';
 import { redirect, RedirectType } from 'next/navigation';
 import SignForm from './form';
+import { Suspense } from 'react';
 
 export default async function Signup({
 	searchParams,
@@ -14,5 +15,9 @@ export default async function Signup({
 		redirect(redirectUrl, RedirectType.replace);
 	}
 
-	return <SignForm />;
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<SignForm />
+		</Suspense>
+	);
 }

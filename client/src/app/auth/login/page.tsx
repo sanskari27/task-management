@@ -1,5 +1,6 @@
 import AuthService from '@/services/auth.service';
 import { redirect, RedirectType } from 'next/navigation';
+import { Suspense } from 'react';
 import LoginForm from './form';
 
 export default async function Login({
@@ -14,5 +15,9 @@ export default async function Login({
 		redirect(redirectUrl, RedirectType.replace);
 	}
 
-	return <LoginForm />;
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<LoginForm />
+		</Suspense>
+	);
 }

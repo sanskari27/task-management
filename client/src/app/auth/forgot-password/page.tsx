@@ -1,5 +1,6 @@
 import AuthService from '@/services/auth.service';
 import { redirect, RedirectType } from 'next/navigation';
+import { Suspense } from 'react';
 import ForgotPasswordForm from './form';
 
 export default async function ForgotPassword({
@@ -14,5 +15,9 @@ export default async function ForgotPassword({
 		redirect(redirectUrl, RedirectType.replace);
 	}
 
-	return <ForgotPasswordForm />;
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<ForgotPasswordForm />
+		</Suspense>
+	);
 }
