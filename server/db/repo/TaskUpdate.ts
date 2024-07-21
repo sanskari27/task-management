@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import ITaskUpdate from '../types/taskupdate';
+import ITaskUpdate from '../types/taskUpdate';
 import { EmployeeDB_name } from './Employee';
 import { TaskDB_name } from './Task';
 
