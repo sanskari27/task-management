@@ -1,6 +1,5 @@
 import VerifySession from '@/middleware/VerifySession';
 import express from 'express';
-import {} from 'tsconfig-paths/src/register';
 import Controller from './auth.controller';
 import {
 	LoginAccountValidator,
