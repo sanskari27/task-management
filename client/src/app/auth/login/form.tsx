@@ -24,7 +24,6 @@ export default function LoginForm() {
 		handleSubmit,
 		register,
 		setError,
-		watch,
 		setValue,
 		clearErrors: resetErrors,
 		formState: { errors },

@@ -1,7 +1,6 @@
 'use client';
 
 import Centered from '@/components/containers/centered';
-import { useEmployees } from '@/components/context/employees';
 import { useOrganizationDetails } from '@/components/context/organization-details';
 import { taskDetailsSchema } from '@/schema/task';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,6 +9,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import LinkInputDialog, { LinkInputHandle } from '@/components/elements/LinkInputDialog';
+import ReminderInputDialog from '@/components/elements/ReminderInputDialog';
+import VoiceNoteInputDialog from '@/components/elements/VoiceNoteInputDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ComboboxCategories from '@/components/ui/combobox_categories';
@@ -53,12 +54,11 @@ const defaultValues = {
 	links: [],
 	files: [],
 	voice_notes: [],
-	remainders: [],
+	reminders: [],
 };
 
 export default function CreateTasks({ params }: { params: { org_id: string } }) {
 	const [isLoading, setLoading] = useState(false);
-	const employees = useEmployees();
 	const { categories } = useOrganizationDetails();
 
 	async function handleSubmit(values: z.infer<typeof taskDetailsSchema>) {
@@ -77,6 +77,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const inputLinkRef = useRef<LinkInputHandle>(null);
 	const [files, setFiles] = useState<File[]>([]);
+	const [voiceNote, setVoiceNote] = useState<Blob>();
 
 	function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const files = event.target.files;
@@ -92,7 +93,18 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 		resolver: zodResolver(taskDetailsSchema),
 		defaultValues,
 	});
-	// const tz = form.watch('timezone');
+	const priority = form.watch('priority');
+	const assigned_separately = form.watch('assigned_separately');
+	const due_date = form.watch('due_date');
+	const isRecurring = form.watch('isRecurring');
+	const recurringFrequency = form.watch('recurrence.frequency');
+	const startDate = form.watch('recurrence.start_date');
+	const endDate = form.watch('recurrence.end_date');
+	const recurringWeekDays = form.watch('recurrence.weekdays');
+	const recurringMonthDays = form.watch('recurrence.monthdays');
+	const links = form.watch('links');
+	const reminders = form.watch('reminders');
+	console.log(reminders);
 
 	const handleFileSelector = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
@@ -145,7 +157,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 										<Label htmlFor='priority'>Priority</Label>
 										<ToggleGroup
 											type='single'
-											value={form.watch('priority')}
+											value={priority}
 											onValueChange={(e) => {
 												if (e) {
 													form.setValue('priority', e);
@@ -164,7 +176,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 											<Switch
 												className='ml-auto '
 												id='assigned_separately'
-												checked={form.watch('assigned_separately')}
+												checked={assigned_separately}
 												onCheckedChange={(value) => form.setValue('assigned_separately', value)}
 											/>
 										</div>
@@ -177,7 +189,11 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 												<FormItem>
 													<FormLabel>Assign To</FormLabel>
 													<FormControl>
-														<ComboboxEmployee {...field} placeholder='Select Employee' />
+														<ComboboxEmployee
+															value={field.value}
+															onChange={(employees) => field.onChange(employees)}
+															placeholder='Select Employee'
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -192,7 +208,11 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 												<FormItem>
 													<FormLabel>Category</FormLabel>
 													<FormControl>
-														<ComboboxCategories {...field} placeholder='Select Category' />
+														<ComboboxCategories
+															value={field.value}
+															onChange={(category) => field.onChange(category)}
+															placeholder='Select Category'
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -211,7 +231,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 													<FormControl>
 														<DatePickerDemo
 															onChange={(date) => form.setValue('due_date', date as Date)}
-															value={form.watch('due_date')}
+															value={due_date}
 														/>
 													</FormControl>
 													<FormMessage />
@@ -224,18 +244,16 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 										<Switch
 											className='ml-auto'
 											id='recurring'
-											checked={form.watch('isRecurring')}
+											checked={isRecurring}
 											onCheckedChange={(value) => form.setValue('isRecurring', value)}
 										/>
 									</div>
-									<div
-										className={`${form.watch('isRecurring') ? 'flex flex-col' : 'hidden'} gap-4`}
-									>
+									<div className={`${isRecurring ? 'flex flex-col' : 'hidden'} gap-4`}>
 										<div className={`flex md:flex-row flex-col items-center justify-between`}>
 											<Label htmlFor='frequency'>Frequency</Label>
 											<ToggleGroup
 												type='single'
-												value={form.watch('recurrence.frequency')}
+												value={recurringFrequency}
 												onValueChange={(e) => {
 													if (e) {
 														form.setValue('recurrence.frequency', e);
@@ -261,7 +279,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 																	onChange={(date) =>
 																		form.setValue('recurrence.start_date', date as Date)
 																	}
-																	value={form.watch('recurrence.start_date')}
+																	value={startDate}
 																/>
 															</FormControl>
 															<FormMessage />
@@ -281,7 +299,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 																	onChange={(date) =>
 																		form.setValue('recurrence.end_date', date as Date)
 																	}
-																	value={form.watch('recurrence.end_date')}
+																	value={endDate}
 																/>
 															</FormControl>
 															<FormMessage />
@@ -291,9 +309,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 											</div>
 										</div>
 										<div
-											className={` ${
-												form.watch('recurrence.frequency') === 'weekly' ? 'grid' : 'hidden'
-											} gap-4`}
+											className={` ${recurringFrequency === 'weekly' ? 'grid' : 'hidden'} gap-4`}
 										>
 											<FormField
 												control={form.control}
@@ -304,7 +320,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 															<ComboboxWeekdays
 																onChange={(value) => form.setValue('recurrence.weekdays', value)}
 																placeholder='Select weekdays'
-																value={form.watch('recurrence.weekdays')}
+																value={recurringWeekDays}
 															/>
 														</FormControl>
 														<FormMessage />
@@ -313,9 +329,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 											/>
 										</div>
 										<div
-											className={` ${
-												form.watch('recurrence.frequency') === 'monthly' ? 'grid' : 'hidden'
-											} gap-4`}
+											className={` ${recurringFrequency === 'monthly' ? 'grid' : 'hidden'} gap-4`}
 										>
 											<FormField
 												control={form.control}
@@ -326,7 +340,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 															<ComboboxMonthDays
 																onChange={(value) => form.setValue('recurrence.monthdays', value)}
 																placeholder='Select days'
-																value={form.watch('recurrence.monthdays')}
+																value={recurringMonthDays}
 															/>
 														</FormControl>
 														<FormMessage />
@@ -336,18 +350,23 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 										</div>
 									</div>
 									<div className='flex flex-col gap-2'>
+										<ReminderInputDialog
+											onConfirm={(reminder) => {
+												form.setValue('reminders', reminder);
+												console.log(reminder);
+											}}
+											reminders={reminders}
+										>
+											<Button variant={'outline'}>Set Reminders</Button>
+										</ReminderInputDialog>
+									</div>
+									<div className='flex flex-col gap-2'>
 										<LinkInputDialog
 											ref={inputLinkRef}
 											onConfirm={(links) => form.setValue('links', links)}
+											links={links}
 										>
-											<Button
-												variant={'outline'}
-												onClick={() => {
-													inputLinkRef.current?.setLink(form.watch('links'));
-												}}
-											>
-												Set Links ({form.watch('links').length})
-											</Button>
+											<Button variant={'outline'}>Set Links ({links.length})</Button>
 										</LinkInputDialog>
 									</div>
 									<div className='flex flex-col gap-4 grid-cols-2'>
@@ -367,7 +386,9 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 											/>
 										</div>
 										<div className='grid grid-cols-1 gap-2'>
-											<Button variant={'outline'}>Voice notes</Button>
+											<VoiceNoteInputDialog onConfirm={(voice_notes) => setVoiceNote(voice_notes)}>
+												<Button variant={'outline'}>Voice notes</Button>
+											</VoiceNoteInputDialog>
 										</div>
 									</div>
 								</div>

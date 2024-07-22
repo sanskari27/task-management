@@ -16,16 +16,16 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import Each from '../containers/each';
 
-const items = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-
-export default function ComboboxWeekdays({
+export default function ComboboxReminder({
 	placeholder,
 	value,
 	onChange,
+	items,
 }: {
+	items: string[];
 	placeholder: string;
-	value: string[];
-	onChange: (value: string[]) => void;
+	value: string;
+	onChange: (value: string) => void;
 }) {
 	const [open, setOpen] = React.useState(false);
 
@@ -36,30 +36,29 @@ export default function ComboboxWeekdays({
 					variant='outline'
 					role='combobox'
 					aria-expanded={open}
-					className='w-full justify-between capitalize'
+					className='w-full justify-between'
 				>
-					{value.length > 0 ? value.join(', ') : placeholder}
+					{value ? value : placeholder}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className='w-full p-0'>
 				<Command>
-					<CommandInput placeholder='Search days...' />
-					<CommandEmpty>No Days found.</CommandEmpty>
+					<CommandInput placeholder='Search Employee...' />
+					<CommandEmpty>No employee found.</CommandEmpty>
 					<CommandList>
 						<CommandGroup>
 							<Each
 								items={items}
-								render={(item, index) => (
+								render={(item) => (
 									<CommandItem
-										key={index}
 										value={item}
 										onSelect={(currentValue) => {
-											if (value.includes(currentValue)) {
-												onChange(value.filter((v) => v !== currentValue));
-											} else {
-												onChange([...value, item]);
+											if (currentValue === value) {
+												onChange('');
+												return;
 											}
+											onChange(currentValue);
 										}}
 										className={cn('cursor-pointer z-10')}
 										onClick={() => console.log('clicked')}
@@ -70,7 +69,7 @@ export default function ComboboxWeekdays({
 												value.includes(item) ? 'opacity-100' : 'opacity-0'
 											)}
 										/>
-										{item.charAt(0).toUpperCase() + item.slice(1)}
+										{item}
 									</CommandItem>
 								)}
 							/>

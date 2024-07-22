@@ -27,9 +27,9 @@ export const taskDetailsSchema = z.object({
 	links: z.array(z.string()),
 	files: z.array(z.string()),
 	voice_notes: z.array(z.string()),
-	remainders: z.array(
+	reminders: z.array(
 		z.object({
-			remainder_type: z.string(),
+			reminder_type: z.string(),
 			before: z.number(),
 			before_type: z.string(),
 		})

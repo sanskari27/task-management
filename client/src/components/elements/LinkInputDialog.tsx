@@ -1,12 +1,11 @@
 'use client';
 
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { forwardRef } from 'react';
 import Each from '../containers/each';
 import { Button } from '../ui/button';
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -23,19 +22,14 @@ export type LinkInputHandle = {
 type LinkInputProps = {
 	children: React.ReactNode;
 	onConfirm: (links: string[]) => void;
+	links: string[];
 };
 
 const LinkInputDialog = forwardRef<LinkInputHandle, LinkInputProps>(
-	({ children, onConfirm }, ref) => {
-		const [links, setLinks] = React.useState<string[]>([]);
+	({ children, onConfirm, links: _links }, ref) => {
+		const [links, setLinks] = React.useState<string[]>(_links);
 
 		const buttonRef = React.useRef<HTMLButtonElement>(null);
-
-		useImperativeHandle(ref, () => ({
-			setLink: (links: string[]) => {
-				setLinks(links);
-			},
-		}));
 
 		const addBlankLink = () => {
 			setLinks((prev) => [...prev, '']);
@@ -49,16 +43,16 @@ const LinkInputDialog = forwardRef<LinkInputHandle, LinkInputProps>(
 			setLinks((prev) => prev.map((link, i) => (i === index ? value : link)));
 		};
 
-		const handleConfirm = () => {
-			console.log(links);
-			onConfirm(links);
-			handleClose();
-		};
-
 		const handleClose = () => {
 			buttonRef.current?.click();
 		};
 
+		const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+			e.stopPropagation();
+			e.preventDefault();
+			onConfirm(links);
+			handleClose();
+		};
 		return (
 			<Dialog>
 				<DialogTrigger asChild ref={buttonRef}>
@@ -66,43 +60,44 @@ const LinkInputDialog = forwardRef<LinkInputHandle, LinkInputProps>(
 				</DialogTrigger>
 				<DialogContent>
 					<DialogHeader>
-						<div className='flex '>
-							<div className='flex-1'>
-								<DialogTitle>Add Link</DialogTitle>
-								<DialogDescription>Enter the link details</DialogDescription>
-							</div>
-							<Button onClick={addBlankLink}>Add</Button>
-						</div>
+						<DialogTitle>Links</DialogTitle>
 					</DialogHeader>
-					<ScrollArea className='h-[400px] '>
-						<Each
-							items={links}
-							render={(link, index) => {
-								return (
-									<>
-										<div className='flex w-full gap-2'>
-											<div className='flex-1'>
-												<Input
-													type='url'
-													placeholder='Enter the link'
-													value={link}
-													onChange={(e) => handleLinkChange(index, e.target.value)}
-												/>
+					<Button onClick={addBlankLink}>Add link</Button>
+					<form method='POST' onSubmit={handleSubmit}>
+						<ScrollArea className='max-h-[400px]'>
+							<Each
+								items={links}
+								render={(link, index) => {
+									return (
+										<>
+											<div className='flex w-full gap-2'>
+												<div className='flex-1'>
+													<Input
+														type='url'
+														placeholder='Enter the link'
+														value={link}
+														onChange={(e) => handleLinkChange(index, e.target.value)}
+														pattern='http(s)?://.*'
+														required
+													/>
+												</div>
+												<Button onClick={() => removeLink(index)} variant={'outline'}>
+													X
+												</Button>
 											</div>
-											<Button onClick={() => removeLink(index)} variant={'outline'}>
-												X
-											</Button>
-										</div>
-										<Separator className='my-2' />
-									</>
-								);
-							}}
-						/>
-					</ScrollArea>
-					<DialogFooter>
-						<Button onClick={handleClose}>Cancel</Button>
-						<Button onClick={handleConfirm}>Save</Button>
-					</DialogFooter>
+											<Separator className='my-2' />
+										</>
+									);
+								}}
+							/>
+						</ScrollArea>
+						<DialogFooter>
+							<Button type='reset' onClick={handleClose}>
+								Cancel
+							</Button>
+							<Button type='submit'>Save</Button>
+						</DialogFooter>
+					</form>
 				</DialogContent>
 			</Dialog>
 		);
