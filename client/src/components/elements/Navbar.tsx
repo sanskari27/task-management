@@ -48,9 +48,9 @@ export default function Navbar({ params }: { params: string }) {
 				</NavigationMenuItem>
 				<Link
 					href={`/organizations/${params}/tasks/create`}
-					className='py-[0.5rem] px-[1rem] dark:hover:bg-zinc-800 hover:bg-slate-100 rounded-lg'
+					className='py-[0.5rem] px-[1rem] dark:hover:bg-zinc-800 hover:bg-slate-100 rounded-lg text-center'
 				>
-					Assign New Task
+					Assign Task
 				</Link>
 				<NavigationMenuItem>
 					<NavigationMenuTrigger className={navigationMenuTriggerStyle()}>

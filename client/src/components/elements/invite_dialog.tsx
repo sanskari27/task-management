@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import useManagedEmployees from '@/hooks/useManagedEmployees';
 import { inviteSchema } from '@/schema/organization';
 import OrganizationService from '@/services/organization.service';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,10 +20,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
-import { useEmployees } from '../context/employees';
 import Combobox from '../ui/combobox';
 import { Switch } from '../ui/switch';
-import useManagedEmployees from '@/hooks/useManagedEmployees';
 
 export function InviteDialog() {
 	const searchParams = useSearchParams();
