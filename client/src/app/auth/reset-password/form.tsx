@@ -68,7 +68,7 @@ export function ResetPassword() {
 							<div className='grid gap-2'>
 								<Label htmlFor='password'>New Password</Label>
 								<Input
-									type='password'
+									type='new-password'
 									{...register('password', { required: true, minLength: 8 })}
 									onChange={() => resetErrors()}
 									isInvalid={!!errors.password?.message}
@@ -77,7 +77,7 @@ export function ResetPassword() {
 							<div className='grid gap-2'>
 								<Label htmlFor='password'>Confirm Password</Label>
 								<Input
-									type='password'
+									type='new-password'
 									{...register('confirmPassword', { required: true, minLength: 8 })}
 									onChange={() => resetErrors()}
 									isInvalid={!!errors.password?.message}

@@ -23,6 +23,7 @@ export default function SignupPage() {
 		handleSubmit,
 		register,
 		setError,
+		setValue,
 		clearErrors: resetErrors,
 		formState: { errors },
 	} = useForm<z.infer<typeof signupSchema>>({
@@ -66,7 +67,10 @@ export default function SignupPage() {
 										id='first-name'
 										placeholder='John'
 										{...register('firstName', { required: true })}
-										onChange={() => resetErrors()}
+										onChange={(e) => {
+											setValue('firstName', e.target.value);
+											resetErrors();
+										}}
 									/>
 								</div>
 								<div className='grid gap-2'>
@@ -75,7 +79,10 @@ export default function SignupPage() {
 										id='last-name'
 										placeholder='Doe'
 										{...register('lastName', {})}
-										onChange={() => resetErrors()}
+										onChange={(e) => {
+											setValue('lastName', e.target.value);
+											resetErrors();
+										}}
 									/>
 								</div>
 							</div>
@@ -86,7 +93,10 @@ export default function SignupPage() {
 									type='tel'
 									placeholder='91890XXXXX78'
 									{...register('phone', { required: true, pattern: /^[0-9]{12}$/ })}
-									onChange={() => resetErrors()}
+									onChange={(e) => {
+										setValue('phone', e.target.value);
+										resetErrors();
+									}}
 									isInvalid={!!errors.email?.message}
 								/>
 							</div>
@@ -97,7 +107,10 @@ export default function SignupPage() {
 									type='email'
 									placeholder='john@example.com'
 									{...register('email', { required: true, pattern: /^\S+@\S+$/i })}
-									onChange={() => resetErrors()}
+									onChange={(e) => {
+										setValue('email', e.target.value);
+										resetErrors();
+									}}
 									isInvalid={!!errors.email?.message}
 								/>
 							</div>
@@ -107,7 +120,10 @@ export default function SignupPage() {
 									id='password'
 									type='password'
 									{...register('password', { required: true, minLength: 8 })}
-									onChange={() => resetErrors()}
+									onChange={(e) => {
+										setValue('password', e.target.value);
+										resetErrors();
+									}}
 									isInvalid={!!errors.email?.message}
 								/>
 								<span className='text-red-500 text-sm text-center'>{errors.email?.message}</span>

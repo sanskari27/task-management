@@ -24,6 +24,8 @@ export default function LoginForm() {
 		handleSubmit,
 		register,
 		setError,
+		watch,
+		setValue,
 		clearErrors: resetErrors,
 		formState: { errors },
 	} = useForm({
@@ -61,7 +63,10 @@ export default function LoginForm() {
 									type='email'
 									placeholder='john@example.com'
 									{...register('email', { required: true, pattern: /^\S+@\S+$/i })}
-									onChange={() => resetErrors()}
+									onChange={(e) => {
+										setValue('email', e.target.value);
+										resetErrors();
+									}}
 									isInvalid={!!errors.password?.message}
 								/>
 							</div>
@@ -78,7 +83,10 @@ export default function LoginForm() {
 								<Input
 									type='password'
 									{...register('password', { required: true, minLength: 8 })}
-									onChange={() => resetErrors()}
+									onChange={(e) => {
+										setValue('password', e.target.value);
+										resetErrors();
+									}}
 									isInvalid={!!errors.password?.message}
 								/>
 								<span className='text-red-500 text-sm text-center'>{errors.password?.message}</span>
