@@ -44,8 +44,8 @@ export default function ComboboxCategories({
 			</PopoverTrigger>
 			<PopoverContent className='w-full p-0'>
 				<Command>
-					<CommandInput placeholder='Search Employee...' />
-					<CommandEmpty>No employee found.</CommandEmpty>
+					<CommandInput placeholder='Search Category...' />
+					<CommandEmpty>No categories found.</CommandEmpty>
 					<CommandList>
 						<CommandGroup>
 							<Each
