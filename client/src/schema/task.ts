@@ -1,12 +1,20 @@
 import { z } from 'zod';
 
 export const taskDetailsSchema = z.object({
-	title: z.string().min(1),
-	description: z.string().min(1),
+	title: z.string().min(1, {
+		message: 'Title is required',
+	}),
+	description: z.string().min(1, {
+		message: 'Description is required',
+	}),
 	assigned_separately: z.boolean(),
-	assigned_to: z.array(z.string()),
-	category: z.string(),
-	priority: z.string(),
+	assigned_to: z.array(z.string()).min(1, {
+		message: 'Employee is required',
+	}),
+	category: z.string().min(1, {
+		message: 'Category is required',
+	}),
+	priority: z.string({}),
 	isRecurring: z.boolean(),
 	recurrence: z.object({
 		frequency: z.string(),

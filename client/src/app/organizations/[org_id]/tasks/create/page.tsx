@@ -49,7 +49,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 	}
 
 	return (
-		<Centered>
+		<Centered className='mt-[15%] md:mt-0'>
 			<TaskDetailsForm
 				categories={categories}
 				employees={employees}
