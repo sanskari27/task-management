@@ -9,15 +9,7 @@ import Logger from 'n23-logger';
 import { IS_PRODUCTION, IS_WINDOWS, Path } from './config/const';
 import { CustomError } from './errors';
 
-const allowlist = [
-	'http://localhost:3000',
-	'https://wautopilot.com',
-	'https://agent.wautopilot.com',
-	'https://agent.wautopilot.com',
-	'https://admin.wautopilot.com',
-	'https://master.wautopilot.com',
-	'https://auth.wautopilot.com',
-];
+const allowlist = ['http://localhost:3000', 'https://task.wautopilot.com'];
 
 const corsOptionsDelegate = (req: any, callback: any) => {
 	let corsOptions;
