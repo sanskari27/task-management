@@ -10,13 +10,16 @@ import { Label } from '@/components/ui/label';
 import { loginSchema } from '@/schema/auth';
 import AuthService from '@/services/auth.service';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 export default function LoginForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const [loading, setLoading] = useState(false);
 	const {
 		handleSubmit,
 		register,
@@ -32,7 +35,9 @@ export default function LoginForm() {
 	});
 
 	async function formSubmit(values: z.infer<typeof loginSchema>) {
+		setLoading(true);
 		const success = await AuthService.login(values.email, values.password);
+		setLoading(false);
 		if (success) {
 			router.push(searchParams.get('callback') ?? '/organizations');
 		} else {
@@ -78,7 +83,8 @@ export default function LoginForm() {
 								/>
 								<span className='text-red-500 text-sm text-center'>{errors.password?.message}</span>
 							</div>
-							<Button type='submit' className='w-full'>
+							<Button type='submit' className='w-full' disabled={loading}>
+								{loading && <Loader2 className='w-4 h-4 animate-spin mr-2' />}
 								Login
 							</Button>
 						</div>

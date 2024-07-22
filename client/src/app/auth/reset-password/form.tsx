@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { resetSchema } from '@/schema/auth';
 import AuthService from '@/services/auth.service';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { z } from 'zod';
@@ -16,6 +17,7 @@ import { z } from 'zod';
 export function ResetPassword() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const [loading, setLoading] = useState(false);
 	const {
 		handleSubmit,
 		register,
@@ -34,8 +36,12 @@ export function ResetPassword() {
 		const code = searchParams.get('code');
 		if (!code) {
 			return toast.error('Invalid reset request');
+		} else if (values.password !== values.confirmPassword) {
+			return setError('password', { message: 'Passwords do not match' });
 		}
+		setLoading(true);
 		const success = await AuthService.resetPassword(code, values.password);
+		setLoading(false);
 		if (success) {
 			router.push('/organizations');
 		} else {
@@ -78,7 +84,8 @@ export function ResetPassword() {
 								/>
 								<span className='text-red-500 text-sm text-center'>{errors.password?.message}</span>
 							</div>
-							<Button type='submit' className='w-full'>
+							<Button type='submit' className='w-full' disabled={loading}>
+								{loading && <Loader2 className='w-4 h-4 animate-spin mr-2' />}
 								Reset Password
 							</Button>
 						</div>

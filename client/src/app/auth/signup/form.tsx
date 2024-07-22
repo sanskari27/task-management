@@ -8,14 +8,17 @@ import { Label } from '@/components/ui/label';
 import { signupSchema } from '@/schema/auth';
 import AuthService from '@/services/auth.service';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 export default function SignupPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const [loading, setLoading] = useState(false);
 	const {
 		handleSubmit,
 		register,
@@ -34,7 +37,9 @@ export default function SignupPage() {
 	});
 
 	async function formSubmit(values: z.infer<typeof signupSchema>) {
+		setLoading(true);
 		const success = await AuthService.register(values);
+		setLoading(false);
 		if (success) {
 			router.push(searchParams.get('callback') ?? '/organizations');
 		} else {
@@ -107,7 +112,8 @@ export default function SignupPage() {
 								/>
 								<span className='text-red-500 text-sm text-center'>{errors.email?.message}</span>
 							</div>
-							<Button type='submit' className='w-full'>
+							<Button type='submit' className='w-full' disabled={loading}>
+								{loading && <Loader2 className='w-4 h-4 animate-spin mr-2' />}
 								Create an account
 							</Button>
 						</div>

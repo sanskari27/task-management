@@ -8,14 +8,17 @@ import { Label } from '@/components/ui/label';
 import { forgotSchema } from '@/schema/auth';
 import AuthService from '@/services/auth.service';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 export default function ForgotPassword() {
 	const router = useRouter();
+	const [loading, setLoading] = useState(false);
 	const {
 		handleSubmit,
 		register,
@@ -30,7 +33,9 @@ export default function ForgotPassword() {
 	});
 
 	async function formSubmit(values: z.infer<typeof forgotSchema>) {
+		setLoading(true);
 		const success = await AuthService.forgotPassword(values.email);
+		setLoading(false);
 		if (success) {
 			toast.success('Password reset link sent to your email');
 			router.push('/auth/login');
@@ -60,7 +65,8 @@ export default function ForgotPassword() {
 								<span className='text-red-500 text-sm text-center'>{errors.email?.message}</span>
 							</div>
 
-							<Button type='submit' className='w-full'>
+							<Button type='submit' className='w-full' disabled={loading}>
+								{loading && <Loader2 className='w-4 h-4 animate-spin mr-2' />}
 								Continue
 							</Button>
 						</div>
