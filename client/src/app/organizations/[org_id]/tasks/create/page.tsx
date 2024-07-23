@@ -1,7 +1,6 @@
 'use client';
 
 import Centered from '@/components/containers/centered';
-import { useOrganizationDetails } from '@/components/context/organization-details';
 import { taskDetailsSchema } from '@/schema/task';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
@@ -32,8 +31,10 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import MediaService from '@/services/media.service';
 import { Loader2 } from 'lucide-react';
 import { useRef } from 'react';
+import { useToaster } from 'react-hot-toast';
 
 const defaultValues = {
 	title: '',
@@ -59,23 +60,10 @@ const defaultValues = {
 
 export default function CreateTasks({ params }: { params: { org_id: string } }) {
 	const [isLoading, setLoading] = useState(false);
-	const { categories } = useOrganizationDetails();
-
-	async function handleSubmit(values: z.infer<typeof taskDetailsSchema>) {
-		console.log(values);
-		// setLoading(true);
-		// const generated_id = await OrganizationService.updateOrganization(id, values);
-		// if (!generated_id) {
-		// 	toast.error('Failed to create organization');
-		// 	setLoading(false);
-		// 	return;
-		// }
-		// toast.success('Organization updated successfully');
-		// router.push(`/organizations/${generated_id}`);
-	}
 
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const inputLinkRef = useRef<LinkInputHandle>(null);
+	const toast = useToaster();
 	const [files, setFiles] = useState<File[]>([]);
 	const [voiceNote, setVoiceNote] = useState<Blob>();
 
@@ -104,18 +92,39 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 	const recurringMonthDays = form.watch('recurrence.monthdays');
 	const links = form.watch('links');
 	const reminders = form.watch('reminders');
-	console.log(reminders);
 
 	const handleFileSelector = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		fileInputRef.current?.click();
 	};
 
+	async function handleSubmit(values: z.infer<typeof taskDetailsSchema>) {
+		setLoading(true);
+
+		if (files.length > 0) {
+			const promises = files.map((file) => {
+				return MediaService.uploadFile(file);
+			});
+
+			const results = await Promise.all(promises);
+
+			values.files = results;
+		}
+		setLoading(false);
+		console.log(typeof values);
+		// router.push(`/organizations/${generated_id}`);
+	}
+
 	return (
 		<Centered className='mt-[15%] md:mt-0'>
 			<Card className='mx-auto w-[90%] md:max-w-[80%] lg:max-w-[60%]'>
 				<CardHeader>
-					<CardTitle className='text-xl text-center'>Task Details</CardTitle>
+					<CardTitle
+						className='text-xl text-center'
+						onClick={() => console.log(form.watch('files'))}
+					>
+						Task Details
+					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Form {...form}>
@@ -177,7 +186,10 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 												className='ml-auto '
 												id='assigned_separately'
 												checked={assigned_separately}
-												onCheckedChange={(value) => form.setValue('assigned_separately', value)}
+												onCheckedChange={(value) => {
+													form.setValue('assigned_separately', value);
+													console.log(assigned_separately);
+												}}
 											/>
 										</div>
 									</div>
@@ -383,6 +395,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 												ref={fileInputRef}
 												onChange={handleFileChange}
 												multiple
+												accept='image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.7z'
 											/>
 										</div>
 										<div className='grid grid-cols-1 gap-2'>

@@ -35,4 +35,44 @@ export default class TasksService {
 			return null;
 		}
 	}
+
+	static async createTask(
+		organizationId: string,
+		task: {
+			title: string;
+			category: string;
+			priority: string;
+			due_date: Date;
+			description: string;
+			assigned_to: string[];
+			assign_separately: boolean;
+			isRecurring: boolean;
+			recurring: {
+				frequency: string;
+				start_date: Date;
+				end_Date: Date;
+				weekdays: string[];
+				monthdays: string[];
+			};
+			reminders: {
+				reminder_type: string;
+				before: number;
+				before_type: string;
+			}[];
+			links: string[];
+			files: string[];
+			voice_notes: string;
+		}
+	) {
+		try {
+			const { data } = await api.post(`/tasks`, task, {
+				headers: {
+					'X-Organization-ID': organizationId,
+				},
+			});
+			return data.success;
+		} catch (error) {
+			return false;
+		}
+	}
 }

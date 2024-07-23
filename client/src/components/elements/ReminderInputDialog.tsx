@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React from 'react';
 import Each from '../containers/each';
@@ -37,7 +37,7 @@ const ReminderInputDialog = ({
 		}[]
 	>(_reminders);
 	const buttonRef = React.useRef<HTMLButtonElement>(null);
-    
+
 	const addBlankReminder = () => {
 		setReminders((prev) => [
 			...prev,
@@ -55,9 +55,7 @@ const ReminderInputDialog = ({
 
 	const handleClose = () => {
 		buttonRef.current?.click();
-        setReminders([]);
 	};
-    console.log(_reminders)
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.stopPropagation();
@@ -67,13 +65,15 @@ const ReminderInputDialog = ({
 	};
 
 	return (
-		<Dialog>
+		<Dialog onOpenChange={()=>{
+			setReminders(_reminders);
+		}}>
 			<DialogTrigger asChild ref={buttonRef}>
 				{children}
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Links</DialogTitle>
+					<DialogTitle>Reminders</DialogTitle>
 				</DialogHeader>
 				<Button onClick={addBlankReminder}>Add</Button>
 				<form method='POST' onSubmit={handleSubmit}>
@@ -94,12 +94,12 @@ const ReminderInputDialog = ({
 													}}
 													defaultValue={reminder.reminder_type}
 													required
-                                                    value={reminder.reminder_type}
+													value={reminder.reminder_type}
 												>
 													<SelectTrigger className='w-full'>
 														<SelectValue placeholder='Select one!' />
 													</SelectTrigger>
-													<SelectContent >
+													<SelectContent>
 														<SelectItem value='email'>Email</SelectItem>
 														<SelectItem value='whatsapp'>WhatsApp</SelectItem>
 													</SelectContent>
@@ -124,9 +124,9 @@ const ReminderInputDialog = ({
 															return [...prev];
 														});
 													}}
-                                                    type='number'
-                                                    placeholder='Enter the time'
-                                                    minLength={1}
+													type='number'
+													placeholder='Enter the time'
+													minLength={1}
 													required
 												/>
 												<Select
@@ -136,7 +136,7 @@ const ReminderInputDialog = ({
 															return [...prev];
 														});
 													}}
-                                                    value={reminder.before_type}
+													value={reminder.before_type}
 													defaultValue={reminder.reminder_type}
 													required
 												>

@@ -54,7 +54,9 @@ const LinkInputDialog = forwardRef<LinkInputHandle, LinkInputProps>(
 			handleClose();
 		};
 		return (
-			<Dialog>
+			<Dialog onOpenChange={()=>{
+				setLinks(_links);
+			}}>
 				<DialogTrigger asChild ref={buttonRef}>
 					{children}
 				</DialogTrigger>
