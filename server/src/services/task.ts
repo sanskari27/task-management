@@ -112,7 +112,7 @@ export default class TaskService {
 			end: Date;
 		};
 		assigned_to?: IDType[];
-		category?: string;
+		categories?: string[];
 		priority?: 'low' | 'medium' | 'high';
 		frequency?: 'daily' | 'weekly' | 'monthly';
 		status?: TaskStatus;
@@ -131,7 +131,7 @@ export default class TaskService {
 						},
 					}),
 					...(opts.assigned_to && { assigned_to: { $in: opts.assigned_to } }),
-					...(opts.category && { category: opts.category }),
+					...(opts.categories && { category: { $in: opts.categories } }),
 					...(opts.priority && { priority: opts.priority }),
 					...(opts.frequency && { 'batch.frequency': opts.frequency }),
 					...(opts.status && { status: opts.status }),
@@ -200,7 +200,7 @@ export default class TaskService {
 			end: Date;
 		};
 		created_by?: IDType[];
-		category?: string;
+		categories?: string[];
 		priority?: 'low' | 'medium' | 'high';
 		frequency?: 'daily' | 'weekly' | 'monthly';
 		status?: TaskStatus;
@@ -219,7 +219,7 @@ export default class TaskService {
 						},
 					}),
 					...(opts.created_by && { created_by: { $in: opts.created_by } }),
-					...(opts.category && { category: opts.category }),
+					...(opts.categories && { category: { $in: opts.categories } }),
 					...(opts.priority && { priority: opts.priority }),
 					...(opts.frequency && { 'batch.frequency': opts.frequency }),
 					...(opts.status && { status: opts.status }),
@@ -289,7 +289,7 @@ export default class TaskService {
 		};
 		created_by?: IDType[];
 		assigned_to?: IDType[];
-		category?: string;
+		categories?: string[];
 		priority?: 'low' | 'medium' | 'high';
 		frequency?: 'daily' | 'weekly' | 'monthly';
 		status?: TaskStatus;
@@ -317,7 +317,7 @@ export default class TaskService {
 						},
 					}),
 					...(opts.created_by && { created_by: { $in: opts.created_by } }),
-					...(opts.category && { category: opts.category }),
+					...(opts.categories && { category: { $in: opts.categories } }),
 					...(opts.priority && { priority: opts.priority }),
 					...(opts.frequency && { 'batch.frequency': opts.frequency }),
 					...(opts.status && { status: opts.status }),

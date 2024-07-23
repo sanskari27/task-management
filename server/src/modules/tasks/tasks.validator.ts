@@ -147,7 +147,7 @@ export function AssignTaskValidator(req: Request, res: Response, next: NextFunct
 export type FetchQueryType = {
 	status?: TaskStatus;
 	assigned_to?: Types.ObjectId[];
-	category?: string;
+	categories?: string[];
 	priority?: 'low' | 'medium' | 'high';
 	frequency?: 'daily' | 'weekly' | 'monthly';
 	date_range?: {
@@ -178,7 +178,11 @@ export function FetchQueryValidator(req: Request, res: Response, next: NextFunct
 				.refine((val) => val.split(',').every((v) => Types.ObjectId.isValid(v)))
 				.transform((val) => val.split(',').map((v) => new Types.ObjectId(v)))
 				.optional(),
-			category: z.string().optional(),
+			categories: z
+				.string()
+				.refine((val) => val.split(','))
+				.transform((val) => val.split(','))
+				.optional(),
 			priority: z.enum(['low', 'medium', 'high']).optional(),
 			status: z.enum(['pending', 'completed', 'in_progress']).optional(),
 			frequency: z.enum(['daily', 'weekly', 'monthly']).optional(),
