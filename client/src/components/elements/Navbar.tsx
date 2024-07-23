@@ -30,15 +30,16 @@ export default function Navbar({ params }: { params: string }) {
 				<NavigationMenuItem>
 					<NavigationMenuTrigger>Organizations</NavigationMenuTrigger>
 					<NavigationMenuContent>
-						<ul className='grid w-[400px] gap-x-1.5 gap-y-0.5 p-4 md:w-[450px] md:grid-cols-2 '>
-							<ListItem href={`/organizations/${params}/edit`} title='Organization Details' />
-							<ListItem href={`/organizations/${params}/employees/manage`} title='Manage Members' />
-							<ListItem href={`/organizations/${params}/employees`} title='Members Data' />
+						<ul className='grid w-[400px] gap-x-1.5 gap-y-0.5 p-4 md:grid-cols-3 md:w-[500px]'>
+							<ListItem href={`/organizations/${params}/edit`} title='Details' />
+							<ListItem href={`/organizations/${params}/employees`} title='Members' />
 							<ListItem
 								href={`/organizations/${params}/employees?invite=true`}
 								title='Invite Member'
 							/>
 							<div />
+
+							<ListItem href={`/organizations/${params}/employees/manage`} title='Restructure' />
 							<ListItem
 								href={`/organizations/${params}/employees?remove=true`}
 								title='Remove Member'
@@ -57,7 +58,7 @@ export default function Navbar({ params }: { params: string }) {
 						Tasks
 					</NavigationMenuTrigger>
 					<NavigationMenuContent>
-						<ul className='grid w-[400px] gap-x-1.5 gap-y-0.5 p-4 md:w-[500px] md:grid-cols-3 lg:w-[600px] '>
+						<ul className='grid w-[400px] gap-x-1.5 gap-y-0.5 p-4 md:w-[500px] md:grid-cols-3 '>
 							<ListItem
 								href={`/organizations/${params}/tasks/my-tasks`}
 								title='My Tasks'
