@@ -17,8 +17,8 @@ type CreateTaskType = {
 	links: string[];
 	files: string[];
 	voice_notes: string[];
-	remainders: {
-		remainder_type: 'email' | 'whatsapp';
+	reminders: {
+		reminder_type: 'email' | 'whatsapp';
 		before: number;
 		before_type: 'minutes' | 'hours' | 'days';
 	}[];

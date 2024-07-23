@@ -10,8 +10,8 @@ export function SearchBar({
 	onSubmit,
 }: {
 	placeholders: string[];
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+	onChange?: (text: string) => void;
+	onSubmit?: (text: string) => void;
 }) {
 	const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
 
@@ -163,7 +163,7 @@ export function SearchBar({
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		vanishAndSubmit();
-		onSubmit && onSubmit(e);
+		onSubmit && onSubmit(value);
 	};
 	return (
 		<form
@@ -184,7 +184,7 @@ export function SearchBar({
 				onChange={(e) => {
 					if (!animating) {
 						setValue(e.target.value);
-						onChange && onChange(e);
+						onChange && onChange(e.target.value);
 					}
 				}}
 				onKeyDown={handleKeyDown}

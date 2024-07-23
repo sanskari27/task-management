@@ -58,13 +58,21 @@ export default function Navbar({ params }: { params: string }) {
 					</NavigationMenuTrigger>
 					<NavigationMenuContent>
 						<ul className='grid w-[400px] gap-x-1.5 gap-y-0.5 p-4 md:w-[500px] md:grid-cols-3 lg:w-[600px] '>
-							<ListItem href={'/my-tasks'} title='My Tasks' className={'text-center'} />
 							<ListItem
-								href={'/delegated-tasks'}
+								href={`/organizations/${params}/tasks/my-tasks`}
+								title='My Tasks'
+								className={'text-center'}
+							/>
+							<ListItem
+								href={`/organizations/${params}/tasks/delegated-tasks`}
 								title='Delegated Tasks'
 								className={'text-center'}
 							/>
-							<ListItem href={'/tasks'} title='All tasks' className={'text-center'} />
+							<ListItem
+								href={`/organizations/${params}/tasks`}
+								title='All tasks'
+								className={'text-center'}
+							/>
 						</ul>
 					</NavigationMenuContent>
 				</NavigationMenuItem>

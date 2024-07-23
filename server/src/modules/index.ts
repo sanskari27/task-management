@@ -6,7 +6,7 @@ import UploadsRoute from './uploads/uploads.route';
 
 import { COMMON_ERRORS, CustomError } from '@/errors';
 import VerifySession from '@/middleware/VerifySession';
-import FileUpload, { ONLY_MEDIA_ALLOWED, SingleFileUploadOptions } from '../config/FileUpload';
+import FileUpload, { SingleFileUploadOptions } from '../config/FileUpload';
 import { Respond, RespondFile, generateRandomID } from '../utils/ExpressUtils';
 
 const router = express.Router();
@@ -36,9 +36,7 @@ router
 router.post('/upload-media', async function (req, res, next) {
 	const fileUploadOptions: SingleFileUploadOptions = {
 		field_name: 'file',
-		options: {
-			fileFilter: ONLY_MEDIA_ALLOWED,
-		},
+		options: {},
 	};
 
 	try {

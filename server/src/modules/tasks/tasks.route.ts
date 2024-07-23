@@ -11,7 +11,6 @@ import {
 
 const router = express.Router();
 
-router.route('/create-task').post(CreateTaskValidator, Controller.createTask);
 router.route('/assigned-to-me').get(FetchQueryValidator, Controller.getAssignedToMe);
 router.route('/assigned-by-me').get(FetchQueryValidator, Controller.getAssignedByMe);
 
@@ -25,6 +24,9 @@ router
 	.get(IDValidator, Controller.taskDetails)
 	.delete(IDValidator, Controller.deleteTask);
 
-router.route('/').get(FetchQueryValidator, Controller.getAssignedToAll);
+router
+	.route('/')
+	.get(FetchQueryValidator, Controller.getAssignedToAll)
+	.post(CreateTaskValidator, Controller.createTask);
 
 export default router;

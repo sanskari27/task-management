@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { CgRemove } from 'react-icons/cg';
 import Each from '../containers/each';
 import { Button } from '../ui/button';
 import {
@@ -12,7 +13,6 @@ import {
 	DialogTrigger,
 } from '../ui/dialog';
 import { Input } from '../ui/input';
-import { ScrollArea } from '../ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Separator } from '../ui/separator';
 
@@ -43,7 +43,7 @@ const ReminderInputDialog = ({
 			...prev,
 			{
 				reminder_type: 'email',
-				before: 0,
+				before: 15,
 				before_type: 'minutes',
 			},
 		]);
@@ -65,9 +65,11 @@ const ReminderInputDialog = ({
 	};
 
 	return (
-		<Dialog onOpenChange={()=>{
-			setReminders(_reminders);
-		}}>
+		<Dialog
+			onOpenChange={() => {
+				setReminders(_reminders);
+			}}
+		>
 			<DialogTrigger asChild ref={buttonRef}>
 				{children}
 			</DialogTrigger>
@@ -77,13 +79,13 @@ const ReminderInputDialog = ({
 				</DialogHeader>
 				<Button onClick={addBlankReminder}>Add</Button>
 				<form method='POST' onSubmit={handleSubmit}>
-					<ScrollArea className='max-h-[400px]'>
+					<div className='max-h-[350px] overflow-y-scroll mb-4'>
 						<Each
 							items={reminders}
 							render={(reminder, index) => {
 								return (
 									<>
-										<div className='flex flex-col w-full gap-2'>
+										<div className='flex flex-col w-full gap-2 px-2 py-2'>
 											<div className='flex-1 flex gap-2'>
 												<Select
 													onValueChange={(value) => {
@@ -104,11 +106,17 @@ const ReminderInputDialog = ({
 														<SelectItem value='whatsapp'>WhatsApp</SelectItem>
 													</SelectContent>
 												</Select>
-												<Button onClick={() => removeReminder(index)} variant={'outline'}>
-													X
+												<Button
+													onClick={(e) => {
+														e.preventDefault();
+														removeReminder(index);
+													}}
+													variant={'destructive'}
+												>
+													<CgRemove />
 												</Button>
 											</div>
-											<div className='flex gap-2'>
+											<div className='flex gap-2 '>
 												<Input
 													value={reminder.before.toString() ?? ''}
 													onChange={(e) => {
@@ -151,14 +159,14 @@ const ReminderInputDialog = ({
 												</Select>
 											</div>
 										</div>
-										<Separator className='my-2' />
+										<Separator />
 									</>
 								);
 							}}
 						/>
-					</ScrollArea>
+					</div>
 					<DialogFooter>
-						<Button type='reset' onClick={handleClose}>
+						<Button type='reset' onClick={handleClose} variant={'outline'}>
 							Cancel
 						</Button>
 						<Button type='submit'>Save</Button>

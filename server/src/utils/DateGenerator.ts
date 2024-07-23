@@ -13,7 +13,7 @@ export default class DateGenerator {
 		| 'saturday'
 		| 'sunday'
 	)[];
-	private _monthdays: number[];
+	private _monthdays: string[];
 
 	private _current: moment.Moment;
 
@@ -30,11 +30,11 @@ export default class DateGenerator {
 			| 'saturday'
 			| 'sunday'
 		)[];
-		monthdays: number[];
+		monthdays: string[];
 	}) {
 		this._frequency = details.frequency;
-		this._start_date = DateUtils.getMoment(details.start_date);
-		this._end_date = DateUtils.getMoment(details.end_date);
+		this._start_date = DateUtils.getMoment(details.start_date).startOf('day');
+		this._end_date = DateUtils.getMoment(details.end_date).endOf('day');
 		this._weekdays = details.weekdays;
 		this._monthdays = details.monthdays;
 		this._current = this._start_date.clone();
@@ -51,18 +51,18 @@ export default class DateGenerator {
 		} else if (this._frequency === 'weekly') {
 			let found = false;
 			while (!found) {
-				nextDate = this._current.add(1, 'day');
 				if ((this._weekdays as string[]).includes(nextDate.format('dddd').toLowerCase())) {
 					found = true;
 				}
+				nextDate = this._current.add(1, 'day');
 			}
 		} else if (this._frequency === 'monthly') {
 			let found = false;
 			while (!found) {
-				nextDate = this._current.add(1, 'day');
-				if (this._monthdays.includes(nextDate.date())) {
+				if (this._monthdays.includes(nextDate.format('D'))) {
 					found = true;
 				}
+				nextDate = this._current.add(1, 'day');
 			}
 		}
 

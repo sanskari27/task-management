@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import Show from '@/components/containers/show';
 import LinkInputDialog, { LinkInputHandle } from '@/components/elements/LinkInputDialog';
 import ReminderInputDialog from '@/components/elements/ReminderInputDialog';
 import VoiceNoteInputDialog from '@/components/elements/VoiceNoteInputDialog';
@@ -32,14 +33,16 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import MediaService from '@/services/media.service';
+import TasksService from '@/services/tasks.service';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
-import { useToaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 const defaultValues = {
 	title: '',
 	description: '',
-	assigned_separately: false,
+	assign_separately: false,
 	assigned_to: [],
 	category: '',
 	priority: 'low',
@@ -58,12 +61,12 @@ const defaultValues = {
 	reminders: [],
 };
 
-export default function CreateTasks({ params }: { params: { org_id: string } }) {
+export default function CreateTasks({ params: { org_id } }: { params: { org_id: string } }) {
 	const [isLoading, setLoading] = useState(false);
+	const router = useRouter();
 
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const inputLinkRef = useRef<LinkInputHandle>(null);
-	const toast = useToaster();
 	const [files, setFiles] = useState<File[]>([]);
 	const [voiceNote, setVoiceNote] = useState<Blob>();
 
@@ -82,7 +85,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 		defaultValues,
 	});
 	const priority = form.watch('priority');
-	const assigned_separately = form.watch('assigned_separately');
+	const assign_separately = form.watch('assign_separately');
 	const due_date = form.watch('due_date');
 	const isRecurring = form.watch('isRecurring');
 	const recurringFrequency = form.watch('recurrence.frequency');
@@ -105,14 +108,35 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 			const promises = files.map((file) => {
 				return MediaService.uploadFile(file);
 			});
-
-			const results = await Promise.all(promises);
-
-			values.files = results;
+			try {
+				const results = await Promise.all(promises);
+				values.files = results;
+			} catch (e) {
+				toast.error('Error uploading files');
+				setLoading(false);
+				return;
+			}
+		}
+		if (voiceNote) {
+			try {
+				const voice_note = await MediaService.uploadFile(voiceNote);
+				values.voice_notes = [voice_note];
+			} catch (e) {
+				toast.error('Error uploading files');
+				setLoading(false);
+				return;
+			}
 		}
 		setLoading(false);
-		console.log(typeof values);
-		// router.push(`/organizations/${generated_id}`);
+		console.log(values);
+		toast.promise(TasksService.createTask(org_id, values), {
+			loading: 'Assigning task...',
+			success: () => {
+				router.push(`/organizations/${org_id}/tasks/delegated-tasks`);
+				return 'Task assigned successfully';
+			},
+			error: 'Error assigning task',
+		});
 	}
 
 	return (
@@ -181,14 +205,14 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 									</div>
 									<div className='grid gap-4'>
 										<div className='grid gap-2 grid-cols-2 items-center'>
-											<Label htmlFor='assigned_separately'>Assign separately</Label>
+											<Label htmlFor='assign_separately'>Assign separately</Label>
 											<Switch
 												className='ml-auto '
-												id='assigned_separately'
-												checked={assigned_separately}
+												id='assign_separately'
+												checked={assign_separately}
 												onCheckedChange={(value) => {
-													form.setValue('assigned_separately', value);
-													console.log(assigned_separately);
+													form.setValue('assign_separately', value);
+													console.log(assign_separately);
 												}}
 											/>
 										</div>
@@ -232,25 +256,7 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 										/>
 									</div>
 								</div>
-								<div className='flex flex-col gap-4'>
-									<div className='flex flex-col gap-2'>
-										<FormField
-											control={form.control}
-											name='due_date'
-											render={() => (
-												<FormItem>
-													<FormLabel>Due Date</FormLabel>
-													<FormControl>
-														<DatePickerDemo
-															onChange={(date) => form.setValue('due_date', date as Date)}
-															value={due_date}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
+								<div className='flex flex-col gap-3'>
 									<div className='flex gap-2 justify-between'>
 										<Label htmlFor='recurring'>Recurring</Label>
 										<Switch
@@ -260,38 +266,130 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 											onCheckedChange={(value) => form.setValue('isRecurring', value)}
 										/>
 									</div>
-									<div className={`${isRecurring ? 'flex flex-col' : 'hidden'} gap-4`}>
-										<div className={`flex md:flex-row flex-col items-center justify-between`}>
-											<Label htmlFor='frequency'>Frequency</Label>
-											<ToggleGroup
-												type='single'
-												value={recurringFrequency}
-												onValueChange={(e) => {
-													if (e) {
-														form.setValue('recurrence.frequency', e);
-													}
-												}}
-											>
-												<ToggleGroupItem value='daily'>Daily</ToggleGroupItem>
-												<ToggleGroupItem value='weekly'>Weekly</ToggleGroupItem>
-												<ToggleGroupItem value='monthly'>Monthly</ToggleGroupItem>
-											</ToggleGroup>
-										</div>
-										<Separator />
-										<div className={'grid grid-cols-2 gap-4'}>
-											<div className='grid gap-4'>
+									<Show>
+										<Show.When condition={isRecurring}>
+											<div className={`flex flex-col gap-4`}>
+												<div className={`flex md:flex-row flex-col items-center justify-between`}>
+													<Label htmlFor='frequency'>Frequency</Label>
+													<ToggleGroup
+														type='single'
+														value={recurringFrequency}
+														onValueChange={(e) => {
+															if (e) {
+																form.setValue('recurrence.frequency', e);
+															}
+														}}
+													>
+														<ToggleGroupItem value='daily'>Daily</ToggleGroupItem>
+														<ToggleGroupItem value='weekly'>Weekly</ToggleGroupItem>
+														<ToggleGroupItem value='monthly'>Monthly</ToggleGroupItem>
+													</ToggleGroup>
+												</div>
+												<Separator />
+												<div className={'grid grid-cols-2 gap-4'}>
+													<div className='grid gap-4'>
+														<FormField
+															control={form.control}
+															name='recurrence.start_date'
+															render={() => (
+																<FormItem>
+																	<FormLabel>Start Date</FormLabel>
+																	<FormControl>
+																		<DatePickerDemo
+																			onChange={(date) =>
+																				form.setValue('recurrence.start_date', date as Date)
+																			}
+																			value={startDate}
+																		/>
+																	</FormControl>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+													</div>
+													<div className='grid gap-4'>
+														<FormField
+															control={form.control}
+															name='recurrence.end_date'
+															render={({ field }) => (
+																<FormItem>
+																	<FormLabel>End Date</FormLabel>
+																	<FormControl>
+																		<DatePickerDemo
+																			onChange={(date) =>
+																				form.setValue('recurrence.end_date', date as Date)
+																			}
+																			value={endDate}
+																		/>
+																	</FormControl>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+													</div>
+												</div>
+												<div
+													className={` ${
+														recurringFrequency === 'weekly' ? 'grid' : 'hidden'
+													} gap-4`}
+												>
+													<FormField
+														control={form.control}
+														name='recurrence.weekdays'
+														render={({ field }) => (
+															<FormItem>
+																<FormControl>
+																	<ComboboxWeekdays
+																		onChange={(value) =>
+																			form.setValue('recurrence.weekdays', value)
+																		}
+																		placeholder='Select weekdays'
+																		value={recurringWeekDays}
+																	/>
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+												</div>
+												<div
+													className={` ${
+														recurringFrequency === 'monthly' ? 'grid' : 'hidden'
+													} gap-4`}
+												>
+													<FormField
+														control={form.control}
+														name='recurrence.monthdays'
+														render={({ field }) => (
+															<FormItem>
+																<FormControl>
+																	<ComboboxMonthDays
+																		onChange={(value) =>
+																			form.setValue('recurrence.monthdays', value)
+																		}
+																		placeholder='Select days'
+																		value={recurringMonthDays}
+																	/>
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+												</div>
+											</div>
+										</Show.When>
+										<Show.Else>
+											<div className='flex flex-col gap-2'>
 												<FormField
 													control={form.control}
-													name='recurrence.start_date'
+													name='due_date'
 													render={() => (
 														<FormItem>
-															<FormLabel>Start Date</FormLabel>
+															<FormLabel>Due Date</FormLabel>
 															<FormControl>
 																<DatePickerDemo
-																	onChange={(date) =>
-																		form.setValue('recurrence.start_date', date as Date)
-																	}
-																	value={startDate}
+																	onChange={(date) => form.setValue('due_date', date as Date)}
+																	value={due_date}
 																/>
 															</FormControl>
 															<FormMessage />
@@ -299,93 +397,23 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 													)}
 												/>
 											</div>
-											<div className='grid gap-4'>
-												<FormField
-													control={form.control}
-													name='recurrence.end_date'
-													render={({ field }) => (
-														<FormItem>
-															<FormLabel>End Date</FormLabel>
-															<FormControl>
-																<DatePickerDemo
-																	onChange={(date) =>
-																		form.setValue('recurrence.end_date', date as Date)
-																	}
-																	value={endDate}
-																/>
-															</FormControl>
-															<FormMessage />
-														</FormItem>
-													)}
-												/>
-											</div>
+										</Show.Else>
+									</Show>
+
+									<div className='flex flex-col gap-2 grid-cols-2'>
+										<div className='flex flex-col gap-2'>
+											<LinkInputDialog
+												ref={inputLinkRef}
+												onConfirm={(links) => form.setValue('links', links)}
+												links={links}
+											>
+												<Button variant={'outline'}>Links ({links.length} added)</Button>
+											</LinkInputDialog>
 										</div>
-										<div
-											className={` ${recurringFrequency === 'weekly' ? 'grid' : 'hidden'} gap-4`}
-										>
-											<FormField
-												control={form.control}
-												name='recurrence.weekdays'
-												render={({ field }) => (
-													<FormItem>
-														<FormControl>
-															<ComboboxWeekdays
-																onChange={(value) => form.setValue('recurrence.weekdays', value)}
-																placeholder='Select weekdays'
-																value={recurringWeekDays}
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
-										<div
-											className={` ${recurringFrequency === 'monthly' ? 'grid' : 'hidden'} gap-4`}
-										>
-											<FormField
-												control={form.control}
-												name='recurrence.monthdays'
-												render={({ field }) => (
-													<FormItem>
-														<FormControl>
-															<ComboboxMonthDays
-																onChange={(value) => form.setValue('recurrence.monthdays', value)}
-																placeholder='Select days'
-																value={recurringMonthDays}
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
-									</div>
-									<div className='flex flex-col gap-2'>
-										<ReminderInputDialog
-											onConfirm={(reminder) => {
-												form.setValue('reminders', reminder);
-												console.log(reminder);
-											}}
-											reminders={reminders}
-										>
-											<Button variant={'outline'}>Set Reminders</Button>
-										</ReminderInputDialog>
-									</div>
-									<div className='flex flex-col gap-2'>
-										<LinkInputDialog
-											ref={inputLinkRef}
-											onConfirm={(links) => form.setValue('links', links)}
-											links={links}
-										>
-											<Button variant={'outline'}>Set Links ({links.length})</Button>
-										</LinkInputDialog>
-									</div>
-									<div className='flex flex-col gap-4 grid-cols-2'>
 										<div className='grid grid-cols-1 gap-2'>
 											<Label htmlFor='files'>
 												<Button variant={'outline'} className='w-full' onClick={handleFileSelector}>
-													Select Files ({files.length})
+													Files ({files.length} selected)
 												</Button>
 											</Label>
 											<input
@@ -395,13 +423,22 @@ export default function CreateTasks({ params }: { params: { org_id: string } }) 
 												ref={fileInputRef}
 												onChange={handleFileChange}
 												multiple
-												accept='image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.7z'
 											/>
 										</div>
 										<div className='grid grid-cols-1 gap-2'>
 											<VoiceNoteInputDialog onConfirm={(voice_notes) => setVoiceNote(voice_notes)}>
 												<Button variant={'outline'}>Voice notes</Button>
 											</VoiceNoteInputDialog>
+										</div>
+										<div className='flex flex-col gap-2'>
+											<ReminderInputDialog
+												onConfirm={(reminder) => {
+													form.setValue('reminders', reminder);
+												}}
+												reminders={reminders}
+											>
+												<Button variant={'outline'}>Reminders ({reminders.length} added)</Button>
+											</ReminderInputDialog>
 										</div>
 									</div>
 								</div>

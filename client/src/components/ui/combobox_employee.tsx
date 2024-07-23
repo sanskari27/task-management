@@ -53,7 +53,7 @@ export default function ComboboxEmployee({
 								render={(item) => (
 									<CommandItem
 										key={item.id}
-										value={item.name}
+										value={item.id}
 										onSelect={(currentValue) => {
 											if (value.includes(currentValue)) {
 												onChange(value.filter((v) => v !== currentValue));
@@ -67,7 +67,7 @@ export default function ComboboxEmployee({
 										<Check
 											className={cn(
 												'mr-2 h-4 w-4',
-												value.includes(item.name) ? 'opacity-100' : 'opacity-0'
+												value.includes(item.id) ? 'opacity-100' : 'opacity-0'
 											)}
 										/>
 										{item.name}

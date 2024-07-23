@@ -47,22 +47,19 @@ async function createTask(req: Request, res: Response, next: NextFunction) {
 	const dateGenerator = new DateGenerator(data.recurrence!);
 
 	while (dateGenerator.hasNext()) {
+		const due_date = dateGenerator.next();
 		if (data.assign_separately) {
 			for (const assigned_to of data.assigned_to) {
 				taskService.createTask({
 					...data,
 					assigned_to: [assigned_to],
-					due_date: dateGenerator.next(),
+					due_date,
 				});
 			}
-			return Respond({
-				res,
-				status: 200,
-			});
 		} else {
 			taskService.createTask({
 				...data,
-				due_date: dateGenerator.next(),
+				due_date,
 			});
 		}
 	}

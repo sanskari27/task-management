@@ -7,21 +7,21 @@ export const taskDetailsSchema = z.object({
 	description: z.string().min(1, {
 		message: 'Description is required',
 	}),
-	assigned_separately: z.boolean(),
+	assign_separately: z.boolean(),
 	assigned_to: z.array(z.string()).min(1, {
 		message: 'Employee is required',
 	}),
 	category: z.string().min(1, {
 		message: 'Category is required',
 	}),
-	priority: z.string({}),
+	priority: z.string(),
 	isRecurring: z.boolean(),
 	recurrence: z.object({
 		frequency: z.string(),
 		start_date: z.date(),
 		end_date: z.date(),
 		weekdays: z.array(z.string()),
-		monthdays: z.array(z.number()),
+		monthdays: z.array(z.string()),
 	}),
 	due_date: z.date(),
 	links: z.array(z.string()),

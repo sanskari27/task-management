@@ -24,8 +24,8 @@ export default function ComboboxMonthDays({
 	onChange,
 }: {
 	placeholder: string;
-	value: number[];
-	onChange: (value: number[]) => void;
+	value: string[];
+	onChange: (value: string[]) => void;
 }) {
 	const [open, setOpen] = React.useState(false);
 
@@ -38,7 +38,9 @@ export default function ComboboxMonthDays({
 					aria-expanded={open}
 					className='w-full justify-between'
 				>
-					{value.length > 0 ? value.sort((a, b) => a - b).join(',') : placeholder}
+					{value.length > 0
+						? value.sort((a, b) => parseInt(a) - parseInt(b)).join(',')
+						: placeholder}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
 			</PopoverTrigger>
@@ -55,10 +57,10 @@ export default function ComboboxMonthDays({
 										key={index}
 										value={item}
 										onSelect={(currentValue) => {
-											if (value.includes(parseInt(currentValue))) {
-												onChange(value.filter((v) => v !== parseInt(currentValue)));
+											if (value.includes(currentValue)) {
+												onChange(value.filter((v) => v !== currentValue));
 											} else {
-												onChange([...value, parseInt(currentValue)]);
+												onChange([...value, currentValue]);
 											}
 										}}
 										className={cn('cursor-pointer z-10')}
@@ -67,7 +69,7 @@ export default function ComboboxMonthDays({
 										<Check
 											className={cn(
 												'mr-2 h-4 w-4',
-												value.includes(parseInt(item)) ? 'text-primary' : 'text-transparent'
+												value.includes(item) ? 'text-primary' : 'text-transparent'
 											)}
 										/>
 										{item}

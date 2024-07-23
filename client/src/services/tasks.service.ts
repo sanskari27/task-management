@@ -40,17 +40,17 @@ export default class TasksService {
 		organizationId: string,
 		task: {
 			title: string;
+			description: string;
+			assign_separately: boolean;
+			assigned_to: string[];
 			category: string;
 			priority: string;
-			due_date: Date;
-			description: string;
-			assigned_to: string[];
-			assign_separately: boolean;
 			isRecurring: boolean;
-			recurring: {
+			due_date: Date;
+			recurrence: {
 				frequency: string;
 				start_date: Date;
-				end_Date: Date;
+				end_date: Date;
 				weekdays: string[];
 				monthdays: string[];
 			};
@@ -61,18 +61,13 @@ export default class TasksService {
 			}[];
 			links: string[];
 			files: string[];
-			voice_notes: string;
+			voice_notes: string[];
 		}
 	) {
-		try {
-			const { data } = await api.post(`/tasks`, task, {
-				headers: {
-					'X-Organization-ID': organizationId,
-				},
-			});
-			return data.success;
-		} catch (error) {
-			return false;
-		}
+		await api.post(`/tasks`, task, {
+			headers: {
+				'X-Organization-ID': organizationId,
+			},
+		});
 	}
 }

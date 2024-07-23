@@ -27,14 +27,14 @@ export type CreateTaskType = {
 			| 'saturday'
 			| 'sunday'
 		)[];
-		monthdays: number[];
+		monthdays: string[];
 	};
 	due_date?: Date;
 	links: string[];
 	files: string[];
 	voice_notes: string[];
-	remainders: {
-		remainder_type: 'email' | 'whatsapp';
+	reminders: {
+		reminder_type: 'email' | 'whatsapp';
 		before: number;
 		before_type: 'minutes' | 'hours' | 'days';
 	}[];
@@ -66,7 +66,13 @@ export function CreateTaskValidator(req: Request, res: Response, next: NextFunct
 						.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
 						.array()
 						.default([]),
-					monthdays: z.array(z.number().min(1).max(31)).default([]),
+					monthdays: z
+						.array(
+							z
+								.string()
+								.refine((val) => !isNaN(parseInt(val)) && parseInt(val) >= 1 && parseInt(val) <= 31)
+						)
+						.default([]),
 				})
 				.optional(),
 			due_date: z
@@ -76,9 +82,9 @@ export function CreateTaskValidator(req: Request, res: Response, next: NextFunct
 			links: z.array(z.string().url()),
 			files: z.array(z.string()),
 			voice_notes: z.array(z.string()),
-			remainders: z.array(
+			reminders: z.array(
 				z.object({
-					remainder_type: z.enum(['email', 'whatsapp']),
+					reminder_type: z.enum(['email', 'whatsapp']),
 					before: z.number(),
 					before_type: z.enum(['minutes', 'hours', 'days']),
 				})

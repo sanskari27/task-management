@@ -46,9 +46,9 @@ const schema = new mongoose.Schema<ITask>(
 		links: [String],
 		files: [String],
 		voice_notes: [String],
-		remainders: [
+		reminders: [
 			{
-				remainder_type: {
+				reminder_type: {
 					type: String,
 					enum: ['email', 'whatsapp'],
 				},
