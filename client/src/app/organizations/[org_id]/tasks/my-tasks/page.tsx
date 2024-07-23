@@ -19,12 +19,12 @@ export default async function MyTasks({
 	// const tasks = await TasksService.getAllTasks(organizationId);
 
 	return (
-		<section className='mx-[2%] md:mx-[7%] mt-3'>
-			<div className='flex items-center justify-between'>
+		<section className='mx-[5%] md:mx-[7%] mt-3'>
+			<div className='flex flex-col md:flex-row  md:items-center md:justify-between gap-y-3'>
 				<h2 className='text-3xl font-bold'>My Tasks</h2>
-			</div>
-			<div className='min-w-[50%] mt-3'>
-				<SearchAndFilters show_assigned_to={false} />
+				<div className='min-w-[50%] '>
+					<SearchAndFilters show_assigned_to={false} />
+				</div>
 			</div>
 
 			{tasks.length}

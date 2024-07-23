@@ -157,8 +157,8 @@ export default function SearchAndFilters({
 	}
 
 	return (
-		<div className='flex justify-center items-center '>
-			<div className='min-w-[300px] md:min-w-[450px] lg:min-w-[600px]'>
+		<div className='flex justify-end items-center gap-3'>
+			<div className='min-w-[300px] md:min-w-[450px] '>
 				<SearchBar
 					placeholders={[
 						'Search by task name',

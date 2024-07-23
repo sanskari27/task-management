@@ -150,6 +150,7 @@ export type FetchQueryType = {
 	categories?: string[];
 	priority?: 'low' | 'medium' | 'high';
 	frequency?: 'daily' | 'weekly' | 'monthly';
+	search?: string;
 	date_range?: {
 		start: Date;
 		end: Date;
@@ -183,6 +184,7 @@ export function FetchQueryValidator(req: Request, res: Response, next: NextFunct
 				.refine((val) => val.split(','))
 				.transform((val) => val.split(','))
 				.optional(),
+			search: z.string().optional(),
 			priority: z.enum(['low', 'medium', 'high']).optional(),
 			status: z.enum(['pending', 'completed', 'in_progress']).optional(),
 			frequency: z.enum(['daily', 'weekly', 'monthly']).optional(),

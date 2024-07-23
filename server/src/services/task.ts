@@ -116,25 +116,38 @@ export default class TaskService {
 		priority?: 'low' | 'medium' | 'high';
 		frequency?: 'daily' | 'weekly' | 'monthly';
 		status?: TaskStatus;
+		search?: string;
 	}) {
 		opts = filterUndefinedKeys(opts);
 
 		const docs = await TaskDB.aggregate([
 			{
 				$match: {
-					organization: this._o_id,
-					created_by: this._e_id,
-					...(opts.date_range && {
-						due_date: {
-							$gte: opts.date_range.start,
-							$lte: opts.date_range.end,
+					$and: [
+						{ organization: this._o_id },
+						{ created_by: this._e_id },
+						{
+							...(opts.date_range && {
+								due_date: {
+									$gte: opts.date_range.start,
+									$lte: opts.date_range.end,
+								},
+							}),
 						},
-					}),
-					...(opts.assigned_to && { assigned_to: { $in: opts.assigned_to } }),
-					...(opts.categories && { category: { $in: opts.categories } }),
-					...(opts.priority && { priority: opts.priority }),
-					...(opts.frequency && { 'batch.frequency': opts.frequency }),
-					...(opts.status && { status: opts.status }),
+						{ ...(opts.assigned_to && { assigned_to: { $in: opts.assigned_to } }) },
+						{ ...(opts.categories && { category: { $in: opts.categories } }) },
+						{ ...(opts.priority && { priority: opts.priority }) },
+						{ ...(opts.frequency && { 'batch.frequency': opts.frequency }) },
+						{ ...(opts.status && { status: opts.status }) },
+						{
+							...(opts.search && {
+								$or: [
+									{ title: { $regex: opts.search, $options: 'i' } },
+									{ description: { $regex: opts.search, $options: 'i' } },
+								],
+							}),
+						},
+					],
 				},
 			},
 			{
@@ -204,25 +217,38 @@ export default class TaskService {
 		priority?: 'low' | 'medium' | 'high';
 		frequency?: 'daily' | 'weekly' | 'monthly';
 		status?: TaskStatus;
+		search?: string;
 	}) {
 		opts = filterUndefinedKeys(opts);
 
 		const docs = await TaskDB.aggregate([
 			{
 				$match: {
-					organization: this._o_id,
-					assigned_to: this._e_id,
-					...(opts.date_range && {
-						due_date: {
-							$gte: opts.date_range.start,
-							$lte: opts.date_range.end,
+					$and: [
+						{ organization: this._o_id },
+						{ assigned_to: this._e_id },
+						{
+							...(opts.date_range && {
+								due_date: {
+									$gte: opts.date_range.start,
+									$lte: opts.date_range.end,
+								},
+							}),
 						},
-					}),
-					...(opts.created_by && { created_by: { $in: opts.created_by } }),
-					...(opts.categories && { category: { $in: opts.categories } }),
-					...(opts.priority && { priority: opts.priority }),
-					...(opts.frequency && { 'batch.frequency': opts.frequency }),
-					...(opts.status && { status: opts.status }),
+						{ ...(opts.created_by && { assigned_to: { $in: opts.created_by } }) },
+						{ ...(opts.categories && { category: { $in: opts.categories } }) },
+						{ ...(opts.priority && { priority: opts.priority }) },
+						{ ...(opts.frequency && { 'batch.frequency': opts.frequency }) },
+						{ ...(opts.status && { status: opts.status }) },
+						{
+							...(opts.search && {
+								$or: [
+									{ title: { $regex: opts.search, $options: 'i' } },
+									{ description: { $regex: opts.search, $options: 'i' } },
+								],
+							}),
+						},
+					],
 				},
 			},
 			{
@@ -293,6 +319,7 @@ export default class TaskService {
 		priority?: 'low' | 'medium' | 'high';
 		frequency?: 'daily' | 'weekly' | 'monthly';
 		status?: TaskStatus;
+		search?: string;
 	}) {
 		let managedEmployees = await this._employeeService.managedEmployees();
 		managedEmployees.push(this._e_id);
@@ -308,19 +335,31 @@ export default class TaskService {
 		const docs = await TaskDB.aggregate([
 			{
 				$match: {
-					organization: this._o_id,
-					assigned_to: { $in: managedEmployees },
-					...(opts.date_range && {
-						due_date: {
-							$gte: opts.date_range.start,
-							$lte: opts.date_range.end,
+					$and: [
+						{ organization: this._o_id },
+						{ assigned_to: { $in: managedEmployees } },
+						{
+							...(opts.date_range && {
+								due_date: {
+									$gte: opts.date_range.start,
+									$lte: opts.date_range.end,
+								},
+							}),
 						},
-					}),
-					...(opts.created_by && { created_by: { $in: opts.created_by } }),
-					...(opts.categories && { category: { $in: opts.categories } }),
-					...(opts.priority && { priority: opts.priority }),
-					...(opts.frequency && { 'batch.frequency': opts.frequency }),
-					...(opts.status && { status: opts.status }),
+						{ ...(opts.created_by && { assigned_to: { $in: opts.created_by } }) },
+						{ ...(opts.categories && { category: { $in: opts.categories } }) },
+						{ ...(opts.priority && { priority: opts.priority }) },
+						{ ...(opts.frequency && { 'batch.frequency': opts.frequency }) },
+						{ ...(opts.status && { status: opts.status }) },
+						{
+							...(opts.search && {
+								$or: [
+									{ title: { $regex: opts.search, $options: 'i' } },
+									{ description: { $regex: opts.search, $options: 'i' } },
+								],
+							}),
+						},
+					],
 				},
 			},
 			{
