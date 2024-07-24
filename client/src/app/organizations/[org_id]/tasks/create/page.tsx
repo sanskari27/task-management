@@ -69,6 +69,7 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 	const inputLinkRef = useRef<LinkInputHandle>(null);
 	const [files, setFiles] = useState<File[]>([]);
 	const [voiceNote, setVoiceNote] = useState<Blob>();
+	const [time, setTime] = useState('00:00');
 
 	function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const files = event.target.files;
@@ -100,9 +101,11 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 		e.preventDefault();
 		fileInputRef.current?.click();
 	};
+	console.log(new Date(`${due_date.toISOString().split('T')[0]}T${time}`), time);
 
 	async function handleSubmit(values: z.infer<typeof taskDetailsSchema>) {
 		setLoading(true);
+		values.due_date = new Date(`${due_date.toISOString().split('T')[0]}T${time}`);
 
 		if (files.length > 0) {
 			const promises = files.map((file) => {
@@ -379,17 +382,35 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 											</div>
 										</Show.When>
 										<Show.Else>
-											<div className='flex flex-col gap-2'>
+											<div className='flex flex-row gap-2'>
 												<FormField
 													control={form.control}
 													name='due_date'
 													render={() => (
-														<FormItem>
+														<FormItem className='flex-1'>
 															<FormLabel>Due Date</FormLabel>
 															<FormControl>
 																<DatePickerDemo
 																	onChange={(date) => form.setValue('due_date', date as Date)}
 																	value={due_date}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name='due_date'
+													render={() => (
+														<FormItem className='flex-1'>
+															<FormLabel>Due Time</FormLabel>
+															<FormControl>
+																<Input
+																	required
+																	type='time'
+																	value={time}
+																	onChange={(e) => setTime(e.target.value)}
 																/>
 															</FormControl>
 															<FormMessage />
