@@ -58,8 +58,8 @@ function processDocs(docs: any[]): {
 			title: doc.title as string,
 			category: doc.category as string,
 			priority: doc.priority as 'low' | 'medium' | 'high',
-			createdAt: DateUtils.getMoment(doc.createdAt).format('MMM Do, YYYY hh:mm a'),
-			due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm a'),
+			createdAt: DateUtils.getMoment(doc.createdAt).format('MMM Do, YYYY hh:mm A'),
+			due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
 			relative_date: DateUtils.getMoment(doc.due_date).fromNow(),
 			isBatchTask: !!doc.batch as boolean,
 			...(doc.batch && {
@@ -120,7 +120,7 @@ export default class TaskService {
 	}) {
 		opts = filterUndefinedKeys(opts);
 
-		const docs = await TaskDB.aggregate([
+		let docs = await TaskDB.aggregate([
 			{
 				$match: {
 					$and: [
@@ -170,11 +170,6 @@ export default class TaskService {
 				$unwind: { path: '$created_by', preserveNullAndEmptyArrays: true },
 			},
 			{
-				$sort: {
-					due_date: 1,
-				},
-			},
-			{
 				$project: {
 					_id: 1,
 
@@ -200,9 +195,34 @@ export default class TaskService {
 					due_date: 1,
 					batch: 1,
 					status: 1,
+					formattedDate: {
+						$dateToString: { format: '%Y-%m-%d', date: '$due_date' },
+					},
+					priorityValue: {
+						$switch: {
+							branches: [
+								{ case: { $eq: ['$priority', 'high'] }, then: 1 },
+								{ case: { $eq: ['$priority', 'medium'] }, then: 2 },
+								{ case: { $eq: ['$priority', 'low'] }, then: 3 },
+							],
+							default: 4, // Assign a default value for any unexpected priority values
+						},
+					},
 				},
 			},
 		]);
+
+		docs = docs.sort((a, b) => {
+			const momentA = DateUtils.getMoment(a.due_date).startOf('day');
+			const momentB = DateUtils.getMoment(b.due_date).startOf('day');
+
+			if (momentA.isBefore(momentB)) {
+				return -1;
+			} else if (momentA.isAfter(momentB)) {
+				return 1;
+			}
+			return a.priorityValue - b.priorityValue;
+		});
 
 		return processDocs(docs);
 	}
@@ -221,7 +241,7 @@ export default class TaskService {
 	}) {
 		opts = filterUndefinedKeys(opts);
 
-		const docs = await TaskDB.aggregate([
+		let docs = await TaskDB.aggregate([
 			{
 				$match: {
 					$and: [
@@ -271,11 +291,6 @@ export default class TaskService {
 				$unwind: { path: '$created_by', preserveNullAndEmptyArrays: true },
 			},
 			{
-				$sort: {
-					due_date: 1,
-				},
-			},
-			{
 				$project: {
 					_id: 1,
 
@@ -301,9 +316,34 @@ export default class TaskService {
 					due_date: 1,
 					batch: 1,
 					status: 1,
+					formattedDate: {
+						$dateToString: { format: '%Y-%m-%d', date: '$due_date' },
+					},
+					priorityValue: {
+						$switch: {
+							branches: [
+								{ case: { $eq: ['$priority', 'high'] }, then: 1 },
+								{ case: { $eq: ['$priority', 'medium'] }, then: 2 },
+								{ case: { $eq: ['$priority', 'low'] }, then: 3 },
+							],
+							default: 4, // Assign a default value for any unexpected priority values
+						},
+					},
 				},
 			},
 		]);
+
+		docs = docs.sort((a, b) => {
+			const momentA = DateUtils.getMoment(a.due_date).startOf('day');
+			const momentB = DateUtils.getMoment(b.due_date).startOf('day');
+
+			if (momentA.isBefore(momentB)) {
+				return -1;
+			} else if (momentA.isAfter(momentB)) {
+				return 1;
+			}
+			return a.priorityValue - b.priorityValue;
+		});
 
 		return processDocs(docs);
 	}
@@ -332,7 +372,7 @@ export default class TaskService {
 			);
 		}
 
-		const docs = await TaskDB.aggregate([
+		let docs = await TaskDB.aggregate([
 			{
 				$match: {
 					$and: [
@@ -382,11 +422,6 @@ export default class TaskService {
 				$unwind: { path: '$created_by', preserveNullAndEmptyArrays: true },
 			},
 			{
-				$sort: {
-					due_date: 1,
-				},
-			},
-			{
 				$project: {
 					_id: 1,
 
@@ -412,9 +447,34 @@ export default class TaskService {
 					due_date: 1,
 					batch: 1,
 					status: 1,
+					formattedDate: {
+						$dateToString: { format: '%Y-%m-%d', date: '$due_date' },
+					},
+					priorityValue: {
+						$switch: {
+							branches: [
+								{ case: { $eq: ['$priority', 'high'] }, then: 1 },
+								{ case: { $eq: ['$priority', 'medium'] }, then: 2 },
+								{ case: { $eq: ['$priority', 'low'] }, then: 3 },
+							],
+							default: 4, // Assign a default value for any unexpected priority values
+						},
+					},
 				},
 			},
 		]);
+
+		docs = docs.sort((a, b) => {
+			const momentA = DateUtils.getMoment(a.due_date).startOf('day');
+			const momentB = DateUtils.getMoment(b.due_date).startOf('day');
+
+			if (momentA.isBefore(momentB)) {
+				return -1;
+			} else if (momentA.isAfter(momentB)) {
+				return 1;
+			}
+			return a.priorityValue - b.priorityValue;
+		});
 
 		return processDocs(docs);
 	}

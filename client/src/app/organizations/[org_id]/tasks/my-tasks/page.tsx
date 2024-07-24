@@ -1,5 +1,6 @@
 import SearchAndFilters from '@/components/elements/search-and-filters';
 import TasksService from '@/services/tasks.service';
+import DataGrid from './data-grid';
 
 export default async function MyTasks({
 	params: { org_id },
@@ -16,7 +17,9 @@ export default async function MyTasks({
 	};
 }) {
 	const tasks = await TasksService.getAssignedToMe(org_id, searchParams);
-	// const tasks = await TasksService.getAllTasks(organizationId);
+	let notStarted = tasks.filter((task) => task.status === 'pending');
+	let inProgress = tasks.filter((task) => task.status === 'in_progress');
+	let completed = tasks.filter((task) => task.status === 'completed');
 
 	return (
 		<section className='mx-[5%] md:mx-[7%] mt-3'>
@@ -27,7 +30,14 @@ export default async function MyTasks({
 				</div>
 			</div>
 
-			{tasks.length}
+			<DataGrid
+				{...{
+					notStarted,
+					inProgress,
+					completed,
+				}}
+			/>
 		</section>
 	);
 }
+//TODO USE HOVERCARD

@@ -1,4 +1,5 @@
 import api from '@/lib/api';
+import { Task } from '@/types/task';
 
 export default class TasksService {
 	static async getAllTasks(organizationId: string) {
@@ -9,28 +10,7 @@ export default class TasksService {
 					'X-Organization-ID': organizationId,
 				},
 			});
-			return (data.tasks ?? []).map((task: any) => {
-				return {
-					id: (task.id as string) ?? '',
-					title: (task.title as string) ?? '',
-					category: (task.category as string) ?? '',
-					priority: (task.priority as string) ?? '',
-					due_date: (task.due_date as string) ?? '',
-					isBatchTask: (task.isBatchTask as boolean) ?? false,
-					assigned_to: (task.assigned_to ?? []).map((assigned: any) => {
-						return {
-							id: (assigned.id as string) ?? '',
-							name: (assigned.name as string) ?? '',
-							email: (assigned.email as string) ?? '',
-						};
-					}),
-					created_by: {
-						id: (task?.created_by.id as string) ?? '',
-						name: (task?.created_by.name as string) ?? '',
-						email: (task?.created_by.email as string) ?? '',
-					},
-				};
-			});
+			return (data.tasks ?? []) as Task[];
 		} catch (error) {
 			return null;
 		}
@@ -45,48 +25,31 @@ export default class TasksService {
 				},
 				params: query,
 			});
-			return (data.tasks ?? []).map((task: any) => {
-				return {
-					id: (task.id as string) ?? '',
-					title: (task.title as string) ?? '',
-					category: (task.category as string) ?? '',
-					priority: (task.priority as string) ?? '',
-					due_date: (task.due_date as string) ?? '',
-					isBatchTask: (task.isBatchTask as boolean) ?? false,
-					assigned_to: (task.assigned_to ?? []).map((assigned: any) => {
-						return {
-							id: (assigned.id as string) ?? '',
-							name: (assigned.name as string) ?? '',
-							email: (assigned.email as string) ?? '',
-						};
-					}),
-					created_by: {
-						id: (task?.created_by.id as string) ?? '',
-						name: (task?.created_by.name as string) ?? '',
-						email: (task?.created_by.email as string) ?? '',
-					},
-				};
-			}) as {
-				id: string;
-				title: string;
-				category: string;
-				priority: string;
-				due_date: string;
-				isBatchTask: boolean;
-				assigned_to: {
-					id: string;
-					name: string;
-					email: string;
-				}[];
-				created_by: {
-					id: string;
-					name: string;
-					email: string;
-				};
-			}[];
+			return (data.tasks ?? []) as Task[];
 		} catch (error) {
 			return [];
 		}
+	}
+
+	static async updateStatus(
+		organizationId: string,
+		{
+			taskId,
+			status,
+		}: {
+			taskId: string;
+			status: string;
+		}
+	) {
+		await api.post(
+			`/tasks/${taskId}/update-status`,
+			{ status },
+			{
+				headers: {
+					'X-Organization-ID': organizationId,
+				},
+			}
+		);
 	}
 
 	static async createTask(

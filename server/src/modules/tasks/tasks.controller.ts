@@ -1,7 +1,7 @@
 import { AUTH_ERRORS, COMMON_ERRORS, CustomError } from '@/errors';
 import TaskService from '@/services/task';
 import DateGenerator from '@/utils/DateGenerator';
-import { Respond } from '@/utils/ExpressUtils';
+import { generateRandomID, Respond } from '@/utils/ExpressUtils';
 import { NextFunction, Request, Response } from 'express';
 import {
 	AssignTaskType,
@@ -45,7 +45,7 @@ async function createTask(req: Request, res: Response, next: NextFunction) {
 	}
 
 	const dateGenerator = new DateGenerator(data.recurrence!);
-
+	const batch_id = generateRandomID();
 	while (dateGenerator.hasNext()) {
 		const due_date = dateGenerator.next();
 		if (data.assign_separately) {
@@ -54,12 +54,20 @@ async function createTask(req: Request, res: Response, next: NextFunction) {
 					...data,
 					assigned_to: [assigned_to],
 					due_date,
+					batch: {
+						batch_task_id: batch_id,
+						frequency: data.recurrence!.frequency,
+					},
 				});
 			}
 		} else {
 			taskService.createTask({
 				...data,
 				due_date,
+				batch: {
+					batch_task_id: batch_id,
+					frequency: data.recurrence!.frequency,
+				},
 			});
 		}
 	}
