@@ -13,7 +13,7 @@ const nextConfig = {
 			},
 			{
 				protocol: 'https',
-				hostname: 'api.keethjewels.com',
+				hostname: 'task-api.wautopilot.com',
 				port: '',
 				pathname: '/media/**',
 			},
