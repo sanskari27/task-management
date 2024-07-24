@@ -5,10 +5,12 @@ import TaskCard from './card';
 import { Column, ColumnRow } from './column';
 
 export default function DataGrid({
+	organizationId,
 	notStarted,
 	inProgress,
 	completed,
 }: {
+	organizationId:string;
 	notStarted: Task[];
 	inProgress: Task[];
 	completed: Task[];
@@ -27,7 +29,7 @@ export default function DataGrid({
 									items={notStarted}
 									render={(item) => (
 										<ColumnRow item={item}>
-											<TaskCard task={item} />
+											<TaskCard task={item} organizationId={organizationId} />
 										</ColumnRow>
 									)}
 								/>

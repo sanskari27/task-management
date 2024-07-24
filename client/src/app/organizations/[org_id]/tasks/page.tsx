@@ -34,6 +34,7 @@ export default async function Tasks({
 			</div>
 
 			<DataGrid
+				organizationId={org_id}
 				{...{
 					notStarted,
 					inProgress,
