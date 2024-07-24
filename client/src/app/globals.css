@@ -73,3 +73,41 @@
 		@apply w-full absolute mx-[2%] bg-gray-100 md:bg-transparent   shadow-[inset_0_0_300px_rgba(0,0,0,0.2)] dark:shadow-[inset_0_0_300px_rgba(220,220,220,0.2)] backdrop-blur-lg rounded-2xl z-50;
 	}
 }
+
+.container {
+	--uib-size: 40px;
+	--uib-color: black;
+	--uib-speed: 1.4s;
+	--uib-bg-opacity: 0.1;
+	height: var(--uib-size);
+	width: var(--uib-size);
+	transform-origin: center;
+	overflow: visible;
+}
+
+.car {
+	fill: none;
+	stroke: var(--uib-color);
+	stroke-dasharray: 15, 85;
+	stroke-dashoffset: 0;
+	stroke-linecap: round;
+	animation: travel var(--uib-speed) linear infinite;
+	will-change: stroke-dasharray, stroke-dashoffset;
+	transition: stroke 0.5s ease;
+}
+
+.track {
+	stroke: var(--uib-color);
+	opacity: var(--uib-bg-opacity);
+	transition: stroke 0.5s ease;
+}
+
+@keyframes travel {
+	0% {
+		stroke-dashoffset: 0;
+	}
+
+	100% {
+		stroke-dashoffset: -100;
+	}
+}
