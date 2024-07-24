@@ -69,7 +69,9 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 	const inputLinkRef = useRef<LinkInputHandle>(null);
 	const [files, setFiles] = useState<File[]>([]);
 	const [voiceNote, setVoiceNote] = useState<Blob>();
-	const [time, setTime] = useState('00:00');
+	const [dueTime, setDueTime] = useState('00:00');
+	const [startTime, setStartTime] = useState('00:00');
+	const [endTime, setEndTime] = useState('00:00');
 
 	function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const files = event.target.files;
@@ -101,11 +103,12 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 		e.preventDefault();
 		fileInputRef.current?.click();
 	};
-	console.log(new Date(`${due_date.toISOString().split('T')[0]}T${time}`), time);
 
 	async function handleSubmit(values: z.infer<typeof taskDetailsSchema>) {
 		setLoading(true);
-		values.due_date = new Date(`${due_date.toISOString().split('T')[0]}T${time}`);
+		values.due_date = new Date(`${due_date.toISOString().split('T')[0]}T${dueTime}`);
+		values.recurrence.start_date = new Date(`${startDate.toISOString().split('T')[0]}T${startTime}`);
+		values.recurrence.end_date = new Date(`${endDate.toISOString().split('T')[0]}T${endTime}`);
 
 		if (files.length > 0) {
 			const promises = files.map((file) => {
@@ -272,7 +275,7 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 									<Show>
 										<Show.When condition={isRecurring}>
 											<div className={`flex flex-col gap-4`}>
-												<div className={`flex md:flex-row flex-col items-center justify-between`}>
+												<div className={`flex md:flex-row flex-col gap-4 md:items-center justify-between`}>
 													<Label htmlFor='frequency'>Frequency</Label>
 													<ToggleGroup
 														type='single'
@@ -289,7 +292,7 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 													</ToggleGroup>
 												</div>
 												<Separator />
-												<div className={'grid grid-cols-2 gap-4'}>
+												<div className={'grid grid-cols-1 md:grid-cols-2 gap-4'}>
 													<div className='grid gap-4'>
 														<FormField
 															control={form.control}
@@ -316,6 +319,28 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 															name='recurrence.end_date'
 															render={({ field }) => (
 																<FormItem>
+																	<FormLabel>Start Time</FormLabel>
+																	<FormControl>
+																		<Input
+																			required
+																			type='time'
+																			value={startTime}
+																			onChange={(e) => setStartTime(e.target.value)}
+																		/>
+																	</FormControl>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+													</div>
+												</div>
+												<div className={'grid grid-cols-1 md:grid-cols-2 gap-4'}>
+													<div className='grid gap-4'>
+														<FormField
+															control={form.control}
+															name='recurrence.start_date'
+															render={() => (
+																<FormItem>
 																	<FormLabel>End Date</FormLabel>
 																	<FormControl>
 																		<DatePickerDemo
@@ -323,6 +348,26 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 																				form.setValue('recurrence.end_date', date as Date)
 																			}
 																			value={endDate}
+																		/>
+																	</FormControl>
+																	<FormMessage />
+																</FormItem>
+															)}
+														/>
+													</div>
+													<div className='grid gap-4'>
+														<FormField
+															control={form.control}
+															name='recurrence.end_date'
+															render={({ field }) => (
+																<FormItem>
+																	<FormLabel>End Time</FormLabel>
+																	<FormControl>
+																		<Input
+																			required
+																			type='time'
+																			value={endTime}
+																			onChange={(e) => setEndTime(e.target.value)}
 																		/>
 																	</FormControl>
 																	<FormMessage />
@@ -382,7 +427,7 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 											</div>
 										</Show.When>
 										<Show.Else>
-											<div className='flex flex-row gap-2'>
+											<div className='flex flex-col md:flex-row gap-2'>
 												<FormField
 													control={form.control}
 													name='due_date'
@@ -409,8 +454,8 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 																<Input
 																	required
 																	type='time'
-																	value={time}
-																	onChange={(e) => setTime(e.target.value)}
+																	value={dueTime}
+																	onChange={(e) => setDueTime(e.target.value)}
 																/>
 															</FormControl>
 															<FormMessage />
