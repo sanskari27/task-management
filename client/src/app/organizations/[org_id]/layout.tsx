@@ -27,7 +27,7 @@ export default async function Layout({
 		<>
 			<OrganizationDetailsProvider data={details}>
 				<EmployeesProvider data={employees}>
-					<Navbar params={org_id} />
+					<Navbar org_id={org_id} />
 					<PageLayout className='w-screen h-screen'>{children}</PageLayout>
 				</EmployeesProvider>
 			</OrganizationDetailsProvider>
