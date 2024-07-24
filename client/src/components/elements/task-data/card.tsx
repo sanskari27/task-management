@@ -6,8 +6,9 @@ import { AlarmClock, CircleUserRound, Flag, Hourglass, Tag } from 'lucide-react'
 export default function TaskCard({ task }: { task: Task }) {
 	return (
 		<div
+			id={task.id}
 			className={cn(
-				'p-4 w-full border border-dashed rounded-2xl flex flex-col gap-1 bg-card cursor-grab',
+				'p-4 w-full border border-dashed rounded-2xl flex flex-col gap-1 bg-card cursor-pointer',
 				task.isOverdue && 'border-red-400'
 			)}
 		>

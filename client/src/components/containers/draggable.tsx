@@ -31,15 +31,19 @@ const DraggableContainer = React.forwardRef<
 	HTMLDivElement,
 	React.HTMLAttributes<HTMLDivElement> & {
 		draggableData: unknown;
+		onDraggingStart?: () => void;
+		onDraggingEnd?: () => void;
 	}
->(({ className, draggableData, onDragStart, onDragEnd, ...props }, ref) => (
+>(({ className, draggableData, onDraggingStart,onDraggingEnd, ...props }, ref) => (
 	<div
 		ref={ref}
 		className={className}
 		draggable
 		onDragStart={(e) => {
 			e.dataTransfer.setData('shared-data', JSON.stringify(draggableData));
+			onDraggingStart?.(); //TODO
 		}}
+		onDragEnd={()=>onDraggingEnd?.()}
 		{...props}
 	/>
 ));

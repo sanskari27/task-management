@@ -51,7 +51,14 @@ const ColumnRow = React.forwardRef<
 		item: Task;
 	}
 >(({ className, item, ...props }, ref) => {
-	return <DraggableContainer ref={ref} {...props} draggableData={item} />;
+
+	return (
+		<DraggableContainer
+			ref={ref}
+			{...props}
+			draggableData={item}
+		/>
+	);
 });
 
 ColumnRow.displayName = 'ColumnRow';
