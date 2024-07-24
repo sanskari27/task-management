@@ -22,9 +22,9 @@ export default async function Organizations() {
 
 	return (
 		<>
-			<nav className='flex justify-end mx-[1rem] sticky top-1 max-w-screen backdrop-blur-sm bg-transparent p-[1rem] justify-self-center'>
-				<ThemeToggle />
-				<LogoutButton />
+			<nav className='flex justify-end mx-[1rem] sticky top-1 max-w-screen backdrop-blur-sm bg-transparent p-[1rem] justify-self-center gap-1'>
+				<ThemeToggle hideText />
+				<LogoutButton as='button' />
 			</nav>
 			<PageLayout className='lg:w-3/4 mx-auto w-full p-3 mt-[3rem]'>
 				<div className='flex flex-col text-center lg:text-left gap-4 lg:flex-row justify-between items-center'>
@@ -84,7 +84,7 @@ export default async function Organizations() {
 														<p className='text-sm text-muted-foreground'>{org.industry}</p>
 													</div>
 												</div>
-												<Link href={`/organizations/${org.org_id}`}>
+												<Link href={`/organizations/${org.org_id}/tasks`}>
 													<Button variant={'outline'}>Manage</Button>
 												</Link>
 											</div>

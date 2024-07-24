@@ -24,7 +24,7 @@ export default async function DelegatedTasks({
 	return (
 		<section className='mx-[5%] md:mx-[7%] mt-3'>
 			<div className='flex flex-col md:flex-row  md:items-center md:justify-between gap-y-3'>
-				<h2 className='text-3xl font-bold'>My Tasks</h2>
+				<h2 className='text-3xl font-bold'>Delegated Tasks</h2>
 				<div className='min-w-[50%] '>
 					<SearchAndFilters show_assigned_by={false} />
 				</div>
