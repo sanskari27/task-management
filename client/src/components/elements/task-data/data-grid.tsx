@@ -55,7 +55,7 @@ export default function DataGrid({
 									items={inProgress}
 									render={(item) => (
 										<ColumnRow item={item}>
-											<TaskCard task={item} />
+											<TaskCard task={item} organizationId={organizationId} />
 										</ColumnRow>
 									)}
 								/>
@@ -79,7 +79,7 @@ export default function DataGrid({
 									items={completed}
 									render={(item) => (
 										<ColumnRow item={item}>
-											<TaskCard task={item} />
+											<TaskCard task={item} organizationId={organizationId} />
 										</ColumnRow>
 									)}
 								/>
