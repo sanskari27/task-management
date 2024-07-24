@@ -62,6 +62,7 @@ export const setCookie = (
 		expires: new Date(Date.now() + expires),
 		httpOnly: IS_PRODUCTION,
 		secure: IS_PRODUCTION,
+		domain: IS_PRODUCTION ? '.wautopilot.com' : 'localhost',
 	});
 };
 
