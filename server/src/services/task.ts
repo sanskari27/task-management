@@ -34,6 +34,7 @@ function processDocs(docs: any[]): {
 	category: string;
 	priority: 'low' | 'medium' | 'high';
 	due_date: string;
+	relative_date: string;
 	isBatchTask: boolean;
 	batch?: {
 		frequency: 'daily' | 'weekly' | 'monthly';
@@ -81,6 +82,7 @@ function processDocs(docs: any[]): {
 				email: doc.created_by.email as string,
 			},
 			status: doc.status,
+			isOverdue: DateUtils.getMoment(doc.due_date).isBefore(doc.completed_at),
 		};
 	});
 }
@@ -195,6 +197,7 @@ export default class TaskService {
 					due_date: 1,
 					batch: 1,
 					status: 1,
+					completed_at: 1,
 					formattedDate: {
 						$dateToString: { format: '%Y-%m-%d', date: '$due_date' },
 					},

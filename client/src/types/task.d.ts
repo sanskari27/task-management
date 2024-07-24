@@ -7,6 +7,7 @@ export type Task = {
 	relative_date: string;
 	status: 'pending' | 'completed' | 'in_progress';
 	isBatchTask: boolean;
+	isOverdue: boolean;
 	assigned_to: {
 		id: string;
 		name: string;

@@ -1,31 +1,16 @@
 import Show from '@/components/containers/show';
+import { cn } from '@/lib/utils';
+import { Task } from '@/types/task';
 import { AlarmClock, CircleUserRound, Flag, Hourglass, Tag } from 'lucide-react';
 
-export default function TaskCard({
-	task,
-}: {
-	task: {
-		id: string;
-		title: string;
-		category: string;
-		priority: string;
-		due_date: string;
-		relative_date: string;
-		isBatchTask: boolean;
-		assigned_to: {
-			id: string;
-			name: string;
-			email: string;
-		}[];
-		created_by: {
-			id: string;
-			name: string;
-			email: string;
-		};
-	};
-}) {
+export default function TaskCard({ task }: { task: Task }) {
 	return (
-		<div className='p-4 w-full border border-dashed rounded-2xl flex flex-col gap-1 bg-card cursor-grab'>
+		<div
+			className={cn(
+				'p-4 w-full border border-dashed rounded-2xl flex flex-col gap-1 bg-card cursor-grab',
+				task.isOverdue && 'border-red-400'
+			)}
+		>
 			<p className='text-xl font-medium line-clamp-1'>{task.title}</p>
 			<div className='flex gap-4 items-center'>
 				<span className='text-sm font-medium  flex items-center gap-1'>

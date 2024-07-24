@@ -163,7 +163,6 @@ export default function SearchAndFilters({
 					placeholders={[
 						'Search by task name',
 						'Search by task description',
-						'Search by task category',
 					]}
 					onSubmit={handleSearch}
 				/>
