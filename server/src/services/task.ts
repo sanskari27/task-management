@@ -319,6 +319,7 @@ export default class TaskService {
 					due_date: 1,
 					batch: 1,
 					status: 1,
+					completed_at: 1,
 					formattedDate: {
 						$dateToString: { format: '%Y-%m-%d', date: '$due_date' },
 					},
