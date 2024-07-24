@@ -76,13 +76,18 @@
 
 .container {
 	--uib-size: 40px;
-	--uib-color: black;
+	--uib-color: white;
 	--uib-speed: 1.4s;
 	--uib-bg-opacity: 0.1;
 	height: var(--uib-size);
 	width: var(--uib-size);
 	transform-origin: center;
 	overflow: visible;
+	margin-top: 1rem;
+	margin-bottom: 1.5rem;
+	margin-left: 1rem;
+	margin-right: 3.5rem;
+	z-index: 100;
 }
 
 .car {

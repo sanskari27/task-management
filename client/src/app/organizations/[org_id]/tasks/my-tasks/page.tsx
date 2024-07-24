@@ -1,3 +1,4 @@
+import Loading from '@/components/elements/loading';
 import SearchAndFilters, { DateFilters } from '@/components/elements/search-and-filters';
 import DataGrid from '@/components/elements/task-data/data-grid';
 import TasksService from '@/services/tasks.service';
