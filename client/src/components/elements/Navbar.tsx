@@ -26,6 +26,10 @@ export default function Navbar({ params }: { params: string }) {
 				e.preventDefault();
 				window.location.href = `/organizations/${params}/tasks/create`;
 			}
+			if (e.key === 'j' && e.metaKey) {
+				e.preventDefault();
+				window.location.href = `/organizations/${params}/tasks/my-tasks`;
+			}
 		}
 
 		document.addEventListener('keydown', handleKeyDown);
