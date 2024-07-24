@@ -1,6 +1,9 @@
 'use client';
+import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
-import { ListFilter } from 'lucide-react';
+import { CalendarIcon } from '@radix-ui/react-icons';
+import { format } from 'date-fns';
+import { ListFilter, MoveRight } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import Each from '../containers/each';
@@ -8,6 +11,7 @@ import Show from '../containers/show';
 import { useEmployees } from '../context/employees';
 import { useOrganizationDetails } from '../context/organization-details';
 import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Badge } from '../ui/badge';
 import { Button, buttonVariants } from '../ui/button';
 import {
 	Dialog,
@@ -18,6 +22,7 @@ import {
 	DialogTrigger,
 } from '../ui/dialog';
 import { Input } from '../ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { SearchBar } from '../ui/searchbar';
 
 export default function SearchAndFilters({
@@ -160,10 +165,7 @@ export default function SearchAndFilters({
 		<div className='flex justify-end items-center gap-3'>
 			<div className='min-w-[300px] md:min-w-[450px] '>
 				<SearchBar
-					placeholders={[
-						'Search by task name',
-						'Search by task description',
-					]}
+					placeholders={['Search by task name', 'Search by task description']}
 					onSubmit={handleSearch}
 				/>
 			</div>
@@ -255,6 +257,252 @@ export default function SearchAndFilters({
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+		</div>
+	);
+}
+
+export function DateFilters() {
+	const router = useRouter();
+	const [selectedTag, setTag] = useState('All Time');
+
+	const [startDate, setStartDate] = useState<Date>();
+	const [endDate, setEndDate] = useState<Date>();
+
+	function applyFilters(start_date: string, end_date: string) {
+		const url = new URL((window as any).location);
+
+		if (start_date === '' && end_date === '') {
+			url.searchParams.delete('start_date');
+			url.searchParams.delete('end_date');
+		} else {
+			url.searchParams.set('start_date', start_date);
+			url.searchParams.set('end_date', end_date);
+		}
+
+		router.push(url.toString());
+	}
+
+	function setSelectedTag(tag: string) {
+		setTag(tag);
+		const now = new Date();
+		let start_date = new Date(now);
+		let end_date = new Date(now);
+
+		switch (tag) {
+			case 'All Time':
+				applyFilters('', '');
+				return;
+			case 'Today':
+				start_date.setHours(0, 0, 0, 0);
+				end_date.setHours(23, 59, 59, 999);
+				break;
+			case 'Yesterday':
+				start_date.setDate(start_date.getDate() - 1);
+				start_date.setHours(0, 0, 0, 0);
+				end_date = new Date(start_date);
+				end_date.setHours(23, 59, 59, 999);
+				break;
+			case 'This Week':
+				start_date.setDate(start_date.getDate() - start_date.getDay());
+				start_date.setHours(0, 0, 0, 0);
+				end_date = new Date(start_date);
+				end_date.setDate(end_date.getDate() + 6);
+				end_date.setHours(23, 59, 59, 999);
+				break;
+			case 'Last Week':
+				start_date.setDate(start_date.getDate() - start_date.getDay() - 7);
+				start_date.setHours(0, 0, 0, 0);
+				end_date = new Date(start_date);
+				end_date.setDate(end_date.getDate() + 6);
+				end_date.setHours(23, 59, 59, 999);
+				break;
+			case 'Next Week':
+				start_date.setDate(start_date.getDate() - start_date.getDay() + 7);
+				start_date.setHours(0, 0, 0, 0);
+				end_date = new Date(start_date);
+				end_date.setDate(end_date.getDate() + 6);
+				end_date.setHours(23, 59, 59, 999);
+				break;
+			case 'This Month':
+				start_date.setDate(1);
+				start_date.setHours(0, 0, 0, 0);
+				end_date = new Date(
+					start_date.getFullYear(),
+					start_date.getMonth() + 1,
+					0,
+					23,
+					59,
+					59,
+					999
+				);
+				break;
+			case 'Last Month':
+				start_date = new Date(start_date.getFullYear(), start_date.getMonth() - 1, 1, 0, 0, 0, 0);
+				end_date = new Date(
+					start_date.getFullYear(),
+					start_date.getMonth() + 1,
+					0,
+					23,
+					59,
+					59,
+					999
+				);
+				break;
+			case 'Next Month':
+				start_date = new Date(start_date.getFullYear(), start_date.getMonth() + 1, 1, 0, 0, 0, 0);
+				end_date = new Date(
+					start_date.getFullYear(),
+					start_date.getMonth() + 1,
+					0,
+					23,
+					59,
+					59,
+					999
+				);
+				break;
+			default:
+				return;
+		}
+		setStartDate(start_date);
+		setEndDate(end_date);
+		applyFilters(start_date.toISOString(), end_date.toISOString());
+	}
+
+	function Chip({
+		text,
+		isActive,
+		setSelectedTag,
+	}: {
+		text: string;
+		isActive: boolean;
+		setSelectedTag: (text: string) => void;
+	}) {
+		return (
+			<Badge
+				variant='outline'
+				className={cn(
+					'px-4 py-2 cursor-pointer select-none',
+					isActive && 'bg-primary text-primary-foreground'
+				)}
+				onClick={() => setSelectedTag(text)}
+			>
+				{text}
+			</Badge>
+		);
+	}
+
+	return (
+		<div className='max-w-sm  md:max-w-lg lg:max-w-screen-2xl mx-auto'>
+			<div className='flex flex-wrap justify-center gap-3'>
+				<Chip
+					text='All Time'
+					isActive={selectedTag === 'All Time'}
+					setSelectedTag={setSelectedTag}
+				/>
+				<Chip text='Today' isActive={selectedTag === 'Today'} setSelectedTag={setSelectedTag} />
+				<Chip
+					text='Yesterday'
+					isActive={selectedTag === 'Yesterday'}
+					setSelectedTag={setSelectedTag}
+				/>
+				<Chip
+					text='This Week'
+					isActive={selectedTag === 'This Week'}
+					setSelectedTag={setSelectedTag}
+				/>
+				<Chip
+					text='Last Week'
+					isActive={selectedTag === 'Last Week'}
+					setSelectedTag={setSelectedTag}
+				/>
+				<Chip
+					text='Next Week'
+					isActive={selectedTag === 'Next Week'}
+					setSelectedTag={setSelectedTag}
+				/>
+				<Chip
+					text='This Month'
+					isActive={selectedTag === 'This Month'}
+					setSelectedTag={setSelectedTag}
+				/>
+				<Chip
+					text='Last Month'
+					isActive={selectedTag === 'Last Month'}
+					setSelectedTag={setSelectedTag}
+				/>
+				<Chip
+					text='Next Month'
+					isActive={selectedTag === 'Next Month'}
+					setSelectedTag={setSelectedTag}
+				/>
+				<Chip text='Custom' isActive={selectedTag === 'Custom'} setSelectedTag={setSelectedTag} />
+			</div>
+			<Show>
+				<Show.When condition={selectedTag === 'Custom'}>
+					<div className='flex justify-center gap-3 mt-3 items-center'>
+						<div>
+							<Popover>
+								<PopoverTrigger asChild>
+									<Button
+										variant={'outline'}
+										className={cn(
+											'w-[240px] justify-start text-left font-normal',
+											!startDate && 'text-muted-foreground'
+										)}
+									>
+										<CalendarIcon className='mr-2 h-4 w-4' />
+										{startDate ? format(startDate, 'PPP') : <span>Pick start date</span>}
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent className='w-auto p-0' align='start'>
+									<Calendar
+										mode='single'
+										selected={startDate}
+										onSelect={setStartDate}
+										initialFocus
+									/>
+								</PopoverContent>
+							</Popover>
+						</div>
+						<span>
+							<MoveRight />
+						</span>
+						<div>
+							<Popover>
+								<PopoverTrigger asChild>
+									<Button
+										variant={'outline'}
+										className={cn(
+											'w-[240px] justify-start text-left font-normal',
+											!endDate && 'text-muted-foreground'
+										)}
+									>
+										<CalendarIcon className='mr-2 h-4 w-4' />
+										{endDate ? format(endDate, 'PPP') : <span>Pick end date</span>}
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent className='w-auto p-0' align='start'>
+									<Calendar mode='single' selected={endDate} onSelect={setEndDate} initialFocus />
+								</PopoverContent>
+							</Popover>
+						</div>
+						<div>
+							<Button
+								variant={'default'}
+								className={cn(
+									' justify-start text-left font-normal',
+									(!startDate || !endDate) && 'text-muted-foreground'
+								)}
+								onClick={() =>
+									applyFilters(startDate?.toISOString() || '', endDate?.toISOString() || '')
+								}
+							>
+								Apply
+							</Button>
+						</div>
+					</div>
+				</Show.When>
+			</Show>
 		</div>
 	);
 }

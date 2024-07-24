@@ -1,4 +1,4 @@
-import SearchAndFilters from '@/components/elements/search-and-filters';
+import SearchAndFilters, { DateFilters } from '@/components/elements/search-and-filters';
 import TasksService from '@/services/tasks.service';
 import DataGrid from './data-grid';
 
@@ -28,6 +28,9 @@ export default async function MyTasks({
 				<div className='min-w-[50%] '>
 					<SearchAndFilters show_assigned_to={false} />
 				</div>
+			</div>
+			<div className='mt-3'>
+				<DateFilters />
 			</div>
 
 			<DataGrid
