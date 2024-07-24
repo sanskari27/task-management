@@ -1,8 +1,8 @@
 'use client';
 import { CircleUserRound } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import {
 	Menubar,
 	MenubarContent,
@@ -90,13 +90,10 @@ export default function Navbar({ params }: { params: string }) {
 			<div className='flex-1' />
 			<MenubarMenu>
 				<MenubarTrigger>
-					<Image
-						src='/profile.png'
-						width={40}
-						height={40}
-						className='rounded-full'
-						alt='settings'
-					/>
+					<Avatar>
+						<AvatarImage src='/profile.png' alt='settings' />
+						<AvatarFallback>P</AvatarFallback>
+					</Avatar>
 				</MenubarTrigger>
 				<MenubarContent>
 					<MenubarItem>
