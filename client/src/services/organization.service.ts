@@ -48,6 +48,17 @@ export default class OrganizationService {
 		}
 	}
 
+	static async updateCategories(id: string, categories: string[]) {
+		try {
+			await api.post(`/organization/${id}/categories`, {
+				categories,
+			});
+			return true;
+		} catch (e) {
+			return false;
+		}
+	}
+
 	static async employeeList(
 		organizationId: string,
 		opts?: { managed: boolean }

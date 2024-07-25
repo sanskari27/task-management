@@ -15,8 +15,8 @@ export type OrganizationDetailsType = {
 		state: string;
 		country: string;
 		zip: string;
-		_id: string;
 	};
+	is_owner: boolean;
 	categories: string[];
 };
 
@@ -33,9 +33,9 @@ const OrganizationDetailsContext = React.createContext<OrganizationDetailsType>(
 		state: '',
 		country: '',
 		zip: '',
-		_id: '',
 	},
 	categories: [],
+	is_owner: false,
 });
 
 export function OrganizationDetailsProvider({
