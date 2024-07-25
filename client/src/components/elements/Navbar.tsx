@@ -61,7 +61,7 @@ export default function Navbar({ org_id }: { org_id: string }) {
 				</MenubarContent>
 			</MenubarMenu>
 			<MenubarMenu>
-				<MenubarTrigger>Memebers</MenubarTrigger>
+				<MenubarTrigger>Members</MenubarTrigger>
 				<MenubarContent>
 					<MenubarItem>
 						<Link href={`/organizations/${org_id}/employees`}>Members</Link>
@@ -103,7 +103,7 @@ export default function Navbar({ org_id }: { org_id: string }) {
 			<div className='flex-1' />
 			<MenubarMenu>
 				<MenubarTrigger>
-					<Avatar>
+					<Avatar className='w-8 h-8 '>
 						<AvatarImage src='/profile.png' alt='settings' />
 						<AvatarFallback>P</AvatarFallback>
 					</Avatar>

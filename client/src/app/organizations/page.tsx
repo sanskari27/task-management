@@ -9,8 +9,13 @@ import { LinkPreview } from '@/components/ui/link-preview';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import AuthService from '@/services/auth.service';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+
+export const metadata: Metadata = {
+	title: 'Managed Organization',
+};
 
 export default async function Organizations() {
 	const success = await AuthService.isUserAuthenticated();

@@ -1,12 +1,6 @@
 'use client';
 
 import Centered from '@/components/containers/centered';
-import { taskDetailsSchema } from '@/schema/task';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-
 import Show from '@/components/containers/show';
 import LinkInputDialog, { LinkInputHandle } from '@/components/elements/LinkInputDialog';
 import ReminderInputDialog from '@/components/elements/ReminderInputDialog';
@@ -32,12 +26,16 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { taskDetailsSchema } from '@/schema/task';
 import MediaService from '@/services/media.service';
 import TasksService from '@/services/tasks.service';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
+import { z } from 'zod';
 
 const defaultValues = {
 	title: '',
@@ -107,7 +105,9 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 	async function handleSubmit(values: z.infer<typeof taskDetailsSchema>) {
 		setLoading(true);
 		values.due_date = new Date(`${due_date.toISOString().split('T')[0]}T${dueTime}`);
-		values.recurrence.start_date = new Date(`${startDate.toISOString().split('T')[0]}T${startTime}`);
+		values.recurrence.start_date = new Date(
+			`${startDate.toISOString().split('T')[0]}T${startTime}`
+		);
 		values.recurrence.end_date = new Date(`${endDate.toISOString().split('T')[0]}T${endTime}`);
 
 		if (files.length > 0) {
@@ -275,7 +275,9 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 									<Show>
 										<Show.When condition={isRecurring}>
 											<div className={`flex flex-col gap-4`}>
-												<div className={`flex md:flex-row flex-col gap-4 md:items-center justify-between`}>
+												<div
+													className={`flex md:flex-row flex-col gap-4 md:items-center justify-between`}
+												>
 													<Label htmlFor='frequency'>Frequency</Label>
 													<ToggleGroup
 														type='single'

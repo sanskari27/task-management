@@ -1,6 +1,11 @@
 import SearchAndFilters, { DateFilters } from '@/components/elements/search-and-filters';
 import DataGrid from '@/components/elements/task-data/data-grid';
 import TasksService from '@/services/tasks.service';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'Delegated Tasks',
+};
 
 export default async function DelegatedTasks({
 	params: { org_id },

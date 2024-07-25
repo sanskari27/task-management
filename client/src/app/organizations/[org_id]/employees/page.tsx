@@ -1,6 +1,11 @@
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { EmployeeDataTable } from './table';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'Members @ Organization',
+};
 
 export default async function EmployeesPage({ params }: { params: { org_id: string } }) {
 	return (

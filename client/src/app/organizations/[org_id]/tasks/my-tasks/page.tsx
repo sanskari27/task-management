@@ -1,7 +1,11 @@
-import Loading from '@/components/elements/loading';
 import SearchAndFilters, { DateFilters } from '@/components/elements/search-and-filters';
 import DataGrid from '@/components/elements/task-data/data-grid';
 import TasksService from '@/services/tasks.service';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'My Tasks',
+};
 
 export default async function MyTasks({
 	params: { org_id },
