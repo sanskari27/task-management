@@ -152,7 +152,15 @@ export function AddUpdate({ org_id, task_id }: { org_id: string; task_id: string
 									render={({ field }) => (
 										<FormItem>
 											<FormControl>
-												<Select {...field}>
+												<Select
+													value={field.value}
+													onValueChange={(value) =>
+														form.setValue(
+															'status',
+															value as 'in_progress' | 'pending' | 'completed'
+														)
+													}
+												>
 													<SelectTrigger className='w-[180px]'>
 														<SelectValue placeholder='Select status' />
 													</SelectTrigger>

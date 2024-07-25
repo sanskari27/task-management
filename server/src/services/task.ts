@@ -82,7 +82,10 @@ function processDocs(docs: any[]): {
 				email: doc.created_by.email as string,
 			},
 			status: doc.status,
-			isOverdue: DateUtils.getMoment(doc.due_date).isBefore(doc.completed_at),
+			isOverdue:
+				doc.status === 'completed'
+					? DateUtils.getMoment(doc.due_date).isBefore(doc.completed_at)
+					: DateUtils.getMoment(doc.due_date).isBefore(DateUtils.getMomentNow()),
 		};
 	});
 }
@@ -614,7 +617,10 @@ export default class TaskService {
 			files: doc.files,
 			voice_notes: doc.voice_notes,
 			status: doc.status,
-			isOverdue: DateUtils.getMoment(doc.due_date).isBefore(doc.completed_at),
+			isOverdue:
+				doc.status === 'completed'
+					? DateUtils.getMoment(doc.due_date).isBefore(doc.completed_at)
+					: DateUtils.getMoment(doc.due_date).isBefore(DateUtils.getMomentNow()),
 			assigned_to: doc.assigned_to.map((e: any) => {
 				return {
 					id: e._id,
