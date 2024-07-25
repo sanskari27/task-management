@@ -2,13 +2,13 @@ import Centered from '@/components/containers/centered';
 import PageLayout from '@/components/containers/page-layout';
 import { ManageCategoriesDialog } from '@/components/elements/manage_categories';
 import OrganizationService from '@/services/organization.service';
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import EditOrganizationForm from './form';
 
 export default async function EditOrganization({ params }: { params: { org_id: string } }) {
 	const details = await OrganizationService.getOrganizationDetails(params.org_id);
 	if (!details) {
-		redirect('/organizations');
+		notFound();
 	}
 
 	return (

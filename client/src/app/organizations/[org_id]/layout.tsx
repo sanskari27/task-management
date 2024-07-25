@@ -4,7 +4,7 @@ import { OrganizationDetailsProvider } from '@/components/context/organization-d
 import Navbar from '@/components/elements/Navbar';
 import OrganizationService from '@/services/organization.service';
 import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
 	title: 'Organization',
@@ -20,7 +20,7 @@ export default async function Layout({
 	const details = await OrganizationService.getOrganizationDetails(org_id);
 	const employees = await OrganizationService.employeeList(org_id);
 	if (!details || !employees) {
-		redirect('/organizations');
+		notFound();
 	}
 
 	return (
