@@ -6,15 +6,10 @@ import useManagedEmployees from '@/hooks/useManagedEmployees';
 import { generateOrganizationTree } from '@/lib/utils';
 import OrganizationService from '@/services/organization.service';
 import { Loader2 } from 'lucide-react';
-import { Metadata } from 'next';
 import { useRouter } from 'next/navigation';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Tree from 'react-d3-tree';
 import { toast } from 'react-hot-toast';
-
-export const metadata: Metadata = {
-	title: 'Restructure Organization Members',
-};
 
 export default function ManageEmployees({ params: { org_id } }: { params: { org_id: string } }) {
 	const targetRef = useRef<HTMLDivElement>(null);
