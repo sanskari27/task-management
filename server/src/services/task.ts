@@ -638,9 +638,11 @@ export default class TaskService {
 
 		const updatesDocs = await TaskUpdateDB.find({
 			task: task_id,
-		}).populate<{
-			added_by: IEmployee;
-		}>('added_by');
+		})
+			.populate<{
+				added_by: IEmployee;
+			}>('added_by')
+			.sort({ createdAt: -1 });
 
 		const updates = updatesDocs.map((doc) => {
 			return {

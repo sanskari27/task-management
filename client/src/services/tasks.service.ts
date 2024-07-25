@@ -158,4 +158,21 @@ export default class TasksService {
 			return null;
 		}
 	}
+
+	static async addUpdate(
+		org_id: string,
+		details: {
+			files: string[];
+			message: string;
+			links: string[];
+			voice_notes: string[];
+			taskId: string;
+		}
+	) {
+		await api.post(`/tasks/${details.taskId}/add-update`, details, {
+			headers: {
+				'X-Organization-ID': org_id,
+			},
+		});
+	}
 }

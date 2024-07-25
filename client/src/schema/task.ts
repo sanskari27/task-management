@@ -35,3 +35,11 @@ export const taskDetailsSchema = z.object({
 		})
 	),
 });
+
+export const taskUpdateSchema = z.object({
+	message: z.string(),
+	links: z.array(z.string()),
+	files: z.array(z.string()),
+	voice_notes: z.array(z.string()),
+	status: z.enum(['pending', 'completed', 'in_progress']),
+});

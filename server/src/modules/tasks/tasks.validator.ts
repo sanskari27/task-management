@@ -264,7 +264,7 @@ export function TaskUpdateValidator(req: Request, res: Response, next: NextFunct
 		links: z.array(z.string()).optional(),
 		files: z.array(z.string()).optional(),
 		voice_notes: z.array(z.string()).optional(),
-		status: z.enum(['pending', 'completed', 'in_progress']),
+		status: z.enum(['pending', 'completed', 'in_progress']).default('in_progress'),
 	});
 
 	const reqValidatorResult = reqValidator.safeParse(req.body);
