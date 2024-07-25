@@ -1,13 +1,8 @@
 'use client';
 import OrganizationService from '@/services/organization.service';
-import { Metadata } from 'next';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Tree from 'react-d3-tree';
 
-
-export const metadata: Metadata = {
-	title: 'Members Tree @ Organization',
-};
 export default function EmployeesTree({ params }: { params: { org_id: string } }) {
 	const [data, setData] = useState<any>(null);
 	const targetRef = useRef<HTMLDivElement>(null);
