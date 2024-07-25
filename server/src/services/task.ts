@@ -608,11 +608,13 @@ export default class TaskService {
 			description: doc.description,
 			category: doc.category,
 			priority: doc.priority,
-			due_date: doc.due_date,
+			due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
+			relative_date: DateUtils.getMoment(doc.due_date).fromNow(),
 			links: doc.links,
 			files: doc.files,
 			voice_notes: doc.voice_notes,
 			status: doc.status,
+			isOverdue: DateUtils.getMoment(doc.due_date).isBefore(doc.completed_at),
 			assigned_to: doc.assigned_to.map((e: any) => {
 				return {
 					id: e._id,
@@ -625,6 +627,13 @@ export default class TaskService {
 				name: doc.created_by.name,
 				email: doc.created_by.email,
 			},
+			isBatchTask: !!doc.batch as boolean,
+			...(doc.batch && {
+				batch: {
+					frequency: doc.batch.frequency as 'daily' | 'weekly' | 'monthly',
+					batch_task_id: doc.batch.batch_task_id as string,
+				},
+			}),
 		};
 
 		const updatesDocs = await TaskUpdateDB.find({

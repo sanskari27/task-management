@@ -76,7 +76,7 @@ export default async function Organizations() {
 													<div className='flex flex-col md:flex-row md:items-center gap-x-3 mt-2'>
 														<LinkPreview
 															url={org.domain}
-															className='font-medium md:font-semibold text-sm md:text-base bg-clip-text text-transparent bg-gradient-to-br from-purple-500 to-pink-500'
+															className='font-medium md:font-semibold text-sm md:text-base bg-clip-text text-transparent  dark:text-transparent bg-gradient-to-br from-purple-500 to-pink-500 dark:from-lime-300 dark:to-emerald-300'
 														>
 															{org.domain}
 														</LinkPreview>

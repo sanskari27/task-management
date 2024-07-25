@@ -11,7 +11,7 @@ export default interface ITask extends Document {
 	description: string;
 	category: string;
 	priority: 'low' | 'medium' | 'high';
-	due_date?: Date;
+	due_date: Date;
 	links: string[];
 	files: string[];
 	voice_notes: string[];

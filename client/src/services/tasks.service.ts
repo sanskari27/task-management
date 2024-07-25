@@ -102,4 +102,60 @@ export default class TasksService {
 			},
 		});
 	}
+
+	static async getTaskDetails(org_id: string, task_id: string) {
+		try {
+			const { data } = await api.get(`/tasks/${task_id}`, {
+				headers: {
+					'X-Organization-ID': org_id,
+				},
+			});
+			return data.task as {
+				details: {
+					id: string;
+					title: string;
+					description: string;
+					category: string;
+					priority: 'low' | 'medium' | 'high';
+					due_date: string;
+					relative_date: string;
+					links: string[];
+					files: string[];
+					voice_notes: string[];
+					isOverdue: boolean;
+					isBatchTask: boolean;
+					batch?: {
+						batch_task_id: string;
+						frequency: 'daily' | 'weekly' | 'monthly';
+					};
+					status: 'pending' | 'completed' | 'in_progress';
+					assigned_to: {
+						id: string;
+						name: string;
+						email: string;
+					}[];
+					created_by: {
+						id: string;
+						name: string;
+						email: string;
+					};
+				};
+				updates: {
+					id: string;
+					message: string;
+					links: string[];
+					files: string[];
+					voice_notes: string[];
+					status: string;
+					added_by: {
+						id: string;
+						name: string;
+						email: string;
+					};
+				}[];
+			};
+		} catch (error) {
+			return null;
+		}
+	}
 }
