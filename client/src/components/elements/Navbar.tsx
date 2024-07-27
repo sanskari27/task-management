@@ -74,7 +74,7 @@ export default function Navbar({ org_id }: { org_id: string }) {
 						<Link href={`/organizations/${org_id}/employees?invite=true`}>Invite Members</Link>
 					</MenubarItem>
 					<MenubarItem>
-						<Link href={`/organizations/${org_id}/employees??remove=true`}>Remove Members</Link>
+						<Link href={`/organizations/${org_id}/employees?remove=true`}>Remove Members</Link>
 					</MenubarItem>
 				</MenubarContent>
 			</MenubarMenu>

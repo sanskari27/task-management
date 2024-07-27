@@ -4,7 +4,7 @@ import { OrganizationDetailsProvider } from '@/components/context/organization-d
 import Navbar from '@/components/elements/Navbar';
 import OrganizationService from '@/services/organization.service';
 import { Metadata } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
 	title: 'Organization',

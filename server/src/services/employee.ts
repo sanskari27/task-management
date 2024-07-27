@@ -1,9 +1,7 @@
-import { getOrCache, removeFromCache } from '@/config/cache';
 import { EmployeeDB, IEmployee } from '@/db';
 import { AUTH_ERRORS, COMMON_ERRORS, CustomError } from '@/errors';
 import { IDType } from '@/types';
 import { filterUndefinedKeys, mongoArrayIncludes } from '@/utils/ExpressUtils';
-import { Types } from 'mongoose';
 import OrganizationService from './organization';
 import UserService from './user';
 
@@ -97,12 +95,6 @@ export default class EmployeeService {
 				can_let_others_create: opts.can_let_others_create,
 			});
 
-			this.allEmployeesInOrganization().then((employees) => {
-				employees.forEach((emp) => {
-					removeFromCache(`managed_employees_${emp._e_id}`);
-				});
-			});
-
 			return service;
 		} catch (e) {
 			throw new CustomError(COMMON_ERRORS.ALREADY_EXISTS);
@@ -120,22 +112,24 @@ export default class EmployeeService {
 
 	async removeFromOrganization(emp_id: IDType) {
 		const managedEmployees = await EmployeeService.managedEmployees(this._e_id);
-		managedEmployees.push(this._e_id);
 
-		if (!mongoArrayIncludes(managedEmployees, emp_id)) {
+		if (!mongoArrayIncludes([...managedEmployees, this._e_id], emp_id)) {
 			throw new CustomError(AUTH_ERRORS.PERMISSION_DENIED);
 		}
 
-		await EmployeeDB.deleteOne({
+		const emp = await EmployeeDB.findOneAndDelete({
 			organization: this._o_id,
 			_id: emp_id,
 		});
 
-		this.allEmployeesInOrganization().then((employees) => {
-			employees.forEach((emp) => {
-				removeFromCache(`managed_employees_${emp._e_id}`);
-			});
-		});
+		if (!emp) {
+			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		for (const emp_id of managedEmployees) {
+			this.reconfigurePosition({ emp_id, parent: emp.parent });
+		}
+
 		OrganizationService.deleteOrganizationByOwnerID(this._o_id, emp_id);
 	}
 
@@ -163,11 +157,6 @@ export default class EmployeeService {
 			_id: emp._id,
 		});
 
-		this.allEmployeesInOrganization().then((employees) => {
-			employees.forEach((emp) => {
-				removeFromCache(`managed_employees_${emp._e_id}`);
-			});
-		});
 		OrganizationService.deleteOrganizationByOwnerID(this._o_id, emp._id);
 	}
 
@@ -259,20 +248,16 @@ export default class EmployeeService {
 	}
 
 	static async managedEmployees(emp_id: IDType) {
-		const list = await getOrCache(`managed_employees_${emp_id}`, async () => {
-			const employees = await EmployeeDB.find({
-				parent: emp_id,
-			});
-			const employees_id = employees.map((emp) => emp._id);
-
-			for (const emp of employees) {
-				const sub_employees = await EmployeeService.managedEmployees(emp._id);
-				employees_id.push(...sub_employees);
-			}
-
-			return employees_id;
+		const employees = await EmployeeDB.find({
+			parent: emp_id,
 		});
+		const employees_id = employees.map((emp) => emp._id);
 
-		return list.map((emp_id) => (typeof emp_id === 'string' ? new Types.ObjectId(emp_id) : emp_id));
+		for (const emp of employees) {
+			const sub_employees = await EmployeeService.managedEmployees(emp._id);
+			employees_id.push(...sub_employees);
+		}
+
+		return employees_id;
 	}
 }

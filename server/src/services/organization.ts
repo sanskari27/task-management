@@ -1,4 +1,3 @@
-import { removeFromCache } from '@/config/cache';
 import { EmployeeDB, IOrganization, OrganizationDB } from '@/db';
 import { COMMON_ERRORS, CustomError } from '@/errors';
 import { IDType } from '@/types';
@@ -103,14 +102,24 @@ export default class OrganizationService {
 			});
 		});
 
+		const noParentEmployees = [] as typeof root;
+
 		details.forEach((item) => {
 			const { employee_id, parent_id } = item;
 			const node = idMap.get(employee_id.toString());
 			if (parent_id) {
-				idMap.get(parent_id.toString()).children.push(node);
+				if (idMap.has(parent_id.toString())) {
+					idMap.get(parent_id.toString()).children.push(node);
+				} else {
+					noParentEmployees.push(node);
+				}
 			} else {
 				root.push(node);
 			}
+		});
+
+		noParentEmployees.forEach((node) => {
+			root[0].children.push(node);
 		});
 
 		return {
@@ -167,16 +176,9 @@ export default class OrganizationService {
 			owner: owner_id,
 		});
 		if (result.deletedCount > 0) {
-			const employees = await EmployeeDB.find({
-				organization: org_id,
-			});
-			const employees_id = employees.map((emp) => emp._id);
 			await EmployeeDB.deleteMany({
 				organization: org_id,
 			});
-			for (const emp_id of employees_id) {
-				removeFromCache(`managed_employees_${emp_id}`);
-			}
 		}
 	}
 }

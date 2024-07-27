@@ -21,10 +21,13 @@ export default async function Tasks({
 		assigned_to: string[];
 	};
 }) {
+	console.log('org_id', org_id);
+
 	const tasks = await TasksService.getAllTasks(org_id, searchParams);
 	let notStarted = tasks.filter((task) => task.status === 'pending');
 	let inProgress = tasks.filter((task) => task.status === 'in_progress');
 	let completed = tasks.filter((task) => task.status === 'completed');
+	console.log('task_pending', notStarted.length);
 
 	return (
 		<section className='mx-[5%] md:mx-[7%] mt-3'>
