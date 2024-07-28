@@ -26,8 +26,10 @@ export type UpdatePasswordValidationResult = {
 	keep_logged_in: boolean;
 };
 
-export type GoogleLoginValidationResult = {
-	token: string;
+export type UpdateAccountValidationResult = {
+	email: string;
+	name: string;
+	phone: string;
 };
 
 export async function LoginAccountValidator(req: Request, res: Response, next: NextFunction) {
@@ -142,9 +144,11 @@ export async function UpdatePasswordValidator(req: Request, res: Response, next:
 	);
 }
 
-export async function GoogleLoginValidator(req: Request, res: Response, next: NextFunction) {
+export async function UpdateAccountValidator(req: Request, res: Response, next: NextFunction) {
 	const reqValidator = z.object({
-		token: z.string(),
+		name: z.string(),
+		phone: z.string(),
+		email: z.string().email(),
 	});
 
 	const reqValidatorResult = reqValidator.safeParse(req.body);

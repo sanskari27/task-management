@@ -30,7 +30,7 @@ export async function sendEmail(
 	});
 
 	if (error) {
-		Logger.error('Resend Error', error, { ...error, details: 'Error Sending reset message' });
+		Logger.error('Resend Error', error, { ...error, details: 'Error Sending email message' });
 		return false;
 	}
 	return true;

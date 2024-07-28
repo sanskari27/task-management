@@ -17,6 +17,10 @@ export const RESEND_API_KEY = process.env.RESEND_API_KEY ?? '';
 export const META_VERIFY_STRING = process.env.META_VERIFY_STRING ?? '';
 export const META_VERIFY_USER_STRING = process.env.META_VERIFY_USER_STRING ?? '';
 
+export const META_AUTH_TOKEN = process.env.META_AUTH_TOKEN ?? '';
+export const META_WA_ID = process.env.META_WA_ID ?? '';
+export const META_PHONE_ID = process.env.META_PHONE_ID ?? '';
+
 export const RAZORPAY_API_KEY = process.env.RAZORPAY_API_KEY ?? '';
 export const RAZORPAY_API_SECRET = process.env.RAZORPAY_API_SECRET ?? '';
 export const RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET ?? '';

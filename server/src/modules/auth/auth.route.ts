@@ -5,6 +5,7 @@ import {
 	LoginAccountValidator,
 	RegisterAccountValidator,
 	ResetPasswordValidator,
+	UpdateAccountValidator,
 	UpdatePasswordValidator,
 } from './auth.validator';
 
@@ -12,7 +13,11 @@ const router = express.Router();
 
 router.route('/validate-auth').all(VerifySession).get(Controller.validateAuth);
 
-router.route('/details').all(VerifySession).get(Controller.details);
+router
+	.route('/details')
+	.all(VerifySession)
+	.get(Controller.details)
+	.patch(UpdateAccountValidator, Controller.updateDetails);
 
 router.route('/login').all(LoginAccountValidator).post(Controller.login);
 

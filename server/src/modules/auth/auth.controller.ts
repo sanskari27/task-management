@@ -11,6 +11,7 @@ import {
 	LoginValidationResult,
 	RegisterValidationResult,
 	ResetPasswordValidationResult,
+	UpdateAccountValidationResult,
 	UpdatePasswordValidationResult,
 } from './auth.validator';
 
@@ -200,6 +201,27 @@ async function details(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function updateDetails(req: Request, res: Response, next: NextFunction) {
+	const { user } = req.locals;
+	const data = req.locals.data as UpdateAccountValidationResult;
+	const details = await user.updateDetails(data);
+
+	try {
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				account: details,
+			},
+		});
+	} catch (err) {
+		if (err instanceof CustomError) {
+			return next(err);
+		}
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+	}
+}
+
 async function logout(req: Request, res: Response, next: NextFunction) {
 	try {
 		const _refresh_id = req.cookies[Cookie.Refresh];
@@ -219,6 +241,7 @@ async function logout(req: Request, res: Response, next: NextFunction) {
 const Controller = {
 	validateAuth,
 	login,
+	updateDetails,
 	forgotPassword,
 	resetPassword,
 	register,

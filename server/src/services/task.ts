@@ -7,6 +7,7 @@ import { IDType } from '@/types';
 import DateUtils from '@/utils/DateUtils';
 import { filterUndefinedKeys, mongoArrayIncludes } from '@/utils/ExpressUtils';
 import EmployeeService from './employee';
+import ReminderService from './reminder';
 import UserService from './user';
 
 type CreateTaskType = {
@@ -112,8 +113,8 @@ export default class TaskService {
 
 		const created_by = await this._employeeService.getUserService();
 		data.assigned_to.forEach(async (e_id) => {
-			const userService = await(await EmployeeService.getServiceByID(e_id)).getUserService();
-			const { name, email } = userService.getDetails();
+			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
+			const { name, email, phone } = userService.getDetails();
 
 			sendEmail(email, {
 				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
@@ -121,11 +122,50 @@ export default class TaskService {
 					name,
 					title: doc.title,
 					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
-					status: doc.status,
-					priority: doc.priority,
+					status: doc.status[0].toUpperCase() + doc.status.slice(1),
+					priority: doc.priority.toUpperCase(),
 					message: doc.description,
 					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
 				}),
+			});
+
+			data.reminders.map((reminder) => {
+				ReminderService.createReminder({
+					task_id: doc._id,
+					reminderAt: DateUtils.getMoment(doc.due_date)
+						.subtract(reminder.before, reminder.before_type)
+						.toDate(),
+					reminderType: reminder.reminder_type,
+					sentTo: reminder.reminder_type === 'whatsapp' ? phone : email,
+					...(reminder.reminder_type === 'whatsapp' && {
+						whatsapp: {
+							template_name: 'task_wautopilot_reminder',
+							variables: [
+								name,
+								doc.description,
+								doc.category,
+								doc.title,
+								DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
+								doc.priority.toUpperCase(),
+							],
+							link: `/${this._o_id}/tasks/${doc._id}`,
+						},
+					}),
+					...(reminder.reminder_type === 'email' && {
+						email: {
+							subject: EmailSubjects.TaskReminder,
+							body: EmailTemplates.taskReminder({
+								name,
+								title: doc.title,
+								due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
+								status: doc.status[0].toUpperCase() + doc.status.slice(1),
+								priority: doc.priority.toUpperCase(),
+								message: doc.description,
+								task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
+							}),
+						},
+					}),
+				});
 			});
 		});
 
@@ -568,8 +608,8 @@ export default class TaskService {
 					name,
 					title: doc.title,
 					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
-					status: doc.status,
-					priority: doc.priority,
+					status: doc.status[0].toUpperCase() + doc.status.slice(1),
+					priority: doc.priority.toUpperCase(),
 					message: '',
 					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
 				}),
@@ -629,8 +669,8 @@ export default class TaskService {
 					name,
 					title: doc.title,
 					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
-					status: details.status,
-					priority: doc.priority,
+					status: doc.status[0].toUpperCase() + doc.status.slice(1),
+					priority: doc.priority.toUpperCase(),
 					message: details.message,
 					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
 				}),

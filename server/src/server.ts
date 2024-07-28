@@ -12,7 +12,6 @@ import SocketServer from './socket';
 
 //  ------------------------- Setup Variables
 const app = express();
-
 configServer(app);
 connectDB(DATABASE_URL)
 	.then(async () => {

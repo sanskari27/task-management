@@ -4,16 +4,14 @@ export default interface IReminder extends Document {
 	task: Types.ObjectId;
 	reminderAt: Date;
 	reminderType: 'email' | 'whatsapp';
-	sentTo: Types.ObjectId[];
-	whatsapp: {
-		template_id: string;
+	sentTo: string;
+	whatsapp?: {
 		template_name: string;
 		variables: string[];
-        link: string;
+		link: string;
 	};
-	email: {
+	email?: {
 		subject: string;
 		body: string;
 	};
 }
- 
