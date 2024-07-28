@@ -2,7 +2,6 @@ import type { NextRequest } from 'next/server';
 import AuthService from './services/auth.service';
 
 export async function middleware(request: NextRequest) {
-	const currentUser = request.cookies.toString();
 	const isAuthenticated = await AuthService.isUserAuthenticated();
 	const pathname = request.nextUrl.pathname;
 
