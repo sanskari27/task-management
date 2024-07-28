@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 export default async function EditOrganization({ params }: { params: { org_id: string } }) {
 	const details = await OrganizationService.getOrganizationDetails(params.org_id);
 	if (!details) {
-		console.log('Organization not found');
 		notFound();
 	}
 

@@ -62,7 +62,6 @@ export default function ComboboxWeekdays({
 											}
 										}}
 										className={cn('cursor-pointer z-10')}
-										onClick={() => console.log('clicked')}
 									>
 										<Check
 											className={cn(

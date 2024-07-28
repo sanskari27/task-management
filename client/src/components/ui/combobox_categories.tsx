@@ -61,7 +61,6 @@ export default function ComboboxCategories({
 											onChange(currentValue);
 										}}
 										className={cn('cursor-pointer z-10')}
-										onClick={() => console.log('clicked')}
 									>
 										<Check
 											className={cn(

@@ -263,7 +263,7 @@ export default function SearchAndFilters({
 
 export function DateFilters() {
 	const router = useRouter();
-	const [selectedTag, setTag] = useState('All Time');
+	const [selectedTag, setTag] = useState('Today');
 
 	const [startDate, setStartDate] = useState<Date>();
 	const [endDate, setEndDate] = useState<Date>();
@@ -394,11 +394,6 @@ export function DateFilters() {
 	return (
 		<div className='max-w-sm  md:max-w-lg lg:max-w-screen-2xl mx-auto'>
 			<div className='flex flex-wrap justify-center gap-3'>
-				<Chip
-					text='All Time'
-					isActive={selectedTag === 'All Time'}
-					setSelectedTag={setSelectedTag}
-				/>
 				<Chip text='Today' isActive={selectedTag === 'Today'} setSelectedTag={setSelectedTag} />
 				<Chip
 					text='Yesterday'
@@ -433,6 +428,11 @@ export function DateFilters() {
 				<Chip
 					text='Next Month'
 					isActive={selectedTag === 'Next Month'}
+					setSelectedTag={setSelectedTag}
+				/>
+				<Chip
+					text='All Time'
+					isActive={selectedTag === 'All Time'}
 					setSelectedTag={setSelectedTag}
 				/>
 				<Chip text='Custom' isActive={selectedTag === 'Custom'} setSelectedTag={setSelectedTag} />

@@ -2,35 +2,23 @@ import Centered from '@/components/containers/centered';
 import Each from '@/components/containers/each';
 import PageLayout from '@/components/containers/page-layout';
 import Show from '@/components/containers/show';
-import { LogoutButton } from '@/components/elements/logout-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { LinkPreview } from '@/components/ui/link-preview';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
 import AuthService from '@/services/auth.service';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
 	title: 'Managed Organization',
 };
 
 export default async function Organizations() {
-	const success = await AuthService.isUserAuthenticated();
-
-	if (!success) {
-		redirect('/auth/login?callback=/organizations');
-	}
 	const details = await AuthService.details();
 
 	return (
 		<>
-			<nav className='flex justify-end mx-[1rem] sticky top-1 max-w-screen backdrop-blur-sm bg-transparent p-[1rem] justify-self-center gap-1'>
-				<ThemeToggle hideText />
-				<LogoutButton as='button' />
-			</nav>
 			<PageLayout className='lg:w-3/4 mx-auto w-full p-3 mt-[3rem]'>
 				<div className='flex flex-col text-center lg:text-left gap-4 lg:flex-row justify-between items-center'>
 					<div>

@@ -40,8 +40,6 @@ export default function EditProfile({
 	});
 
 	async function formSubmit(values: z.infer<typeof profileSchema>) {
-		console.log('called');
-
 		setLoading(true);
 		const success = await AuthService.updateProfile(values);
 		setLoading(false);

@@ -66,7 +66,6 @@ export default function OrganizationDetailsForm({
 			}
 			values.logo = name;
 		}
-		console.log(values);
 		onSubmit(values);
 	}
 

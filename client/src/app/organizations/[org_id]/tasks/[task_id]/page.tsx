@@ -41,7 +41,6 @@ export default async function TaskPage({
 }) {
 	const task = await TasksService.getTaskDetails(org_id, task_id);
 	if (!task) {
-		console.log('Task not found');
 		notFound();
 	}
 

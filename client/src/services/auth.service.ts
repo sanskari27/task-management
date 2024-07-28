@@ -108,7 +108,7 @@ export default class AuthService {
 	}> {
 		try {
 			const { data } = await api.patch('/auth/details', {
-				name: `${values.firstName} ${values.lastName}`,
+				name: `${values.firstName} ${values.lastName}`.trim(),
 				email: values.email,
 				phone: values.phone,
 			});

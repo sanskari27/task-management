@@ -133,7 +133,6 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 			}
 		}
 		setLoading(false);
-		console.log(values);
 		toast.promise(TasksService.createTask(org_id, values), {
 			loading: 'Assigning task...',
 			success: () => {
@@ -148,12 +147,7 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 		<Centered className='mt-[15%] md:mt-0'>
 			<Card className='mx-auto w-[90%] md:max-w-[80%] lg:max-w-[60%]'>
 				<CardHeader>
-					<CardTitle
-						className='text-xl text-center'
-						onClick={() => console.log(form.watch('files'))}
-					>
-						Task Details
-					</CardTitle>
+					<CardTitle className='text-xl text-center'>Task Details</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Form {...form}>
@@ -217,7 +211,6 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 												checked={assign_separately}
 												onCheckedChange={(value) => {
 													form.setValue('assign_separately', value);
-													console.log(assign_separately);
 												}}
 											/>
 										</div>
