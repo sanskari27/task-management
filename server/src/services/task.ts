@@ -3,6 +3,7 @@ import { IEmployee, TaskDB } from '@/db';
 import { EmployeeDB, TaskUpdateDB } from '@/db/repo';
 import { COMMON_ERRORS, CustomError } from '@/errors';
 import { EmailSubjects, EmailTemplates, sendEmail } from '@/provider/email';
+import { sendWhatsapp, WhatsappTemplates } from '@/provider/whatsapp';
 import { IDType } from '@/types';
 import DateUtils from '@/utils/DateUtils';
 import { filterUndefinedKeys, mongoArrayIncludes } from '@/utils/ExpressUtils';
@@ -600,7 +601,7 @@ export default class TaskService {
 		doc.assigned_to.forEach(async (u_id) => {
 			console.log('u_id', u_id);
 			const userService = await UserService.getUserService(u_id);
-			const { name, email } = userService.getDetails();
+			const { name, email, phone } = userService.getDetails();
 
 			sendEmail(email, {
 				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
@@ -614,6 +615,22 @@ export default class TaskService {
 					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
 				}),
 			});
+			sendWhatsapp(
+				WhatsappTemplates.taskUpdate({
+					to: phone,
+					bodyParams: [
+						name,
+						created_by.getDetails().name,
+						status[0].toUpperCase() + status.slice(1),
+						'Task Status Updated',
+						doc.category,
+						doc.title,
+						DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
+						doc.priority.toUpperCase(),
+					],
+					link: `/${this._o_id}/tasks/${doc._id}`,
+				})
+			);
 		});
 
 		doc!.status = status;
@@ -661,7 +678,7 @@ export default class TaskService {
 		const created_by = await this._employeeService.getUserService();
 		doc.assigned_to.forEach(async (e_id) => {
 			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
-			const { name, email } = userService.getDetails();
+			const { name, email, phone } = userService.getDetails();
 
 			sendEmail(email, {
 				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
@@ -675,6 +692,22 @@ export default class TaskService {
 					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
 				}),
 			});
+			sendWhatsapp(
+				WhatsappTemplates.taskUpdate({
+					to: phone,
+					bodyParams: [
+						name,
+						created_by.getDetails().name,
+						status[0].toUpperCase() + status.slice(1),
+						'Task Status Updated',
+						doc.category,
+						doc.title,
+						DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
+						doc.priority.toUpperCase(),
+					],
+					link: `/${this._o_id}/tasks/${doc._id}`,
+				})
+			);
 		});
 	}
 
