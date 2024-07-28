@@ -86,7 +86,7 @@ export function ResetPassword() {
 									type='password'
 									{...register('confirmPassword', { required: true, minLength: 8 })}
 									onChange={(e) => {
-										setValue('password', e.target.value);
+										setValue('confirmPassword', e.target.value);
 										resetErrors();
 									}}
 									isInvalid={!!errors.password?.message}
