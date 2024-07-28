@@ -111,7 +111,7 @@ export default function (app: Express) {
 
 	createDir();
 
-	cron.schedule('*/2 * * * * *', () => {
+	cron.schedule('*/30 * * * * *', () => {
 		ReminderService.sendReminder();
 	});
 }

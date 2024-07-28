@@ -1,6 +1,6 @@
-import Logger from 'n23-logger';
 import { Resend } from 'resend';
 import { RESEND_API_KEY } from '../../config/const';
+import Logger from 'n23-logger';
 export { default as EmailTemplates } from './templates';
 
 const resend = new Resend(RESEND_API_KEY);
@@ -30,8 +30,6 @@ export async function sendEmail(
 	});
 
 	if (error) {
-		console.log(error);
-
 		Logger.error('Resend Error', error, { ...error, details: 'Error Sending email message' });
 		return false;
 	}

@@ -26,6 +26,7 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { joinDate } from '@/lib/utils';
 import { taskDetailsSchema } from '@/schema/task';
 import MediaService from '@/services/media.service';
 import TasksService from '@/services/tasks.service';
@@ -104,11 +105,9 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 
 	async function handleSubmit(values: z.infer<typeof taskDetailsSchema>) {
 		setLoading(true);
-		values.due_date = new Date(`${due_date.toISOString().split('T')[0]}T${dueTime}`);
-		values.recurrence.start_date = new Date(
-			`${startDate.toISOString().split('T')[0]}T${startTime}`
-		);
-		values.recurrence.end_date = new Date(`${endDate.toISOString().split('T')[0]}T${endTime}`);
+		values.due_date = joinDate(due_date, dueTime);
+		values.recurrence.start_date = joinDate(startDate, startTime);
+		values.recurrence.end_date = joinDate(endDate, endTime);
 
 		if (files.length > 0) {
 			const promises = files.map((file) => {

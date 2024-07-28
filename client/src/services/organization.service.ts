@@ -26,7 +26,8 @@ export default class OrganizationService {
 				is_owner: data.details.is_owner ?? false,
 			};
 		} catch (error) {
-			//ignore
+			console.log((error as any).response.data);
+			return null;
 		}
 	}
 
@@ -86,6 +87,8 @@ export default class OrganizationService {
 				};
 			});
 		} catch (error) {
+			console.log((error as any).response.data);
+
 			return null;
 		}
 	}

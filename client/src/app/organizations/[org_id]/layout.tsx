@@ -20,8 +20,6 @@ export default async function Layout({
 	const details = await OrganizationService.getOrganizationDetails(org_id);
 	const employees = await OrganizationService.employeeList(org_id);
 	if (!details || !employees) {
-		console.log('Organization not found');
-
 		notFound();
 	}
 

@@ -135,8 +135,6 @@ async function inviteToOrganization(req: Request, res: Response, next: NextFunct
 		if (err instanceof CustomError) {
 			return next(err);
 		}
-		console.log(err);
-
 		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
 	}
 }

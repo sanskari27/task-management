@@ -7,7 +7,7 @@ export default function taskCreate(details: { to: string; bodyParams: string[]; 
 		template: {
 			name: 'task_wautopilot_status_create',
 			language: {
-				code: 'en_US',
+				code: 'en',
 			},
 			components: [
 				{

@@ -48,3 +48,13 @@ export function generateOrganizationTree(employees: TEmployee[]) {
 		children: root[0].children,
 	};
 }
+
+export function joinDate(date: Date, time: string) {
+	// time is in GMT
+	const dateObj = new Date(date);
+	const timeArr = time.split(':');
+	dateObj.setHours(parseInt(timeArr[0], 10));
+	dateObj.setMinutes(parseInt(timeArr[1], 10));
+	dateObj.setSeconds(0);
+	return dateObj;
+}

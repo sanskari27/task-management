@@ -18,7 +18,7 @@ export async function sendWhatsapp(opts: any) {
 	} catch (err) {
 		if (axios.isAxiosError(err)) {
 			Logger.error('Whatsapp Error', err, {
-				...err.response,
+				...(err.response as any).data,
 				details: 'Error Sending whatsapp message',
 			});
 		} else {

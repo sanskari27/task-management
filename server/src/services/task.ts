@@ -116,7 +116,7 @@ export default class TaskService {
 		data.assigned_to.forEach(async (e_id) => {
 			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
 			const { name, email, phone } = userService.getDetails();
-
+			return;
 			sendEmail(email, {
 				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
 				html: EmailTemplates.taskCreated({
@@ -136,6 +136,7 @@ export default class TaskService {
 					bodyParams: [
 						name,
 						created_by.getDetails().name,
+						doc.status[0].toUpperCase() + doc.status.slice(1),
 						'Task Created',
 						doc.category,
 						doc.title,
@@ -615,7 +616,6 @@ export default class TaskService {
 
 		const created_by = await this._employeeService.getUserService();
 		doc.assigned_to.forEach(async (u_id) => {
-			console.log('u_id', u_id);
 			const userService = await UserService.getUserService(u_id);
 			const { name, email, phone } = userService.getDetails();
 
