@@ -225,12 +225,94 @@ export default async function TaskPage({
 						</div>
 					</div>
 				</div>
-				<div className='flex-1 flex flex-col gap-2  max-h-fit overflow-scroll'>
+				<div className='flex-1 flex flex-col gap-2 max-h-[80vh] custom-scrollbar overflow-hidden'>
 					<div className='flex justify-between items-end'>
 						<h3 className='text-xl font-semibold'>Task Updates</h3>
 						<span className='text-sm'>{updates.length} updates found</span>
 					</div>
-					<div className='flex flex-col gap-2 overflow-y-scroll'>
+					<div className='flex flex-col gap-2 overflow-y-scroll pr-2'>
+						<Each
+							items={updates}
+							render={(update) => (
+								<div className='flex flex-col gap-2 border border-dashed p-4 w-full  rounded-xl'>
+									<div className='flex'>
+										<ProfileHover {...update.added_by}>
+											<p className='inline-flex items-center gap-2 font-medium md:font-bold capitalize'>
+												<CircleUserRound size={16} strokeWidth={2.25} />
+												{update.added_by.name}
+											</p>
+										</ProfileHover>
+									</div>
+									<div>
+										<p>{update.message}</p>
+									</div>
+									<div hidden={update.links.length === 0}>
+										<Separator className='mb-2' />
+										<span className='font-semibold w-[80px] md:w-[150px] underline underline-offset-1'>
+											Links
+										</span>
+										<ul>
+											<Each
+												items={update.links}
+												render={(link) => (
+													<li>
+														<LinkPreview
+															url={link}
+															className='font-medium md:font-semibold text-sm md:text-base bg-clip-text text-transparent dark:text-transparent bg-gradient-to-br from-purple-500 to-pink-500 dark:from-lime-300 dark:to-emerald-300'
+														>
+															{link}
+														</LinkPreview>
+													</li>
+												)}
+											/>
+										</ul>
+									</div>
+									<div hidden={update.files.length === 0}>
+										<Separator className='mb-2' />
+										<span className='font-semibold w-[80px] md:w-[150px] underline underline-offset-1 '>
+											Files
+										</span>
+										<ul className='flex flex-col mt-2'>
+											<Each
+												items={update.files}
+												render={(file, index) => (
+													<li>
+														<a
+															href={`${process.env.NEXT_PUBLIC_API_URL}media/${file}`}
+															target='_blank'
+															rel='noreferrer'
+															className='inline-flex gap-2 items-center line-clamp-1'
+														>
+															{getComponentByMimeType(file)}
+															{`File ${index + 1}.${file.split('.').pop()}`}
+														</a>
+													</li>
+												)}
+											/>
+										</ul>
+									</div>
+									<div hidden={update.voice_notes.length === 0}>
+										<Separator className='mb-2' />
+										<span className='font-semibold w-[80px] md:w-[150px] underline underline-offset-1 '>
+											Voice Notes
+										</span>
+										<ul className='flex flex-col mt-2'>
+											<Each
+												items={update.voice_notes}
+												render={(file, index) => (
+													<li className='inline-flex gap-2 items-center'>
+														<AudioPlayer src={`${process.env.NEXT_PUBLIC_API_URL}media/${file}`} />
+
+														<AudioLines size={16} strokeWidth={2.25} />
+														{`Voice Note ${index + 1}`}
+													</li>
+												)}
+											/>
+										</ul>
+									</div>
+								</div>
+							)}
+						/>
 						<Each
 							items={updates}
 							render={(update) => (
