@@ -22,6 +22,7 @@ export function ResetPassword() {
 		handleSubmit,
 		register,
 		setError,
+		setValue,
 		clearErrors: resetErrors,
 		formState: { errors },
 	} = useForm({
@@ -68,18 +69,26 @@ export function ResetPassword() {
 							<div className='grid gap-2'>
 								<Label htmlFor='password'>New Password</Label>
 								<Input
-									type='new-password'
+									autoComplete='new-password'
+									type='password'
 									{...register('password', { required: true, minLength: 8 })}
-									onChange={() => resetErrors()}
+									onChange={(e) => {
+										setValue('password', e.target.value);
+										resetErrors();
+									}}
 									isInvalid={!!errors.password?.message}
 								/>
 							</div>
 							<div className='grid gap-2'>
 								<Label htmlFor='password'>Confirm Password</Label>
 								<Input
-									type='new-password'
+									autoComplete='new-password'
+									type='password'
 									{...register('confirmPassword', { required: true, minLength: 8 })}
-									onChange={() => resetErrors()}
+									onChange={(e) => {
+										setValue('password', e.target.value);
+										resetErrors();
+									}}
 									isInvalid={!!errors.password?.message}
 								/>
 								<span className='text-red-500 text-sm text-center'>{errors.password?.message}</span>
