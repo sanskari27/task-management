@@ -130,6 +130,22 @@ export default class TaskService {
 				}),
 			});
 
+			sendWhatsapp(
+				WhatsappTemplates.taskCreate({
+					to: phone,
+					bodyParams: [
+						name,
+						created_by.getDetails().name,
+						'Task Created',
+						doc.category,
+						doc.title,
+						DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
+						doc.priority.toUpperCase(),
+					],
+					link: `/${this._o_id}/tasks/${doc._id}`,
+				})
+			);
+
 			data.reminders.map((reminder) => {
 				ReminderService.createReminder({
 					task_id: doc._id,
