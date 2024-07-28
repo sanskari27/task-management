@@ -25,7 +25,7 @@ export default class ReminderService {
 	private constructor() {}
 
 	static async createReminder(details: ReminderDetails) {
-		if (DateUtils.getMomentNow().isAfter(details.reminderAt)) {
+		if (DateUtils.getMomentNow().isAfter(details.reminderAt) || !details.sentTo) {
 			return;
 		}
 		await ReminderDB.create({
