@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import IReminder from '../types/Reminder';
+import IReminder from '../types/reminder';
 import { TaskDB_name } from './Task';
 
 export const ReminderDB_name = 'Reminder';
