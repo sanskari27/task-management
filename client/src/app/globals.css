@@ -67,7 +67,7 @@
 		@apply bg-background text-foreground;
 	}
 	::-webkit-scrollbar {
-		@apply w-[0.4em];
+		@apply w-[0.2em];
 	}
 	::-webkit-scrollbar-button {
 		@apply h-0;
@@ -76,7 +76,7 @@
 		@apply bg-muted;
 	}
 	::-webkit-scrollbar-thumb {
-		@apply bg-foreground rounded-full w-[0.4em];
+		@apply bg-foreground rounded-full w-[0.2em];
 	}
 }
 
