@@ -697,7 +697,7 @@ export default class TaskService {
 			const { name, email, phone } = userService.getDetails();
 
 			sendEmail(email, {
-				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
+				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskUpdate}`,
 				html: EmailTemplates.taskUpdate({
 					name,
 					title: doc.title,
