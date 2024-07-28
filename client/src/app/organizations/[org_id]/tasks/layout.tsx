@@ -1,4 +1,6 @@
+import Loading from '@/components/elements/loading';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
 	title: 'Tasks',
@@ -9,5 +11,5 @@ export default async function Layout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return <>{children}</>;
+	return <Suspense fallback={<Loading />}>{children}</Suspense>;
 }

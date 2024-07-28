@@ -3,10 +3,10 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-	title: 'Restructure Organization Members',
+	title: 'My Tasks',
 };
 
-export default function EmployeesLayout({
+export default async function Layout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;

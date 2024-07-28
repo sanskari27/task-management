@@ -1,10 +1,12 @@
 import PageLayout from '@/components/containers/page-layout';
 import { EmployeesProvider } from '@/components/context/employees';
 import { OrganizationDetailsProvider } from '@/components/context/organization-details';
+import Loading from '@/components/elements/loading';
 import Navbar from '@/components/elements/Navbar';
 import OrganizationService from '@/services/organization.service';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
 	title: 'Organization',
@@ -25,13 +27,13 @@ export default async function Layout({
 	}
 
 	return (
-		<>
+		<Suspense fallback={<Loading />}>
 			<OrganizationDetailsProvider data={details}>
 				<EmployeesProvider data={employees}>
 					<Navbar org_id={org_id} />
 					<PageLayout className='w-screen h-screen'>{children}</PageLayout>
 				</EmployeesProvider>
 			</OrganizationDetailsProvider>
-		</>
+		</Suspense>
 	);
 }

@@ -1,6 +1,6 @@
-import { InviteDialog } from '@/components/elements/invite_dialog';
-import { RemoveDialog } from '@/components/elements/remove_dialog';
+import Loading from '@/components/elements/loading';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
 	title: 'Members Tree @ Organization',
@@ -11,11 +11,5 @@ export default function EmployeesLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return (
-		<>
-			{children}
-			<InviteDialog />
-			<RemoveDialog />
-		</>
-	);
+	return <Suspense fallback={<Loading />}>{children}</Suspense>;
 }
