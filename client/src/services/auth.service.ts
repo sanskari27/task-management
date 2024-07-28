@@ -97,6 +97,35 @@ export default class AuthService {
 			};
 		}
 	}
+
+	static async updateProfile(values: {
+		firstName: string;
+		lastName: string;
+		email: string;
+		phone: string;
+	}): Promise<{
+		account: { name: string; email: string; phone: string };
+	}> {
+		try {
+			const { data } = await api.patch('/auth/details', {
+				name: `${values.firstName} ${values.lastName}`,
+				email: values.email,
+				phone: values.phone,
+			});
+			return {
+				account: {
+					name: (data.account?.name as string) ?? '',
+					email: (data.account?.email as string) ?? '',
+					phone: (data.account?.phone as string) ?? '',
+				},
+			};
+		} catch (error) {
+			return {
+				account: { name: '', email: '', phone: '' },
+			};
+		}
+	}
+
 	static async logout() {
 		try {
 			const { data } = await api.post('/auth/logout');
