@@ -698,7 +698,7 @@ export default class TaskService {
 					bodyParams: [
 						name,
 						created_by.getDetails().name,
-						status[0].toUpperCase() + status.slice(1),
+						details.status[0].toUpperCase() + details.status.slice(1),
 						'Task Status Updated',
 						doc.category,
 						doc.title,
