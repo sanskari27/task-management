@@ -9,7 +9,6 @@ import DateUtils from '@/utils/DateUtils';
 import { filterUndefinedKeys, mongoArrayIncludes } from '@/utils/ExpressUtils';
 import EmployeeService from './employee';
 import ReminderService from './reminder';
-import UserService from './user';
 
 type CreateTaskType = {
 	assigned_to: IDType[];
@@ -122,7 +121,7 @@ export default class TaskService {
 					name,
 					title: doc.title,
 					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
-					status: doc.status[0].toUpperCase() + doc.status.slice(1),
+					status: doc.status.toUpperCase().split('_').join(' '),
 					priority: doc.priority.toUpperCase(),
 					message: doc.description,
 					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
@@ -175,7 +174,7 @@ export default class TaskService {
 								name,
 								title: doc.title,
 								due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
-								status: doc.status[0].toUpperCase() + doc.status.slice(1),
+								status: doc.status.toUpperCase().split('_').join(' '),
 								priority: doc.priority.toUpperCase(),
 								message: doc.description,
 								task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
@@ -614,8 +613,8 @@ export default class TaskService {
 		}
 
 		const created_by = await this._employeeService.getUserService();
-		doc.assigned_to.forEach(async (u_id) => {
-			const userService = await UserService.getUserService(u_id);
+		doc.assigned_to.forEach(async (e_id) => {
+			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
 			const { name, email, phone } = userService.getDetails();
 
 			sendEmail(email, {
@@ -624,10 +623,10 @@ export default class TaskService {
 					name,
 					title: doc.title,
 					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
-					status: doc.status[0].toUpperCase() + doc.status.slice(1),
+					status: doc.status.toUpperCase().split('_').join(' '),
 					priority: doc.priority.toUpperCase(),
 					message: '',
-					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
+					task_link: `http://localhost:3000/organizations/${this._o_id}/tasks/${doc._id}`,
 				}),
 			});
 			sendWhatsapp(
@@ -701,7 +700,7 @@ export default class TaskService {
 					name,
 					title: doc.title,
 					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
-					status: doc.status[0].toUpperCase() + doc.status.slice(1),
+					status: doc.status.toUpperCase().split('_').join(' '),
 					priority: doc.priority.toUpperCase(),
 					message: details.message,
 					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
