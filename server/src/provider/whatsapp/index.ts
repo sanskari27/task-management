@@ -13,6 +13,7 @@ const whatsapp = axios.create({
 });
 
 export async function sendWhatsapp(opts: any) {
+	Logger.debug(`Sending whatsapp message to ${opts.to} template_name ${opts.template.name}`);
 	try {
 		await whatsapp.post(`${META_PHONE_ID}/messages`, opts);
 	} catch (err) {

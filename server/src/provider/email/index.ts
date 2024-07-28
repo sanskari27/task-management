@@ -1,6 +1,6 @@
+import Logger from 'n23-logger';
 import { Resend } from 'resend';
 import { RESEND_API_KEY } from '../../config/const';
-import Logger from 'n23-logger';
 export { default as EmailTemplates } from './templates';
 
 const resend = new Resend(RESEND_API_KEY);
@@ -22,6 +22,8 @@ export async function sendEmail(
 		html: string;
 	}
 ) {
+	Logger.debug(`Sending email to ${to} subject: ${opts.subject}`);
+
 	const { error } = await resend.emails.send({
 		from: 'Wautopilot <no-reply@wautopilot.com>',
 		to: [to],

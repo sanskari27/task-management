@@ -116,7 +116,6 @@ export default class TaskService {
 		data.assigned_to.forEach(async (e_id) => {
 			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
 			const { name, email, phone } = userService.getDetails();
-			return;
 			sendEmail(email, {
 				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
 				html: EmailTemplates.taskCreated({
