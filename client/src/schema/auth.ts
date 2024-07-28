@@ -23,6 +23,21 @@ export const signupSchema = z.object({
 	}),
 });
 
+export const profileSchema = z.object({
+	email: z.string().email({
+		message: 'Invalid email address',
+	}),
+	firstName: z.string({
+		message: 'First name is required',
+	}),
+	lastName: z.string({
+		message: 'Last name is required',
+	}),
+	phone: z.string().min(10, {
+		message: 'Phone number must be at least 10 characters',
+	}),
+});
+
 export const forgotSchema = z.object({
 	email: z.string().email(),
 });

@@ -110,7 +110,7 @@ export default function Navbar({ org_id }: { org_id: string }) {
 				</MenubarTrigger>
 				<MenubarContent>
 					<MenubarItem>
-						<Link href={`/organizations/${org_id}/tasks/delegated-tasks`}>
+						<Link href={`/auth/edit`}>
 							<div className='inline-flex justify-start items-center gap-2'>
 								<CircleUserRound size={'1.2rem'} />
 								Profile Details
