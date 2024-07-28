@@ -30,6 +30,8 @@ export async function sendEmail(
 	});
 
 	if (error) {
+		console.log(error);
+
 		Logger.error('Resend Error', error, { ...error, details: 'Error Sending email message' });
 		return false;
 	}

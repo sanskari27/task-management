@@ -3,11 +3,12 @@ import cors from 'cors';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import useragent from 'express-useragent';
 import fs from 'fs';
-import routes from './modules';
-
 import Logger from 'n23-logger';
+import cron from 'node-cron';
 import { IS_PRODUCTION, IS_WINDOWS, Path } from './config/const';
 import { CustomError } from './errors';
+import routes from './modules';
+import ReminderService from './services/reminder';
 
 const allowlist = ['http://localhost:3000', 'https://task.wautopilot.com'];
 
@@ -107,7 +108,12 @@ export default function (app: Express) {
 		});
 		next();
 	});
+
 	createDir();
+
+	cron.schedule('*/2 * * * * *', () => {
+		ReminderService.sendReminder();
+	});
 }
 
 function createDir() {

@@ -42,6 +42,10 @@ export default class ReminderService {
 			reminderAt: { $lte: DateUtils.getMomentNow().toDate() },
 		});
 
+		await ReminderDB.deleteMany({
+			_id: { $in: reminders.map((reminder) => reminder._id) },
+		});
+
 		for (const reminder of reminders) {
 			if (reminder.reminderType === 'email') {
 				sendEmail(reminder.sentTo, {
@@ -58,6 +62,5 @@ export default class ReminderService {
 				);
 			}
 		}
-		console.log('sent reminders', reminders.length);
 	}
 }
