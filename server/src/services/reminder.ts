@@ -1,3 +1,4 @@
+import { IS_PRODUCTION } from '@/config/const';
 import { ReminderDB } from '@/db';
 import { sendEmail } from '@/provider/email';
 import { sendWhatsapp, WhatsappTemplates } from '@/provider/whatsapp';
@@ -38,6 +39,9 @@ export default class ReminderService {
 	}
 
 	static async sendReminder() {
+		if (!IS_PRODUCTION) {
+			return;
+		}
 		const reminders = await ReminderDB.find({
 			reminderAt: { $lte: DateUtils.getMomentNow().toDate() },
 		});
