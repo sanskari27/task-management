@@ -22,7 +22,12 @@ export default async function VerifySession(req: Request, res: Response, next: N
 			const decoded = verify(_refresh_id, REFRESH_SECRET) as JwtPayload;
 			session = await SessionService.findSessionByRefreshToken(decoded.id);
 			setCookie(res, {
-				key: Cookie.Auth,
+				key: Cookie.Refresh,
+				value: session.refreshToken,
+				expires: SESSION_EXPIRE_TIME,
+			});
+			setCookie(res, {
+				key: Cookie.Refresh,
 				value: session.authToken,
 				expires: SESSION_EXPIRE_TIME,
 			});
