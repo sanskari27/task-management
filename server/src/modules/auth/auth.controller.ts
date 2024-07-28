@@ -1,7 +1,7 @@
 import { Cookie, REFRESH_SECRET } from '@/config/const';
 import { StorageDB } from '@/db';
 import { AUTH_ERRORS, COMMON_ERRORS, CustomError } from '@/errors';
-import { sendPasswordResetEmail } from '@/provider/email';
+import { EmailSubjects, EmailTemplates, sendEmail } from '@/provider/email';
 import { UserService } from '@/services';
 import EmployeeService from '@/services/employee';
 import { Respond, setCookie } from '@/utils/ExpressUtils';
@@ -53,10 +53,13 @@ async function forgotPassword(req: Request, res: Response, next: NextFunction) {
 	const { email, callbackURL } = req.locals.data as ResetPasswordValidationResult;
 
 	try {
-		const token = await UserService.generatePasswordResetLink(email);
+		const { token, name } = await UserService.generatePasswordResetLink(email);
 
 		const resetLink = `${callbackURL}?code=${token}`;
-		const success = await sendPasswordResetEmail(email, resetLink);
+		const success = await sendEmail(email, {
+			subject: EmailSubjects.PasswordReset,
+			html: EmailTemplates.resetPassword(name, resetLink),
+		});
 
 		return Respond({
 			res,
@@ -97,6 +100,13 @@ async function resetPassword(req: Request, res: Response, next: NextFunction) {
 			});
 		}
 
+		const { name, email } = userService.getDetails();
+
+		sendEmail(email, {
+			subject: EmailSubjects.PasswordResetSuccess,
+			html: EmailTemplates.resetSuccessful(name),
+		});
+
 		return Respond({
 			res,
 			status: 200,
@@ -130,6 +140,11 @@ async function register(req: Request, res: Response, next: NextFunction) {
 			key: Cookie.Refresh,
 			value: refreshToken,
 			expires: SESSION_EXPIRE_TIME,
+		});
+
+		sendEmail(email, {
+			subject: EmailSubjects.Welcome,
+			html: EmailTemplates.welcomeTemplate(name),
 		});
 
 		return Respond({

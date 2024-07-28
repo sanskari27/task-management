@@ -1,5 +1,4 @@
 import { AUTH_ERRORS, COMMON_ERRORS, CustomError } from '@/errors';
-import { sendOrganizationInviteEmail } from '@/provider/email';
 import { UserService } from '@/services';
 import EmployeeService from '@/services/employee';
 import OrganizationService from '@/services/organization';
@@ -121,7 +120,9 @@ async function inviteToOrganization(req: Request, res: Response, next: NextFunct
 			can_let_others_create: data.can_let_others_create,
 		});
 
-		sendOrganizationInviteEmail(data.email, org.organizationDetails.name);
+		console.log(org);
+
+		// sendOrganizationInviteEmail(data.email, org.organizationDetails.name);
 
 		return Respond({
 			res,

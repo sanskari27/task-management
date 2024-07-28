@@ -106,6 +106,9 @@ export function AddUpdate({ org_id, task_id }: { org_id: string; task_id: string
 			{
 				loading: 'Adding update...',
 				success: () => {
+					form.reset(defaultValues);
+					setFiles([]);
+					setVoiceNote(undefined);
 					buttonRef.current?.click();
 					router.refresh();
 					return 'Update added.';

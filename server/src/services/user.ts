@@ -1,6 +1,6 @@
 import { AccountDB, IAccount, SessionDB, StorageDB } from '@/db';
 import { AUTH_ERRORS, CustomError } from '@/errors';
-import { sendWelcomeEmail } from '@/provider/email';
+import { EmailSubjects, EmailTemplates, sendEmail } from '@/provider/email';
 import { IDType } from '@/types';
 import { filterUndefinedKeys, generateNewPassword } from '@/utils/ExpressUtils';
 import { randomBytes } from 'crypto';
@@ -129,9 +129,12 @@ export default class UserService {
 			});
 
 			if (!opts.password) {
-				sendWelcomeEmail(email, email, password); // SEND A LINK TO SET A NEW PASSWORD
-			} else {
-				sendWelcomeEmail(email, email, 'password'); // SEND A LINK TO SET A NEW PASSWORD
+				const { token, name } = await UserService.generatePasswordResetLink(email);
+				const resetLink = `https://task.wautopilot.com/auth/reset-password?code=${token}`;
+				sendEmail(email, {
+					subject: EmailSubjects.Signup,
+					html: EmailTemplates.signupTemplate(name, resetLink),
+				});
 			}
 			return new UserService(user);
 		} catch (err) {
@@ -148,7 +151,7 @@ export default class UserService {
 		const token = randomBytes(16).toString('hex');
 
 		await StorageDB.setString(token, user._id.toString());
-		return token;
+		return { token, name: user.name };
 	}
 
 	static async saveResetPassword(token: string, password: string) {

@@ -1,49 +1,33 @@
 import Logger from 'n23-logger';
 import { Resend } from 'resend';
 import { RESEND_API_KEY } from '../../config/const';
-import { LoginCredentialsTemplate, PasswordResetTemplate } from './templates';
+export { default as EmailTemplates } from './templates';
 
 const resend = new Resend(RESEND_API_KEY);
 
-export async function sendPasswordResetEmail(to: string, token: string) {
-	const { error } = await resend.emails.send({
-		from: 'Wautopilot <no-reply@wautopilot.com>',
-		to: [to],
-		subject: 'Password reset request for Wautopilot',
-		html: PasswordResetTemplate(token),
-	});
-
-	if (error) {
-		Logger.error('Resend Error', error, { ...error, details: 'Error Sending reset message' });
-		return false;
-	}
-	return true;
+export enum EmailSubjects {
+	PasswordReset = 'Password reset request for Task @ Wautopilot',
+	PasswordResetSuccess = 'Password reset successful for Task @ Wautopilot🥳',
+	Welcome = 'Welcome to Task @ Wautopilot✌️',
+	Signup = `Welcome to Task @ Wautopilot✌️`,
+	TaskCreated = 'Assigned a new task on Task @ Wautopilot',
+	TaskReminder = 'Reminder: Task @ Wautopilot',
+	TaskUpdate = 'Added an update to Task @ Wautopilot',
 }
 
-export async function sendWelcomeEmail(to: string, username: string, password: string) {
-	const { error } = await resend.emails.send({
-		from: 'Wautopilot <no-reply@wautopilot.com>',
-		to: [to],
-		subject: 'Welcome ! Wautopilot',
-		html: LoginCredentialsTemplate(username, password),
-	});
-
-	if (error) {
-		Logger.error('Resend Error', error, { ...error, details: 'Error Sending reset message' });
-		return false;
+export async function sendEmail(
+	to: string,
+	opts: {
+		subject: string;
+		html: string;
 	}
-	return true;
-}
-
-export async function sendOrganizationInviteEmail(to: string, organization_name: string) {
+) {
 	const { error } = await resend.emails.send({
 		from: 'Wautopilot <no-reply@wautopilot.com>',
 		to: [to],
-		subject: `Added to ${organization_name} on Wautopilot`,
-		html: `<div>abc</div>`,
+		subject: opts.subject,
+		html: opts.html,
 	});
-
-	//LoginCredentialsTemplate(username, password),
 
 	if (error) {
 		Logger.error('Resend Error', error, { ...error, details: 'Error Sending reset message' });

@@ -1,2 +1,19 @@
-export { default as LoginCredentialsTemplate } from './loginCredentials';
-export { default as PasswordResetTemplate } from './passwordReset';
+import resetPassword from './passwordReset';
+import resetSuccessful from './resetSuccessful';
+import signupTemplate from './signup';
+import taskCreated from './taskCreated';
+import taskReminder from './taskReminder';
+import taskUpdate from './taskUpdate';
+import welcomeTemplate from './welcome';
+
+const EmailTemplates = {
+	welcomeTemplate,
+	resetPassword,
+	resetSuccessful,
+	signupTemplate,
+	taskCreated,
+	taskReminder,
+	taskUpdate,
+};
+
+export default EmailTemplates;

@@ -2,10 +2,12 @@ import { TaskStatus } from '@/config/const';
 import { IEmployee, TaskDB } from '@/db';
 import { EmployeeDB, TaskUpdateDB } from '@/db/repo';
 import { COMMON_ERRORS, CustomError } from '@/errors';
+import { EmailSubjects, EmailTemplates, sendEmail } from '@/provider/email';
 import { IDType } from '@/types';
 import DateUtils from '@/utils/DateUtils';
 import { filterUndefinedKeys, mongoArrayIncludes } from '@/utils/ExpressUtils';
 import EmployeeService from './employee';
+import UserService from './user';
 
 type CreateTaskType = {
 	assigned_to: IDType[];
@@ -106,6 +108,25 @@ export default class TaskService {
 			...data,
 			organization: this._o_id,
 			created_by: this._e_id,
+		});
+
+		const created_by = await this._employeeService.getUserService();
+		data.assigned_to.forEach(async (e_id) => {
+			const userService = await(await EmployeeService.getServiceByID(e_id)).getUserService();
+			const { name, email } = userService.getDetails();
+
+			sendEmail(email, {
+				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
+				html: EmailTemplates.taskCreated({
+					name,
+					title: doc.title,
+					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
+					status: doc.status,
+					priority: doc.priority,
+					message: doc.description,
+					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
+				}),
+			});
 		});
 
 		return processDocs([doc])[0];
@@ -528,12 +549,32 @@ export default class TaskService {
 	async updateStatus(task_id: IDType, status: TaskStatus) {
 		const { canManage, doc } = await this.canManageTask(task_id);
 
-		if (!canManage) {
+		if (!canManage || !doc) {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
 		if (doc!.status === status) {
 			return;
 		}
+
+		const created_by = await this._employeeService.getUserService();
+		doc.assigned_to.forEach(async (u_id) => {
+			console.log('u_id', u_id);
+			const userService = await UserService.getUserService(u_id);
+			const { name, email } = userService.getDetails();
+
+			sendEmail(email, {
+				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
+				html: EmailTemplates.taskUpdate({
+					name,
+					title: doc.title,
+					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
+					status: doc.status,
+					priority: doc.priority,
+					message: '',
+					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
+				}),
+			});
+		});
 
 		doc!.status = status;
 		await doc!.save();
@@ -557,12 +598,12 @@ export default class TaskService {
 			links: string[];
 			files: string[];
 			voice_notes: string[];
-			status: string;
+			status: TaskStatus;
 		}
 	) {
-		const { canManage } = await this.canManageTask(task_id);
+		const { canManage, doc } = await this.canManageTask(task_id);
 
-		if (!canManage) {
+		if (!canManage || !doc) {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
 
@@ -570,6 +611,30 @@ export default class TaskService {
 			...details,
 			task: task_id,
 			added_by: this._e_id,
+		});
+
+		if (doc.status !== details.status) {
+			doc.status = details.status;
+			await doc!.save();
+		}
+
+		const created_by = await this._employeeService.getUserService();
+		doc.assigned_to.forEach(async (e_id) => {
+			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
+			const { name, email } = userService.getDetails();
+
+			sendEmail(email, {
+				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
+				html: EmailTemplates.taskUpdate({
+					name,
+					title: doc.title,
+					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
+					status: details.status,
+					priority: doc.priority,
+					message: details.message,
+					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
+				}),
+			});
 		});
 	}
 
