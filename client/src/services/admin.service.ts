@@ -40,11 +40,9 @@ export default class AdminService {
 			const { data } = await api.get(`/admin/users`);
 			return (data.users ?? []).map((user: any) => {
 				return {
-					account: {
-						name: (user.account.name as string) ?? '',
-						email: (user.account.email as string) ?? '',
-						phone: (user.account.phone as string) ?? '',
-					},
+					name: (user.name as string) ?? '',
+					email: (user.email as string) ?? '',
+					phone: (user.phone as string) ?? '',
 					organizations: (user.organizations ?? []).map((organization: any) => {
 						return {
 							org_id: (organization.org_id as string) ?? '',
