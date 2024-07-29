@@ -5,6 +5,7 @@ import ProfileHover from '@/components/elements/profile-hover';
 import { Badge } from '@/components/ui/badge';
 import { LinkPreview } from '@/components/ui/link-preview';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 import TasksService from '@/services/tasks.service';
 import {
 	AlarmClock,
@@ -25,7 +26,7 @@ import {
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { AddUpdate } from './add-update';
-import { MarkCompleted, MarkInProgress, MarkPending } from './update-status';
+import { MarkCompleted, MarkInactive, MarkInProgress } from './update-status';
 
 export const metadata: Metadata = {
 	title: 'Task Details',
@@ -52,9 +53,12 @@ export default async function TaskPage({
 				<h2 className='text-3xl font-bold'>{details.title}</h2>
 				<div className='flex items-end justify-end gap-3'>
 					<AddUpdate org_id={org_id} task_id={task_id} />
+					<MarkInactive
+						org_id={org_id}
+						task_id={details.isBatchTask ? details.batch!.batch_task_id : task_id}
+					/>
 					<Show>
 						<Show.When condition={details.status === 'in_progress'}>
-							<MarkPending org_id={org_id} task_id={task_id} />
 							<MarkCompleted org_id={org_id} task_id={task_id} />
 						</Show.When>
 						<Show.When condition={details.status === 'pending' || details.status === 'completed'}>
@@ -101,7 +105,14 @@ export default async function TaskPage({
 							<div className='flex'>
 								<span className='font-medium w-[80px] md:w-[150px]'>Priority</span>
 								<span className='font-medium mx-3 md:mx-6'>:</span>
-								<p className='inline-flex items-center gap-2 font-medium md:font-bold capitalize'>
+								<p
+									className={cn(
+										'inline-flex items-center gap-2 font-medium md:font-bold capitalize',
+										details.priority === 'low' && 'text-yellow-500',
+										details.priority === 'medium' && 'text-orange-500',
+										details.priority === 'high' && 'text-red-500'
+									)}
+								>
 									<Flag size={16} strokeWidth={2.25} />
 									{details.priority}
 								</p>

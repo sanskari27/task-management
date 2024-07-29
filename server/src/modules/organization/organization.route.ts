@@ -8,6 +8,7 @@ import {
 	InviteToOrganizationValidator,
 	ReconfigurePositionsValidator,
 	UpdateOrganizationValidator,
+	UpdatePermissionValidator,
 } from './organization.validator';
 
 const router = express.Router();
@@ -17,7 +18,11 @@ router
 	.all(ReconfigurePositionsValidator)
 	.post(Controller.reconfigurePositions);
 
-router.route('/employees/:id').all(IDValidator).delete(Controller.removeFromOrganization);
+router
+	.route('/employees/:id')
+	.all(IDValidator)
+	.patch(UpdatePermissionValidator, Controller.updatePermissions)
+	.delete(Controller.removeFromOrganization);
 
 router
 	.route('/employees')

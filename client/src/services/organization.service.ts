@@ -79,7 +79,7 @@ export default class OrganizationService {
 					organization_id: (employee.organization_id as string) ?? '',
 					parent_id: (employee.parent_id as string) ?? '',
 					can_create_others: (employee.can_create_others as boolean) ?? false,
-					can_let_other_create: (employee.can_let_other_create as boolean) ?? false,
+					can_let_others_create: (employee.can_let_others_create as boolean) ?? false,
 					name: (employee.name as string) ?? '',
 					email: (employee.email as string) ?? '',
 					phone: (employee.phone as string) ?? '',
@@ -165,5 +165,25 @@ export default class OrganizationService {
 		} catch (error) {
 			return false;
 		}
+	}
+
+	static async updatePermissions(details: {
+		org_id: string;
+		emp_id: string;
+		can_create_others: boolean;
+		can_let_others_create: boolean;
+	}) {
+		await api.patch(
+			`/organization/employees/${details.emp_id}`,
+			{
+				can_create_others: details.can_create_others,
+				can_let_others_create: details.can_let_others_create,
+			},
+			{
+				headers: {
+					'X-Organization-ID': details.org_id,
+				},
+			}
+		);
 	}
 }

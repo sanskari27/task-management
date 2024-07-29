@@ -27,7 +27,7 @@ export async function CreateOrganizationValidator(req: Request, res: Response, n
 		name: z.string().min(1),
 		industry: z.string().min(1),
 		domain: z.string().optional(),
-		logo: z.string().min(1),
+		logo: z.string().default(''),
 		address: z
 			.object({
 				street: z.string().default(''),
@@ -118,6 +118,33 @@ export async function InviteToOrganizationValidator(
 			.refine((val) => Types.ObjectId.isValid(val))
 			.transform((val) => new Types.ObjectId(val))
 			.optional(),
+		can_create_others: z.boolean().default(false),
+		can_let_others_create: z.boolean().default(false),
+	});
+
+	const reqValidatorResult = reqValidator.safeParse(req.body);
+
+	if (reqValidatorResult.success) {
+		req.locals.data = reqValidatorResult.data;
+		return next();
+	}
+
+	return next(
+		new CustomError({
+			STATUS: 400,
+			TITLE: 'INVALID_FIELDS',
+			MESSAGE: parseZodMessage(reqValidatorResult),
+		})
+	);
+}
+
+export type UpdatePermissionType = {
+	can_create_others: boolean;
+	can_let_others_create: boolean;
+};
+
+export async function UpdatePermissionValidator(req: Request, res: Response, next: NextFunction) {
+	const reqValidator = z.object({
 		can_create_others: z.boolean().default(false),
 		can_let_others_create: z.boolean().default(false),
 	});

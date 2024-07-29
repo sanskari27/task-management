@@ -10,6 +10,7 @@ import {
 	InviteToOrganizationType,
 	ReconfigurePositionsType,
 	UpdateOrganizationType,
+	UpdatePermissionType,
 } from './organization.validator';
 export const JWT_EXPIRE_TIME = 3 * 60 * 1000;
 export const SESSION_EXPIRE_TIME = 28 * 24 * 60 * 60 * 1000;
@@ -165,7 +166,10 @@ async function removeFromOrganization(req: Request, res: Response, next: NextFun
 
 	if (!employeeService) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
+	} else if (id === employeeService.employee_id) {
+		return next(new CustomError(AUTH_ERRORS.PERMISSION_DENIED));
 	}
+
 	try {
 		await employeeService.removeFromOrganization(id);
 
@@ -184,21 +188,20 @@ async function removeFromOrganization(req: Request, res: Response, next: NextFun
 	}
 }
 
-async function removeFromOrganizationByEmail(req: Request, res: Response, next: NextFunction) {
-	const { employeeService, data: email } = req.locals;
-
+async function updatePermissions(req: Request, res: Response, next: NextFunction) {
+	const { id, employeeService } = req.locals;
+	const data = req.locals.data as UpdatePermissionType;
 	if (!employeeService) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 	}
-
 	try {
-		await employeeService.removeFromOrganization(email);
+		await employeeService.updatePermissions(id, data);
 
 		return Respond({
 			res,
 			status: 200,
 			data: {
-				message: 'User removed from organization successfully.',
+				message: 'User permissions updated successfully.',
 			},
 		});
 	} catch (err) {
@@ -309,7 +312,7 @@ const Controller = {
 	createOrganization,
 	inviteToOrganization,
 	removeFromOrganization,
-	removeFromOrganizationByEmail,
+	updatePermissions,
 	reconfigurePositions,
 	updateDetails,
 	listEmployees,

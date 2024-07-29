@@ -42,7 +42,13 @@ export default function Navbar({ isAdmin }: Readonly<{ isAdmin: boolean }>) {
 			}
 			if (e.key === 'j' && e.metaKey) {
 				e.preventDefault();
-				window.location.href = `/organizations/${org_id}/tasks/my-tasks`;
+				const now = new Date();
+				const start_date = new Date(now);
+				const end_date = new Date(now);
+				start_date.setHours(0, 0, 0, 0);
+				end_date.setHours(23, 59, 59, 999);
+
+				window.location.href = `/organizations/${org_id}/tasks/my-tasks?start_date=${start_date.toISOString()}&end_date=${end_date.toISOString()}`;
 			}
 		}
 

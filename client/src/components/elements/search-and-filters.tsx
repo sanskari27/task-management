@@ -296,6 +296,12 @@ export function DateFilters() {
 				start_date.setHours(0, 0, 0, 0);
 				end_date.setHours(23, 59, 59, 999);
 				break;
+			case 'Tomorrow':
+				start_date.setDate(start_date.getDate() + 1);
+				start_date.setHours(0, 0, 0, 0);
+				end_date = new Date(start_date);
+				end_date.setHours(23, 59, 59, 999);
+				break;
 			case 'Yesterday':
 				start_date.setDate(start_date.getDate() - 1);
 				start_date.setHours(0, 0, 0, 0);
@@ -395,6 +401,11 @@ export function DateFilters() {
 		<div className='max-w-sm  md:max-w-lg lg:max-w-screen-2xl mx-auto'>
 			<div className='flex flex-wrap justify-center gap-3'>
 				<Chip text='Today' isActive={selectedTag === 'Today'} setSelectedTag={setSelectedTag} />
+				<Chip
+					text='Tomorrow'
+					isActive={selectedTag === 'Tomorrow'}
+					setSelectedTag={setSelectedTag}
+				/>
 				<Chip
 					text='Yesterday'
 					isActive={selectedTag === 'Yesterday'}

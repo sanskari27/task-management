@@ -46,6 +46,7 @@ async function createTask(req: Request, res: Response, next: NextFunction) {
 
 	const dateGenerator = new DateGenerator(data.recurrence!);
 	const batch_id = generateRandomID();
+	let sendNotification = true;
 	while (dateGenerator.hasNext()) {
 		const due_date = dateGenerator.next();
 		if (data.assign_separately) {
@@ -57,6 +58,7 @@ async function createTask(req: Request, res: Response, next: NextFunction) {
 					batch: {
 						batch_task_id: batch_id,
 						frequency: data.recurrence!.frequency,
+						sendNotification,
 					},
 				});
 			}
@@ -67,9 +69,11 @@ async function createTask(req: Request, res: Response, next: NextFunction) {
 				batch: {
 					batch_task_id: batch_id,
 					frequency: data.recurrence!.frequency,
+					sendNotification,
 				},
 			});
 		}
+		sendNotification = false;
 	}
 
 	return Respond({
@@ -182,16 +186,17 @@ async function updateStatus(req: Request, res: Response, next: NextFunction) {
 }
 
 async function deleteTask(req: Request, res: Response, next: NextFunction) {
-	const { employeeService, id } = req.locals;
+	const { employeeService } = req.locals;
+	const task_id = req.params.id;
 
-	if (!employeeService) {
+	if (!employeeService || !task_id) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 	}
 
 	const taskService = new TaskService(employeeService);
 
 	try {
-		await taskService.deleteTask(id);
+		await taskService.markInactive(task_id);
 	} catch (e) {
 		return next(new CustomError(AUTH_ERRORS.PERMISSION_DENIED));
 	}

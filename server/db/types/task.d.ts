@@ -26,4 +26,5 @@ export default interface ITask extends Document {
 	};
 	status: TaskStatus;
 	completed_at?: Date;
+	inActive: boolean;
 }

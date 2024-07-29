@@ -133,31 +133,26 @@ export default class EmployeeService {
 		OrganizationService.deleteOrganizationByOwnerID(this._o_id, emp_id);
 	}
 
-	async removeFromOrganizationFromEmail(email: string) {
-		const user = await UserService.getUserService(email);
-
-		const emp = await EmployeeDB.findOne({
-			organization: this._o_id,
-			account_id: user.userId,
-		});
-
-		if (!emp) {
-			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
+	async updatePermissions(
+		emp_id: IDType,
+		data: {
+			can_create_others?: boolean;
+			can_let_others_create?: boolean;
 		}
-
+	) {
 		const managedEmployees = await EmployeeService.managedEmployees(this._e_id);
-		managedEmployees.push(this._e_id);
 
-		if (!mongoArrayIncludes(managedEmployees, emp._id)) {
+		if (!mongoArrayIncludes(managedEmployees, emp_id)) {
 			throw new CustomError(AUTH_ERRORS.PERMISSION_DENIED);
 		}
 
-		await EmployeeDB.deleteOne({
-			organization: this._o_id,
-			_id: emp._id,
-		});
-
-		OrganizationService.deleteOrganizationByOwnerID(this._o_id, emp._id);
+		await EmployeeDB.updateOne(
+			{
+				organization: this._o_id,
+				_id: emp_id,
+			},
+			filterUndefinedKeys(data)
+		);
 	}
 
 	async getUserService() {

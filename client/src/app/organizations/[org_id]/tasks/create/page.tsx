@@ -136,7 +136,15 @@ export default function CreateTasks({ params: { org_id } }: { params: { org_id: 
 		toast.promise(TasksService.createTask(org_id, values), {
 			loading: 'Assigning task...',
 			success: () => {
-				router.push(`/organizations/${org_id}/tasks/delegated-tasks`);
+				const now = new Date();
+				const start_date = new Date(now);
+				const end_date = new Date(now);
+				start_date.setHours(0, 0, 0, 0);
+				end_date.setHours(23, 59, 59, 999);
+
+				router.push(
+					`/organizations/${org_id}/tasks/delegated-tasks?start_date=${start_date.toISOString()}&end_date=${end_date.toISOString()}`
+				);
 				return 'Task assigned successfully';
 			},
 			error: 'Error assigning task',

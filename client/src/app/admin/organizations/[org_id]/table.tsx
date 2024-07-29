@@ -117,14 +117,14 @@ export const columns: ColumnDef<TEmployee>[] = [
 	},
 	{
 		accessorKey: 'can_create_others',
-		header: 'Can Create Others',
+		header: 'Can add other employees?',
 		cell: ({ row }) => (
 			<div className='capitalize'>{row.getValue('can_create_others') === true ? 'Yes' : 'No'}</div>
 		),
 	},
 	{
 		accessorKey: 'can_let_others_create',
-		header: 'Can Let Others Create',
+		header: 'Can let others add employees?',
 		cell: ({ row }) => (
 			<div className='capitalize'>
 				{row.getValue('can_let_others_create') === true ? 'Yes' : 'No'}

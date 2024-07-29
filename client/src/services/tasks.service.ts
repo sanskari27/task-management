@@ -175,4 +175,12 @@ export default class TasksService {
 			},
 		});
 	}
+
+	static async markInactive(org_id: string, taskId: string) {
+		await api.delete(`/tasks/${taskId}`, {
+			headers: {
+				'X-Organization-ID': org_id,
+			},
+		});
+	}
 }

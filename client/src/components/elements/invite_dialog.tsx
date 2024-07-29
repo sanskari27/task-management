@@ -116,7 +116,7 @@ export function InviteForm() {
 							/>
 						</div>
 						<div className='flex items-center justify-between'>
-							<Label htmlFor='create-others'>Can Create Others</Label>
+							<Label htmlFor='create-others'>Can add other employees?</Label>
 							<Switch
 								id='create-others'
 								checked={can_create_others}
@@ -124,7 +124,7 @@ export function InviteForm() {
 							/>
 						</div>
 						<div className='flex items-center justify-between'>
-							<Label htmlFor='let-create-others'>Can Let Others Create</Label>
+							<Label htmlFor='let-create-others'>Can let others add employees?</Label>
 							<Switch
 								id='let-create-others'
 								checked={can_let_others_create}

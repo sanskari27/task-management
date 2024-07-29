@@ -7,13 +7,14 @@ import Combobox from '@/components/ui/combobox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { TIMEZONES } from '@/lib/const';
+import countriesWithState from '@/lib/countries.json';
 import { cn } from '@/lib/utils';
 import { organizationDetailsSchema } from '@/schema/organization';
 import MediaService from '@/services/media.service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { CgOrganisation } from 'react-icons/cg';
@@ -37,11 +38,6 @@ export default function OrganizationDetailsForm({
 	} | null>(null);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-	const timezones = TIMEZONES.map((tz) => ({
-		value: tz,
-		label: tz,
-	}));
-
 	const {
 		handleSubmit,
 		register,
@@ -56,6 +52,8 @@ export default function OrganizationDetailsForm({
 		disabled: !canEdit,
 	});
 	const tz = watch('timezone');
+	const country = watch('address.country');
+	const state = watch('address.state');
 
 	async function formSubmit(values: z.infer<typeof organizationDetailsSchema>) {
 		if (logoFile) {
@@ -83,6 +81,33 @@ export default function OrganizationDetailsForm({
 			fileInputRef.current.value = '';
 		}
 	}
+
+	const timezones = TIMEZONES.map((tz) => ({
+		value: tz,
+		label: tz,
+	}));
+
+	const countries = useMemo(() => {
+		return countriesWithState.map((country) => ({
+			value: country.name,
+			label: country.name,
+		}));
+	}, []);
+
+	const states = useMemo(() => {
+		if (!country) {
+			return [];
+		}
+		const _country = countriesWithState.find((c) => c.name === country);
+		if (!_country) {
+			return [];
+		}
+
+		return _country.states.map((state) => ({
+			value: state,
+			label: state,
+		}));
+	}, [country]);
 
 	return (
 		<Card className='mx-auto md:max-w-[60%] w-[90%] md:w-full'>
@@ -134,7 +159,7 @@ export default function OrganizationDetailsForm({
 						<div className='flex flex-1 flex-col border-r-0 border-b md:border-b-0 md:border-r border-dashed px-4 pb-3'>
 							<div className='grid gap-4'>
 								<div className='grid gap-2'>
-									<Label htmlFor='name'>Name</Label>
+									<Label htmlFor='name'>Name *</Label>
 									<Input
 										id='name'
 										placeholder='Ex. ABC Corp'
@@ -143,7 +168,7 @@ export default function OrganizationDetailsForm({
 									/>
 								</div>
 								<div className='grid gap-2'>
-									<Label htmlFor='industry'>Industry</Label>
+									<Label htmlFor='industry'>Industry *</Label>
 									<Input
 										id='industry'
 										placeholder='Ex Textile'
@@ -163,7 +188,7 @@ export default function OrganizationDetailsForm({
 								<div
 									className={cn('grid gap-2', canEdit ? 'cursor-pointer' : 'cursor-not-allowed')}
 								>
-									<Label htmlFor='timezone'>Timezone</Label>
+									<Label htmlFor='timezone'>Timezone *</Label>
 									<Combobox
 										placeholder='Select timezone'
 										items={timezones}
@@ -177,33 +202,32 @@ export default function OrganizationDetailsForm({
 						<div className='px-4 flex-1'>
 							<div className='grid gap-4'>
 								<div className='grid gap-2'>
+									<Label htmlFor='address.country'>Country</Label>
+									<Combobox
+										placeholder='Select country'
+										items={countries}
+										value={country}
+										onChange={(value) => setValue('address.country', value)}
+										disabled={!canEdit}
+									/>
+								</div>
+								<div className='grid gap-2'>
+									<Label htmlFor='address.state'>State</Label>
+									<Combobox
+										placeholder='Select state'
+										items={states}
+										value={state}
+										onChange={(value) => setValue('address.state', value)}
+										disabled={!canEdit}
+									/>
+								</div>
+								<div className='grid gap-2'>
 									<Label htmlFor='address.city'>City</Label>
 									<Input
 										autoComplete='new-password'
 										id='address.city'
 										placeholder='Ex Gurugram'
 										{...register('address.city', {})}
-										onChange={() => setError('address.city', { message: '' })}
-									/>
-								</div>
-								<div className='grid gap-2'>
-									<Label htmlFor='address.state'>State</Label>
-									<Input
-										autoComplete='new-password'
-										id='address.state'
-										placeholder='Ex. Haryana'
-										{...register('address.state', {})}
-										onChange={() => setError('address.state', { message: '' })}
-									/>
-								</div>
-								<div className='grid gap-2'>
-									<Label htmlFor='address.country'>Country</Label>
-									<Input
-										autoComplete='new-password'
-										id='address.country'
-										placeholder='Ex. India'
-										{...register('address.country', {})}
-										onChange={() => setError('address.country', { message: '' })}
 									/>
 								</div>
 								<div className='grid gap-2'>
@@ -213,7 +237,8 @@ export default function OrganizationDetailsForm({
 										id='address.zip'
 										placeholder='Ex. 888888'
 										{...register('address.zip', {})}
-										onChange={() => setError('address.zip', { message: '' })}
+										pattern='[0-9]*'
+										title='Only numbers are allowed'
 									/>
 								</div>
 							</div>

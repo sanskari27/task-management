@@ -6,7 +6,7 @@ import { EmailSubjects, EmailTemplates, sendEmail } from '@/provider/email';
 import { sendWhatsapp, WhatsappTemplates } from '@/provider/whatsapp';
 import { IDType } from '@/types';
 import DateUtils from '@/utils/DateUtils';
-import { filterUndefinedKeys, mongoArrayIncludes } from '@/utils/ExpressUtils';
+import { filterUndefinedKeys, idValidator, mongoArrayIncludes } from '@/utils/ExpressUtils';
 import EmployeeService from './employee';
 import ReminderService from './reminder';
 
@@ -28,6 +28,7 @@ type CreateTaskType = {
 	batch?: {
 		batch_task_id: string;
 		frequency: 'daily' | 'weekly' | 'monthly';
+		sendNotification?: boolean;
 	};
 };
 
@@ -115,35 +116,43 @@ export default class TaskService {
 		data.assigned_to.forEach(async (e_id) => {
 			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
 			const { name, email, phone } = userService.getDetails();
-			sendEmail(email, {
-				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
-				html: EmailTemplates.taskCreated({
-					name,
-					title: doc.title,
-					due_date: DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
-					status: doc.status.toUpperCase().split('_').join(' '),
-					priority: doc.priority.toUpperCase(),
-					message: doc.description,
-					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
-				}),
-			});
 
-			sendWhatsapp(
-				WhatsappTemplates.taskCreate({
-					to: phone,
-					bodyParams: [
+			const due_date = DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A');
+			const due_text = data.batch
+				? `${data.batch.frequency.toUpperCase()} - Starting ${due_date}`
+				: due_date;
+
+			if (!data.batch || data.batch.sendNotification) {
+				sendEmail(email, {
+					subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
+					html: EmailTemplates.taskCreated({
 						name,
-						created_by.getDetails().name,
-						doc.status[0].toUpperCase() + doc.status.slice(1),
-						'Task Created',
-						doc.category,
-						doc.title,
-						DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
-						doc.priority.toUpperCase(),
-					],
-					link: `/${this._o_id}/tasks/${doc._id}`,
-				})
-			);
+						title: doc.title,
+						due_date: due_text,
+						status: doc.status.toUpperCase().split('_').join(' '),
+						priority: doc.priority.toUpperCase(),
+						message: doc.description,
+						task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
+					}),
+				});
+
+				sendWhatsapp(
+					WhatsappTemplates.taskCreate({
+						to: phone,
+						bodyParams: [
+							name,
+							created_by.getDetails().name,
+							doc.status[0].toUpperCase() + doc.status.slice(1),
+							'Task Created',
+							doc.category,
+							doc.title,
+							due_text,
+							doc.priority.toUpperCase(),
+						],
+						link: `/${this._o_id}/tasks/${doc._id}`,
+					})
+				);
+			}
 
 			data.reminders.map((reminder) => {
 				ReminderService.createReminder({
@@ -206,6 +215,7 @@ export default class TaskService {
 			{
 				$match: {
 					$and: [
+						{ inActive: false },
 						{ organization: this._o_id },
 						{ created_by: this._e_id },
 						{
@@ -328,6 +338,7 @@ export default class TaskService {
 			{
 				$match: {
 					$and: [
+						{ inActive: false },
 						{ organization: this._o_id },
 						{ assigned_to: this._e_id },
 						{
@@ -460,6 +471,7 @@ export default class TaskService {
 			{
 				$match: {
 					$and: [
+						{ inActive: false },
 						{ organization: this._o_id },
 						{ assigned_to: { $in: managedEmployees } },
 						{
@@ -618,7 +630,7 @@ export default class TaskService {
 			const { name, email, phone } = userService.getDetails();
 
 			sendEmail(email, {
-				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskCreated}`,
+				subject: `${created_by.getDetails().name} ${EmailSubjects.TaskUpdate}`,
 				html: EmailTemplates.taskUpdate({
 					name,
 					title: doc.title,
@@ -651,15 +663,32 @@ export default class TaskService {
 		await doc!.save();
 	}
 
-	async deleteTask(task_id: IDType) {
+	async markInactive(task_id: string) {
 		const managedEmployees = await this._employeeService.managedEmployees();
 		managedEmployees.push(this._e_id);
-
-		await TaskDB.deleteOne({
-			_id: task_id,
-			organization: this._o_id,
-			created_by: { $in: managedEmployees },
-		});
+		if (idValidator(task_id)[0]) {
+			await TaskDB.updateOne(
+				{
+					_id: task_id,
+					organization: this._o_id,
+					created_by: { $in: managedEmployees },
+				},
+				{
+					inActive: true,
+				}
+			);
+		} else {
+			await TaskDB.updateMany(
+				{
+					'batch.batch_task_id': task_id,
+					organization: this._o_id,
+					created_by: { $in: managedEmployees },
+				},
+				{
+					inActive: true,
+				}
+			);
+		}
 	}
 
 	async addUpdate(
@@ -713,7 +742,7 @@ export default class TaskService {
 						name,
 						created_by.getDetails().name,
 						details.status[0].toUpperCase() + details.status.slice(1),
-						details.message,
+						`A new update has been added by ${created_by.getDetails().name}`,
 						doc.category,
 						doc.title,
 						DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
@@ -732,6 +761,7 @@ export default class TaskService {
 		const doc = await TaskDB.findOne({
 			$and: [
 				{ _id: task_id },
+				{ inActive: false },
 				{ organization: this._o_id },
 				{
 					$or: [
@@ -831,6 +861,7 @@ export default class TaskService {
 		const doc = await TaskDB.findOne({
 			$and: [
 				{ _id: task_id },
+				{ inActive: false },
 				{ organization: this._o_id },
 				{
 					$or: [
@@ -877,6 +908,7 @@ export default class TaskService {
 						$gte: start,
 						$lte: end,
 					},
+					inActive: false,
 				},
 			},
 			{
@@ -922,6 +954,7 @@ export default class TaskService {
 						$gte: start,
 						$lte: end,
 					},
+					inActive: false,
 				},
 			},
 			{

@@ -4,13 +4,7 @@ import { Task } from '@/types/task';
 import { AlarmClock, CircleUserRound, Flag, Hourglass, Tag } from 'lucide-react';
 import Link from 'next/link';
 
-export default function TaskCard({
-	task,
-	organizationId,
-}: {
-	task: Task;
-	organizationId: string;
-}) {
+export default function TaskCard({ task, organizationId }: { task: Task; organizationId: string }) {
 	return (
 		<Link href={`/organizations/${organizationId}/tasks/${task.id}`}>
 			<div
@@ -29,7 +23,14 @@ export default function TaskCard({
 					<span className='text-sm  flex items-center gap-1 capitalize'>
 						<Tag size={'0.85rem'} /> {task.category}
 					</span>
-					<span className='text-sm   flex items-center gap-1 capitalize'>
+					<span
+						className={cn(
+							'text-sm   flex items-center gap-1 capitalize',
+							task.priority === 'low' && 'text-yellow-500',
+							task.priority === 'medium' && 'text-orange-500',
+							task.priority === 'high' && 'text-red-500'
+						)}
+					>
 						<Flag size={'0.85rem'} /> {task.priority}
 					</span>
 				</div>

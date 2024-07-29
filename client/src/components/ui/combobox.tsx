@@ -40,7 +40,7 @@ export default function Combobox({
 					aria-expanded={open}
 					className='w-full justify-between'
 				>
-					{value ? items.find((e) => e.value === value)?.label : placeholder}
+					{value ? items.find((e) => e.value === value)?.label ?? placeholder : placeholder}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
 			</PopoverTrigger>

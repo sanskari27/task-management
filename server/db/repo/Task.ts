@@ -78,6 +78,10 @@ const schema = new mongoose.Schema<ITask>(
 			type: Date,
 			default: undefined,
 		},
+		inActive: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{
 		timestamps: { createdAt: true, updatedAt: false },

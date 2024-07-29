@@ -23,6 +23,8 @@ import {
 import * as React from 'react';
 
 import { useEmployees } from '@/components/context/employees';
+import { useOrganizationDetails } from '@/components/context/organization-details';
+import Permissions from '@/components/elements/task-data/permissions';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -49,97 +51,121 @@ import {
 } from '@/components/ui/table';
 import { TEmployee } from '@/types/employee';
 
-export const columns: ColumnDef<TEmployee>[] = [
-	{
-		id: 'select',
-		header: ({ table }) => (
-			<Checkbox
-				checked={
-					table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
-				}
-				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-				aria-label='Select all'
-			/>
-		),
-		cell: ({ row }) => (
-			<Checkbox
-				checked={row.getIsSelected()}
-				onCheckedChange={(value) => row.toggleSelected(!!value)}
-				aria-label='Select row'
-			/>
-		),
-		enableSorting: false,
-		enableHiding: false,
-	},
-	{
-		accessorKey: 'name',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-				>
-					Name
-					<CaretSortIcon className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => <div>{row.getValue('name')}</div>,
-	},
-	{
-		accessorKey: 'email',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-				>
-					Email
-					<CaretSortIcon className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => <div>{row.getValue('email')}</div>,
-	},
-	{
-		accessorKey: 'phone',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-				>
-					Phone
-					<CaretSortIcon className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => <div>{row.getValue('phone')}</div>,
-	},
-	{
-		accessorKey: 'can_create_others',
-		header: 'Can Create Others',
-		cell: ({ row }) => (
-			<div className='capitalize'>{row.getValue('can_create_others') === true ? 'Yes' : 'No'}</div>
-		),
-	},
-	{
-		accessorKey: 'can_let_others_create',
-		header: 'Can Let Others Create',
-		cell: ({ row }) => (
-			<div className='capitalize'>
-				{row.getValue('can_let_others_create') === true ? 'Yes' : 'No'}
-			</div>
-		),
-	},
-];
-
 export function EmployeeDataTable() {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = React.useState({});
+	const { id: org_id } = useOrganizationDetails();
 	const data = useEmployees();
+
+	const columns: ColumnDef<TEmployee>[] = [
+		{
+			id: 'select',
+			header: ({ table }) => (
+				<Checkbox
+					checked={
+						table.getIsAllPageRowsSelected() ||
+						(table.getIsSomePageRowsSelected() && 'indeterminate')
+					}
+					onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+					aria-label='Select all'
+				/>
+			),
+			cell: ({ row }) => (
+				<Checkbox
+					checked={row.getIsSelected()}
+					onCheckedChange={(value) => row.toggleSelected(!!value)}
+					aria-label='Select row'
+				/>
+			),
+			enableSorting: false,
+			enableHiding: false,
+		},
+		{
+			accessorKey: 'name',
+			header: ({ column }) => {
+				return (
+					<Button
+						variant='ghost'
+						onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					>
+						Name
+						<CaretSortIcon className='ml-2 h-4 w-4' />
+					</Button>
+				);
+			},
+			cell: ({ row }) => <div>{row.getValue('name')}</div>,
+		},
+		{
+			accessorKey: 'email',
+			header: ({ column }) => {
+				return (
+					<Button
+						variant='ghost'
+						onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					>
+						Email
+						<CaretSortIcon className='ml-2 h-4 w-4' />
+					</Button>
+				);
+			},
+			cell: ({ row }) => <div>{row.getValue('email')}</div>,
+		},
+		{
+			accessorKey: 'phone',
+			header: ({ column }) => {
+				return (
+					<Button
+						variant='ghost'
+						onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					>
+						Phone
+						<CaretSortIcon className='ml-2 h-4 w-4' />
+					</Button>
+				);
+			},
+			cell: ({ row }) => <div>{row.getValue('phone')}</div>,
+		},
+		{
+			accessorKey: 'can_create_others',
+			header: 'Can add other employees?',
+			cell: ({ row }) => (
+				<div className='capitalize'>
+					{row.getValue('can_create_others') === true ? 'Yes' : 'No'}
+				</div>
+			),
+		},
+		{
+			accessorKey: 'can_let_others_create',
+			header: 'Can let others add employees?',
+			cell: ({ row }) => (
+				<div className='capitalize'>
+					{row.getValue('can_let_others_create') === true ? 'Yes' : 'No'}
+				</div>
+			),
+		},
+		{
+			accessorKey: 'id',
+			header: () => {
+				return <div className='text-center'>Action</div>;
+			},
+			cell: ({ row }) => (
+				<Permissions
+					org_id={org_id}
+					emp_id={row.getValue('id')}
+					defaultData={{
+						can_create_others: row.getValue('can_create_others'),
+						can_let_others_create: row.getValue('can_let_others_create'),
+					}}
+				>
+					<Button className='mx-auto' variant={'outline'}>
+						Permissions
+					</Button>
+				</Permissions>
+			),
+		},
+	];
 
 	const table = useReactTable({
 		data,

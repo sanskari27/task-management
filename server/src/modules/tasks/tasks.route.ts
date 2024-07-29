@@ -19,10 +19,7 @@ router
 	.route('/:id/update-status')
 	.post(IDValidator, UpdateStatusValidator, Controller.updateStatus);
 router.route('/:id/transfer-task').post(IDValidator, AssignTaskValidator, Controller.transfer);
-router
-	.route('/:id')
-	.get(IDValidator, Controller.taskDetails)
-	.delete(IDValidator, Controller.deleteTask);
+router.route('/:id').get(IDValidator, Controller.taskDetails).delete(Controller.deleteTask);
 
 router
 	.route('/')
