@@ -36,7 +36,7 @@ export default async function AdminDashboard() {
 							description: details.emailSent.toString(),
 						},
 						{
-							title: 'Whatsapp count',
+							title: 'Whatsapp Count',
 							description: details.whatsappSent.toString(),
 						},
 					]}
