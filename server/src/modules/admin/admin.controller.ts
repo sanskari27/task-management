@@ -16,7 +16,7 @@ async function listUsers(req: Request, res: Response, next: NextFunction) {
 	const details = users.map(async (user) => {
 		const employees = await EmployeeService.getInstancesOfUser(user.userId);
 		return {
-			account: user.getDetails(),
+			...user.getDetails(),
 			organizations: await Promise.all(
 				employees.map(async (emp) => {
 					const org = await emp.getOrganizationService();
