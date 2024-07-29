@@ -1,3 +1,4 @@
+import { StorageDB } from '@/db';
 import Logger from 'n23-logger';
 import { Resend } from 'resend';
 import { RESEND_API_KEY } from '../../config/const';
@@ -34,6 +35,8 @@ export async function sendEmail(
 	if (error) {
 		Logger.error('Resend Error', error, { ...error, details: 'Error Sending email message' });
 		return false;
+	} else {
+		StorageDB.incValue('email_sent', 1);
 	}
 	return true;
 }

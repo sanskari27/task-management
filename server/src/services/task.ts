@@ -854,4 +854,103 @@ export default class TaskService {
 			doc: doc,
 		};
 	}
+
+	static async monthlyCreatedTasks() {
+		const start = DateUtils.getMomentNow().subtract(12, 'months').startOf('month').toDate();
+		const end = DateUtils.getMomentNow().endOf('month').toDate();
+
+		const allMonths = [];
+		let currentMonth = new Date(start);
+		while (currentMonth <= end) {
+			allMonths.push({
+				month: currentMonth.getMonth() + 1, // Months are 0-indexed in JavaScript Date
+				year: currentMonth.getFullYear(),
+				count: 0,
+			});
+			currentMonth.setMonth(currentMonth.getMonth() + 1);
+		}
+
+		const docs = await TaskDB.aggregate([
+			{
+				$match: {
+					createdAt: {
+						$gte: start,
+						$lte: end,
+					},
+				},
+			},
+			{
+				$group: {
+					_id: {
+						month: { $month: '$createdAt' },
+						year: { $year: '$createdAt' },
+					},
+					count: {
+						$sum: 1,
+					},
+				},
+			},
+		]);
+
+		// Convert docs to a map for easy lookup
+		const docsMap = new Map(docs.map((doc) => [`${doc._id.year}-${doc._id.month}`, doc.count]));
+
+		// Merge the results with all months
+		const result = allMonths.map((month) => {
+			const key = `${month.year}-${month.month}`;
+			return {
+				month: month.month,
+				year: month.year,
+				count: docsMap.get(key) || 0,
+			};
+		});
+		return result;
+	}
+
+	static async dailyCreatedTasks() {
+		const start = DateUtils.getMomentNow().startOf('month').toDate();
+		const end = DateUtils.getMomentNow().endOf('month').toDate();
+
+		const daysInMonth = DateUtils.getMomentNow().daysInMonth();
+
+		const allDaysInMonth = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+		const docs = await TaskDB.aggregate([
+			{
+				$match: {
+					sent_at: {
+						$gte: start,
+						$lte: end,
+					},
+				},
+			},
+			{
+				$group: {
+					_id: {
+						$dayOfMonth: '$sent_at',
+					},
+					month: {
+						$first: {
+							$month: '$sent_at',
+						},
+					},
+					count: {
+						$sum: 1,
+					},
+				},
+			},
+		]);
+
+		// Convert aggregation results into a map for easier lookup
+		const docsMap = new Map(docs.map((doc) => [doc._id, doc.count]));
+
+		// Create the final result array, ensuring each day is accounted for
+		const result = allDaysInMonth.map((day) => ({
+			day,
+			month: DateUtils.getMomentNow().month() + 1, // Month is 0-indexed in Moment.js
+			count: docsMap.get(day) || 0,
+		}));
+
+		return result;
+	}
 }

@@ -37,6 +37,7 @@ export default async function VerifySession(req: Request, res: Response, next: N
 	if (req.headers['x-organization-id']) {
 		try {
 			if (org_id[0]) {
+				req.locals.org_id = org_id[1];
 				req.locals.employeeService = await EmployeeService.getEmployeeService(
 					org_id[1],
 					req.locals.user_id
@@ -45,6 +46,9 @@ export default async function VerifySession(req: Request, res: Response, next: N
 				throw new Error();
 			}
 		} catch (err) {
+			if (req.locals.user.isAdmin) {
+				return next();
+			}
 			return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 		}
 	}

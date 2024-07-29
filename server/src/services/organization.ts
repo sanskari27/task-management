@@ -1,4 +1,4 @@
-import { EmployeeDB, IOrganization, OrganizationDB } from '@/db';
+import { AccountDB, EmployeeDB, IOrganization, OrganizationDB } from '@/db';
 import { COMMON_ERRORS, CustomError } from '@/errors';
 import { IDType } from '@/types';
 import { filterUndefinedKeys } from '@/utils/ExpressUtils';
@@ -41,6 +41,60 @@ export default class OrganizationService {
 	static async createOrganization(data: OrganizationData) {
 		const organization = await OrganizationDB.create(data);
 		return new OrganizationService(organization);
+	}
+
+	static async listOrganizations() {
+		const organizations = await OrganizationDB.aggregate([
+			{
+				$lookup: {
+					from: EmployeeDB.collection.name,
+					localField: '_id',
+					foreignField: 'organization',
+					as: 'employees',
+				},
+			},
+			{
+				$lookup: {
+					from: AccountDB.collection.name,
+					localField: 'owner',
+					foreignField: '_id',
+					as: 'owner_details',
+				},
+			},
+			{
+				$addFields: {
+					total_employees: {
+						$size: '$employees',
+					},
+				},
+			},
+			{
+				$addFields: {
+					owner_details: {
+						$first: '$owner_details',
+					},
+				},
+			},
+			{
+				$addFields: {
+					owner_id: '$owner_details._id',
+					owner_name: '$owner_details.name',
+					owner_phone: '$owner_details.phone',
+					owner_email: '$owner_details.email',
+				},
+			},
+		]);
+
+		return organizations.map((org) => ({
+			...new OrganizationService(org).organizationDetails,
+			total_employees: org.total_employees,
+			owner: {
+				id: org.owner_id,
+				name: org.owner_name,
+				phone: org.owner_phone,
+				email: org.owner_email,
+			},
+		}));
 	}
 
 	get org_id() {

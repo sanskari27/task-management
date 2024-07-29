@@ -1,4 +1,5 @@
 import IDValidator from '@/middleware/idValidator';
+import { VerifyAdmin } from '@/middleware/VerifySession';
 import express from 'express';
 import Controller from './organization.controller';
 import {
@@ -33,6 +34,9 @@ router
 	.get(IDValidator, Controller.details)
 	.patch(IDValidator, UpdateOrganizationValidator, Controller.updateDetails);
 
-router.route('/').post(CreateOrganizationValidator, Controller.createOrganization);
+router
+	.route('/')
+	.get(VerifyAdmin, Controller.listOrganizations)
+	.post(CreateOrganizationValidator, Controller.createOrganization);
 
 export default router;

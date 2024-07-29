@@ -13,6 +13,18 @@ import {
 export const JWT_EXPIRE_TIME = 3 * 60 * 1000;
 export const SESSION_EXPIRE_TIME = 28 * 24 * 60 * 60 * 1000;
 
+async function listOrganizations(req: Request, res: Response, next: NextFunction) {
+	const organizations = await OrganizationService.listOrganizations();
+
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			organizations,
+		},
+	});
+}
+
 async function createOrganization(req: Request, res: Response, next: NextFunction) {
 	const { user_id } = req.locals;
 	const data = req.locals.data as CreateOrganizationType;
@@ -65,13 +77,20 @@ async function updateDetails(req: Request, res: Response, next: NextFunction) {
 }
 
 async function listEmployees(req: Request, res: Response, next: NextFunction) {
-	const { employeeService } = req.locals;
+	let employeeService = req.locals.employeeService;
+	const org_id = req.locals.org_id;
 	const managed = req.query.managed === 'true';
-	if (!employeeService) {
+	if (!employeeService && !org_id) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_HEADERS));
 	}
 	try {
-		const org = await employeeService.getOrganizationService();
+		let org;
+		if (employeeService) {
+			org = await employeeService.getOrganizationService();
+		} else {
+			org = await OrganizationService.getInstance(org_id);
+			employeeService = await EmployeeService.getEmployeeService(org_id, org.owner_id);
+		}
 
 		let details;
 		if (managed) {
@@ -295,6 +314,7 @@ const Controller = {
 	details,
 	categories,
 	updateCategories,
+	listOrganizations,
 };
 
 export default Controller;

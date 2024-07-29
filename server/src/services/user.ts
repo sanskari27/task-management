@@ -24,6 +24,15 @@ export default class UserService {
 		this._account = account;
 	}
 
+	static async listUsers() {
+		const users = await AccountDB.find();
+		return users.map((user) => new UserService(user));
+	}
+
+	static async totalUsers() {
+		return await AccountDB.countDocuments();
+	}
+
 	static async getUserService(str: IDType | string) {
 		let account;
 		if (typeof str === 'string') {

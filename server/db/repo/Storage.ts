@@ -40,6 +40,15 @@ StorageSchema.statics.getObject = async function (key: string): Promise<object |
 	return Storage.object;
 };
 
+StorageSchema.statics.incValue = async function (key: string, value: number) {
+	const Storage: IStorage = await this.findOne({ key });
+	if (Storage === null || Storage.object === undefined) {
+		return null;
+	}
+	Storage.object = (Number(Storage.object) + value) as any;
+	await Storage.save();
+};
+
 StorageSchema.statics.setString = async function (key: string, value: string): Promise<void> {
 	const Storage: IStorage = await this.findOne({ key });
 

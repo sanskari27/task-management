@@ -1,18 +1,19 @@
+import { COMMON_ERRORS, CustomError } from '@/errors';
+import VerifySession, { VerifyAdmin } from '@/middleware/VerifySession';
 import express from 'express';
+import FileUpload, { SingleFileUploadOptions } from '../config/FileUpload';
+import { Respond, RespondFile, generateRandomID } from '../utils/ExpressUtils';
+import AdminRoute from './admin/admin.route';
 import SessionRoute from './auth/auth.route';
 import OrganizationRoute from './organization/organization.route';
 import TasksRoute from './tasks/tasks.route';
 import UploadsRoute from './uploads/uploads.route';
 
-import { COMMON_ERRORS, CustomError } from '@/errors';
-import VerifySession from '@/middleware/VerifySession';
-import FileUpload, { SingleFileUploadOptions } from '../config/FileUpload';
-import { Respond, RespondFile, generateRandomID } from '../utils/ExpressUtils';
-
 const router = express.Router();
 
 // Next routes will be webhooks routes
 
+router.use('/admin', VerifySession, VerifyAdmin, AdminRoute);
 router.use('/auth', SessionRoute);
 router.use('/organization', VerifySession, OrganizationRoute);
 router.use('/tasks', VerifySession, TasksRoute);

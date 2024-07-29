@@ -24,6 +24,7 @@ export interface LocalVariables {
 	query: any;
 	data: any;
 	id: IDType;
+	org_id: IDType;
 	user_id: IDType;
 	user: UserService;
 	employeeService?: EmployeeService;

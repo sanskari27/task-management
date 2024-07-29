@@ -1,3 +1,4 @@
+import { StorageDB } from '@/db';
 import axios from 'axios';
 import Logger from 'n23-logger';
 import { META_AUTH_TOKEN, META_PHONE_ID } from '../../config/const';
@@ -16,6 +17,7 @@ export async function sendWhatsapp(opts: any) {
 	Logger.debug(`Sending whatsapp message to ${opts.to} template_name ${opts.template.name}`);
 	try {
 		await whatsapp.post(`${META_PHONE_ID}/messages`, opts);
+		StorageDB.incValue('whatsapp_sent', 1);
 	} catch (err) {
 		if (axios.isAxiosError(err)) {
 			Logger.error('Whatsapp Error', err, {
