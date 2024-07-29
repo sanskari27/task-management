@@ -1,3 +1,4 @@
+import { ADMIN_EMAIL } from '@/config/const';
 import { AccountDB, IAccount, SessionDB, StorageDB } from '@/db';
 import { AUTH_ERRORS, CustomError } from '@/errors';
 import { EmailSubjects, EmailTemplates, sendEmail } from '@/provider/email';
@@ -188,5 +189,9 @@ export default class UserService {
 
 	public get account() {
 		return this._account;
+	}
+
+	public get isAdmin() {
+		return this._account.email === ADMIN_EMAIL;
 	}
 }

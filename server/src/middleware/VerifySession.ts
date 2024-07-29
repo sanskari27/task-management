@@ -51,3 +51,11 @@ export default async function VerifySession(req: Request, res: Response, next: N
 
 	return next();
 }
+
+export async function VerifyAdmin(req: Request, res: Response, next: NextFunction) {
+	if (!req.locals.user.isAdmin) {
+		return next(new CustomError(AUTH_ERRORS.PERMISSION_DENIED));
+	}
+
+	return next();
+}

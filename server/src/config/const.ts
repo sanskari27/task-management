@@ -11,8 +11,6 @@ export const REFRESH_SECRET = process.env.REFRESH_SECRET ?? 'refresh-secret';
 export const REFRESH_EXPIRE = process.env.REFRESH_EXPIRE ?? '28days';
 export const SESSION_EXPIRE_TIME = 28 * 24 * 60 * 60;
 
-export const COOKIE_DOMAIN_VALUE = process.env.COOKIE_DOMAIN_VALUE ?? 'localhost';
-
 export const RESEND_API_KEY = process.env.RESEND_API_KEY ?? '';
 export const META_VERIFY_STRING = process.env.META_VERIFY_STRING ?? '';
 export const META_VERIFY_USER_STRING = process.env.META_VERIFY_USER_STRING ?? '';
@@ -24,6 +22,8 @@ export const META_PHONE_ID = process.env.META_PHONE_ID ?? '';
 export const RAZORPAY_API_KEY = process.env.RAZORPAY_API_KEY ?? '';
 export const RAZORPAY_API_SECRET = process.env.RAZORPAY_API_SECRET ?? '';
 export const RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET ?? '';
+
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? '';
 
 export const LOGO_PATH = '/static/assets/logo-primary.svg';
 

@@ -32,7 +32,7 @@ export default class OrganizationService {
 
 	static async createOrganization(details: z.infer<typeof organizationDetailsSchema>) {
 		try {
-			const { data } = await api.post('/organization/create-organization', details);
+			const { data } = await api.post('/organization/', details);
 			return data.organization.id;
 		} catch (error) {
 			return null;
@@ -41,7 +41,7 @@ export default class OrganizationService {
 
 	static async updateOrganization(id: string, details: z.infer<typeof organizationDetailsSchema>) {
 		try {
-			const { data } = await api.post(`/organization/${id}/update-details`, details);
+			const { data } = await api.patch(`/organization/${id}`, details);
 			return data.organization.id;
 		} catch (error) {
 			return null;
@@ -64,7 +64,7 @@ export default class OrganizationService {
 		opts?: { managed: boolean }
 	): Promise<TEmployee[] | null> {
 		try {
-			const { data } = await api.get('/organization/list-employees', {
+			const { data } = await api.get('/organization/employees', {
 				headers: {
 					'X-Organization-ID': organizationId,
 				},
@@ -118,7 +118,7 @@ export default class OrganizationService {
 		}
 	) {
 		try {
-			await api.post('/organization/add-to-organization', values, {
+			await api.post('/organization/employees', values, {
 				headers: {
 					'X-Organization-ID': org_id,
 				},
@@ -132,9 +132,8 @@ export default class OrganizationService {
 
 	static async removeEmployee(org_id: string, emp_id: string) {
 		try {
-			await api.post(
-				`/organization/remove-from-organization/${emp_id}`,
-				{},
+			await api.delete(
+				`/organization/employees/${emp_id}`,
 				{
 					headers: {
 						'X-Organization-ID': org_id,

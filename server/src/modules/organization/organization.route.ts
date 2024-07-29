@@ -6,45 +6,33 @@ import {
 	CreateOrganizationValidator,
 	InviteToOrganizationValidator,
 	ReconfigurePositionsValidator,
-	RemoveFromOrganizationValidator,
 	UpdateOrganizationValidator,
 } from './organization.validator';
 
 const router = express.Router();
 
 router
-	.route('/create-organization')
-	.post(CreateOrganizationValidator, Controller.createOrganization);
-
-router
 	.route('/reconfigure-positions')
 	.all(ReconfigurePositionsValidator)
 	.post(Controller.reconfigurePositions);
 
-router
-	.route('/add-to-organization')
-	.all(InviteToOrganizationValidator)
-	.post(Controller.inviteToOrganization);
+router.route('/employees/:id').all(IDValidator).delete(Controller.removeFromOrganization);
 
 router
-	.route('/remove-from-organization/:id')
-	.all(IDValidator)
-	.post(Controller.removeFromOrganization);
+	.route('/employees')
+	.get(Controller.listEmployees)
+	.post(InviteToOrganizationValidator, Controller.inviteToOrganization);
 
-router
-	.route('/remove-from-organization')
-	.all(RemoveFromOrganizationValidator)
-	.post(Controller.removeFromOrganizationByEmail);
-
-router.route('/list-employees').get(Controller.listEmployees);
-
-router
-	.route('/:id/update-details')
-	.post(IDValidator, UpdateOrganizationValidator, Controller.updateDetails);
 router
 	.route('/:id/categories')
 	.get(IDValidator, Controller.categories)
 	.post(IDValidator, CategoriesValidator, Controller.updateCategories);
-router.route('/:id').get(IDValidator, Controller.details);
+
+router
+	.route('/:id')
+	.get(IDValidator, Controller.details)
+	.patch(IDValidator, UpdateOrganizationValidator, Controller.updateDetails);
+
+router.route('/').post(CreateOrganizationValidator, Controller.createOrganization);
 
 export default router;
