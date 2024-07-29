@@ -22,6 +22,7 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
+import Show from '@/components/containers/show';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -64,35 +65,43 @@ export const columns: ColumnDef<TOrganization>[] = [
 			/>
 		),
 		cell: ({ row }) => (
-			<Checkbox
-				checked={row.getIsSelected()}
-				onCheckedChange={(value) => row.toggleSelected(!!value)}
-				aria-label='Select row'
-			/>
+			<div
+				className='cursor-pointer'
+				onClick={() => {
+					row.toggleSelected();
+				}}
+				id={`row-${row.original.logo}`}
+			>
+				<Show>
+					<Show.When condition={!row.getIsSelected()}>
+						<Avatar>
+							<AvatarImage
+								className='h-full w-full rounded-full border-gray-50 border'
+								src={`${process.env.NEXT_PUBLIC_API_URL}media/${row.original.logo}`}
+							/>
+							<AvatarFallback>
+								{(row.getValue('name') as string)
+									.split(' ')
+									.map((name) => name.charAt(0))
+									.join('')
+									.toUpperCase()}
+							</AvatarFallback>
+						</Avatar>
+					</Show.When>
+					<Show.Else>
+						<div className='flex items-center justify-center dark:bg-gray-200 dark:text-black bg-gray-600 text-white rounded-full w-10 h-10'>
+							{(row.getValue('name') as string)
+								.split(' ')
+								.map((name) => name.charAt(0))
+								.join('')
+								.toUpperCase()}
+						</div>
+					</Show.Else>
+				</Show>
+			</div>
 		),
 		enableSorting: false,
 		enableHiding: false,
-	},
-	{
-		accessorKey: 'logo',
-		header: () => {
-			return <></>;
-		},
-		cell: ({ row }) => (
-			<Avatar className='inline-flex justify-center  items-center h-[50px] w-[50px]'>
-				<AvatarImage
-					className='h-full w-full rounded-full border-gray-50 border'
-					src={`${process.env.NEXT_PUBLIC_API_URL}media/${row.getValue('logo')}`}
-				/>
-				<AvatarFallback className='rounded-full border inline-flex justify-center items-center h-full w-full '>
-					{(row.getValue('name') as string)
-						.split(' ')
-						.map((name) => name.charAt(0))
-						.join('')
-						.toUpperCase()}
-				</AvatarFallback>
-			</Avatar>
-		),
 	},
 	{
 		accessorKey: 'name',
