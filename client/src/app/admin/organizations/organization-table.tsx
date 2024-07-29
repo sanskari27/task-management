@@ -76,7 +76,7 @@ export const columns: ColumnDef<TOrganization>[] = [
 	{
 		accessorKey: 'logo',
 		header: () => {
-			return <Button variant='ghost'>Logo</Button>;
+			return <></>;
 		},
 		cell: ({ row }) => (
 			<Avatar className='inline-flex justify-center  items-center h-[50px] w-[50px]'>
@@ -107,7 +107,7 @@ export const columns: ColumnDef<TOrganization>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('name')}</div>,
+		cell: ({ row }) => <div className='text-left'>{row.getValue('name')}</div>,
 	},
 	{
 		accessorKey: 'owner',
@@ -123,7 +123,7 @@ export const columns: ColumnDef<TOrganization>[] = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className='lowercase'>{(row.getValue('owner') as { name: string }).name}</div>
+			<div className='text-left'>{(row.getValue('owner') as { name: string }).name}</div>
 		),
 	},
 	{
@@ -139,7 +139,7 @@ export const columns: ColumnDef<TOrganization>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('industry')}</div>,
+		cell: ({ row }) => <div className='text-left'>{row.getValue('industry')}</div>,
 	},
 	{
 		accessorKey: 'domain',
@@ -155,7 +155,7 @@ export const columns: ColumnDef<TOrganization>[] = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className='lowercase'>
+			<div className='text-left'>
 				<LinkPreview url={row.getValue('domain')}>{row.getValue('domain')}</LinkPreview>
 			</div>
 		),
@@ -173,7 +173,7 @@ export const columns: ColumnDef<TOrganization>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('timezone')}</div>,
+		cell: ({ row }) => <div className='text-left'>{row.getValue('timezone')}</div>,
 	},
 	{
 		accessorKey: 'total_employees',
@@ -188,16 +188,18 @@ export const columns: ColumnDef<TOrganization>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('total_employees')}</div>,
+		cell: ({ row }) => <div className='text-center'>{row.getValue('total_employees')}</div>,
 	},
 	{
 		accessorKey: 'id',
 		header: () => {
-			return <></>;
+			return <div className='text-center'>Action</div>;
 		},
 		cell: ({ row }) => (
-			<Link href={`/admin/organization/${row.getValue('id')}/employees/tree`}>
-				<Button variant={'outline'}>Organization tree</Button>
+			<Link className='mx-auto' href={`/admin/organization/${row.getValue('id')}/employees/tree`}>
+				<Button className='mx-auto' variant={'outline'}>
+					Organization tree
+				</Button>
 			</Link>
 		),
 	},
@@ -292,7 +294,7 @@ export function OrganizationTable({ data }: { data: TOrganization[] }) {
 							table.getRowModel().rows.map((row) => (
 								<TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
+										<TableCell className='text-center' key={cell.id}>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
 										</TableCell>
 									))}

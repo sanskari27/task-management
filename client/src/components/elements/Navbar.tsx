@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import Show from '../containers/show';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Button } from '../ui/button';
 import {
 	Menubar,
 	MenubarContent,
@@ -20,12 +19,16 @@ import { LogoutButton } from './logout-button';
 
 export default function Navbar({ isAdmin }: Readonly<{ isAdmin: boolean }>) {
 	const pathname = usePathname();
-	const org_id = pathname.split('/')[2];
+	let org_id = pathname.split('/')[2];
 	const now = new Date();
 	const start_date = new Date(now);
 	const end_date = new Date(now);
 	start_date.setHours(0, 0, 0, 0);
 	end_date.setHours(23, 59, 59, 999);
+
+	if (org_id && org_id.length !== 24) {
+		org_id = '';
+	}
 
 	useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
@@ -123,11 +126,36 @@ export default function Navbar({ isAdmin }: Readonly<{ isAdmin: boolean }>) {
 							</MenubarItem>
 						</MenubarContent>
 					</MenubarMenu>
-					<Link href={`/admin`}>
-						<Button size={'sm'} variant={'outline'}>
-							Browse Admin
-						</Button>
-					</Link>
+				</Show.When>
+				<Show.When condition={isAdmin}>
+					<MenubarMenu>
+						<MenubarTrigger>Organization</MenubarTrigger>
+						<MenubarContent>
+							<MenubarItem>
+								<Link href='/organizations'>
+									My Organizations <MenubarShortcut>⌘L</MenubarShortcut>
+								</Link>
+							</MenubarItem>
+						</MenubarContent>
+					</MenubarMenu>
+				</Show.When>
+			</Show>
+			<Show>
+				<Show.When condition={isAdmin}>
+					<MenubarMenu>
+						<MenubarTrigger>Admin</MenubarTrigger>
+						<MenubarContent>
+							<MenubarItem>
+								<Link href='/admin'>Dashboard</Link>
+							</MenubarItem>
+							<MenubarItem>
+								<Link href='/admin/organizations'>Organizations</Link>
+							</MenubarItem>
+							<MenubarItem>
+								<Link href='/admin/users'>Users</Link>
+							</MenubarItem>
+						</MenubarContent>
+					</MenubarMenu>
 				</Show.When>
 			</Show>
 
