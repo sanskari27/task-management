@@ -161,6 +161,9 @@ async function validateAuth(req: Request, res: Response, next: NextFunction) {
 	return Respond({
 		res,
 		status: 200,
+		data: {
+			isAdmin: req.locals.user.isAdmin,
+		},
 	});
 }
 

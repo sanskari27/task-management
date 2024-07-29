@@ -3,10 +3,16 @@ import api from '@/lib/api';
 export default class AuthService {
 	static async isUserAuthenticated() {
 		try {
-			await api.get('/auth/validate-auth');
-			return true;
+			const { data } = await api.get('/auth/validate-auth');
+			return {
+				authenticated: true,
+				isAdmin: data.isAdmin,
+			};
 		} catch (error) {
-			return false;
+			return {
+				authenticated: false,
+				isAdmin: false,
+			};
 		}
 	}
 
