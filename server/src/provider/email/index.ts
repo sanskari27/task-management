@@ -14,6 +14,7 @@ export enum EmailSubjects {
 	TaskCreated = 'Assigned a new task on Task @ Wautopilot',
 	TaskReminder = 'Reminder: Task @ Wautopilot',
 	TaskUpdate = 'Added an update to Task @ Wautopilot',
+	InviteToOrganization = 'You have been invited to join an organization on Task @ Wautopilot',
 }
 
 export async function sendEmail(

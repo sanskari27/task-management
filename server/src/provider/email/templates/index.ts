@@ -1,3 +1,4 @@
+import inviteToOrganization from './inviteToOrganization';
 import resetPassword from './passwordReset';
 import resetSuccessful from './resetSuccessful';
 import signupTemplate from './signup';
@@ -14,6 +15,7 @@ const EmailTemplates = {
 	taskCreated,
 	taskReminder,
 	taskUpdate,
+	inviteToOrganization,
 };
 
 export default EmailTemplates;
