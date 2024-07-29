@@ -1,8 +1,13 @@
 import AdminService from '@/services/admin.service';
+import { notFound } from 'next/navigation';
 import { OrganizationTable } from './organization-table';
 
 export default async function Organizations() {
 	const details = await AdminService.listOrganizations();
+
+	if (!details) {
+		notFound();
+	}
 
 	return (
 		<section className='mx-[2%] md:mx-[7%] mt-3'>
