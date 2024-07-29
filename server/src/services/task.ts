@@ -918,7 +918,7 @@ export default class TaskService {
 		const docs = await TaskDB.aggregate([
 			{
 				$match: {
-					sent_at: {
+					due_date: {
 						$gte: start,
 						$lte: end,
 					},
@@ -927,11 +927,11 @@ export default class TaskService {
 			{
 				$group: {
 					_id: {
-						$dayOfMonth: '$sent_at',
+						$dayOfMonth: '$due_date',
 					},
 					month: {
 						$first: {
-							$month: '$sent_at',
+							$month: '$due_date',
 						},
 					},
 					count: {
