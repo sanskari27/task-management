@@ -22,7 +22,6 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
-import { useEmployees } from '@/components/context/employees';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -84,7 +83,7 @@ export const columns: ColumnDef<TEmployee>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('name')}</div>,
+		cell: ({ row }) => <div>{row.getValue('name')}</div>,
 	},
 	{
 		accessorKey: 'email',
@@ -99,7 +98,7 @@ export const columns: ColumnDef<TEmployee>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('email')}</div>,
+		cell: ({ row }) => <div>{row.getValue('email')}</div>,
 	},
 	{
 		accessorKey: 'phone',
@@ -114,7 +113,7 @@ export const columns: ColumnDef<TEmployee>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('phone')}</div>,
+		cell: ({ row }) => <div>{row.getValue('phone')}</div>,
 	},
 	{
 		accessorKey: 'can_create_others',
@@ -134,12 +133,11 @@ export const columns: ColumnDef<TEmployee>[] = [
 	},
 ];
 
-export function EmployeeDataTable() {
+export function EmployeeDataTable({ data }: { data: TEmployee[] }) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = React.useState({});
-	const data = useEmployees();
 
 	const table = useReactTable({
 		data,

@@ -3,19 +3,19 @@ import OrganizationService from '@/services/organization.service';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Tree from 'react-d3-tree';
 
-export default function EmployeesTree({ params }: { params: { org_id: string } }) {
+export default function EmployeesTree({ params: { org_id } }: { params: { org_id: string } }) {
 	const [data, setData] = useState<any>(null);
 	const targetRef = useRef<HTMLDivElement>(null);
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const orgChart = await OrganizationService.employeeTree(params.org_id);
+			const orgChart = await OrganizationService.employeeTree(org_id);
 			setData(orgChart);
 		};
 
 		fetchData();
-	}, [params.org_id]);
+	}, [org_id]);
 
 	useLayoutEffect(() => {
 		if (targetRef.current) {

@@ -71,10 +71,7 @@ export const columns: ColumnDef<TOrganization>[] = [
 		cell: ({ row }) => (
 			<div
 				className='cursor-pointer inline-flex justify-center items-center w-full'
-				onClick={() => {
-					row.toggleSelected();
-				}}
-				id={`row-${row.original.logo}`}
+				onClick={() => row.toggleSelected()}
 			>
 				<Show>
 					<Show.When condition={!row.getIsSelected()}>
@@ -209,7 +206,7 @@ export const columns: ColumnDef<TOrganization>[] = [
 			return <div className='text-center'>Action</div>;
 		},
 		cell: ({ row }) => (
-			<Link className='mx-auto' href={`/admin/organizations/${row.getValue('id')}/employees`}>
+			<Link className='mx-auto' href={`/admin/organizations/${row.getValue('id')}`}>
 				<Button className='mx-auto' variant={'outline'}>
 					Browse
 				</Button>

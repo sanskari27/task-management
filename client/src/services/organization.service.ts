@@ -92,7 +92,7 @@ export default class OrganizationService {
 
 	static async employeeTree(organizationId: string) {
 		try {
-			const { data } = await api.get('/organization/list-employees', {
+			const { data } = await api.get('/organization/employees', {
 				headers: {
 					'X-Organization-ID': organizationId,
 				},
@@ -132,14 +132,11 @@ export default class OrganizationService {
 
 	static async removeEmployee(org_id: string, emp_id: string) {
 		try {
-			await api.delete(
-				`/organization/employees/${emp_id}`,
-				{
-					headers: {
-						'X-Organization-ID': org_id,
-					},
-				}
-			);
+			await api.delete(`/organization/employees/${emp_id}`, {
+				headers: {
+					'X-Organization-ID': org_id,
+				},
+			});
 
 			return true;
 		} catch (error) {

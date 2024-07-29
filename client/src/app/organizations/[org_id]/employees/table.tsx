@@ -84,7 +84,7 @@ export const columns: ColumnDef<TEmployee>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('name')}</div>,
+		cell: ({ row }) => <div>{row.getValue('name')}</div>,
 	},
 	{
 		accessorKey: 'email',
@@ -99,7 +99,7 @@ export const columns: ColumnDef<TEmployee>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('email')}</div>,
+		cell: ({ row }) => <div>{row.getValue('email')}</div>,
 	},
 	{
 		accessorKey: 'phone',
@@ -114,7 +114,7 @@ export const columns: ColumnDef<TEmployee>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='lowercase'>{row.getValue('phone')}</div>,
+		cell: ({ row }) => <div>{row.getValue('phone')}</div>,
 	},
 	{
 		accessorKey: 'can_create_others',
