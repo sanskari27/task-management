@@ -713,7 +713,7 @@ export default class TaskService {
 						name,
 						created_by.getDetails().name,
 						details.status[0].toUpperCase() + details.status.slice(1),
-						'Task Status Updated',
+						details.message,
 						doc.category,
 						doc.title,
 						DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A'),
