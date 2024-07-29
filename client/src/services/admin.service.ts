@@ -1,3 +1,4 @@
+
 import api from '@/lib/api';
 
 export default class AdminService {
@@ -53,6 +54,35 @@ export default class AdminService {
 					}),
 				};
 			});
+		} catch (error) {
+			return null;
+		}
+	}
+
+	static async overview() {
+		try {
+			const { data } = await api.get('/admin/overview');
+
+			return {
+				users: (data.users as number) ?? 0,
+				organizations: (data.organizations as number) ?? 0,
+				emailSent: (data.emailSent as number) ?? 0,
+				whatsappSent: (data.whatsappSent as number) ?? 0,
+				tasks: (data.tasks ?? []).map((task: any) => {
+					return {
+						month: (task.month as number) ?? 0,
+						year: (task.year as number) ?? 0,
+						count: (task.count as number) ?? 0,
+					};
+				}),
+				dailyTasks: (data.dailyTasks ?? []).map((task: any) => {
+					return {
+						day: (task.day as string) ?? '',
+						month: (task.month as number) ?? 0,
+						count: (task.count as number) ?? 0,
+					};
+				}),
+			};
 		} catch (error) {
 			return null;
 		}
