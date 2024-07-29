@@ -56,13 +56,17 @@ export const columns: ColumnDef<TOrganization>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (
-			<Checkbox
-				checked={
-					table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
-				}
-				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-				aria-label='Select all'
-			/>
+			<div className='inline-flex justify-center items-center w-3/4'>
+				<Checkbox
+					className='mx-auto'
+					checked={
+						table.getIsAllPageRowsSelected() ||
+						(table.getIsSomePageRowsSelected() && 'indeterminate')
+					}
+					onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+					aria-label='Select all'
+				/>
+			</div>
 		),
 		cell: ({ row }) => (
 			<div
