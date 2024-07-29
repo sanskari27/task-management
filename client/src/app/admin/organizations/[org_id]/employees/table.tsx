@@ -22,8 +22,7 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
-import Show from '@/components/containers/show';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useEmployees } from '@/components/context/employees';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -33,7 +32,6 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { LinkPreview } from '@/components/ui/link-preview';
 import {
 	Select,
 	SelectContent,
@@ -49,60 +47,26 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { TOrganization } from '@/types/organizatios';
-import Link from 'next/link';
+import { TEmployee } from '@/types/employee';
 
-export const columns: ColumnDef<TOrganization>[] = [
+export const columns: ColumnDef<TEmployee>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (
-			<div className='inline-flex justify-center items-center w-3/4'>
-				<Checkbox
-					className='mx-auto'
-					checked={
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate')
-					}
-					onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-					aria-label='Select all'
-				/>
-			</div>
+			<Checkbox
+				checked={
+					table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
+				}
+				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+				aria-label='Select all'
+			/>
 		),
 		cell: ({ row }) => (
-			<div
-				className='cursor-pointer inline-flex justify-center items-center w-full'
-				onClick={() => {
-					row.toggleSelected();
-				}}
-				id={`row-${row.original.logo}`}
-			>
-				<Show>
-					<Show.When condition={!row.getIsSelected()}>
-						<Avatar>
-							<AvatarImage
-								className='h-full w-full rounded-full border-gray-50 border'
-								src={`${process.env.NEXT_PUBLIC_API_URL}media/${row.original.logo}`}
-							/>
-							<AvatarFallback>
-								{(row.getValue('name') as string)
-									.split(' ')
-									.map((name) => name.charAt(0))
-									.join('')
-									.toUpperCase()}
-							</AvatarFallback>
-						</Avatar>
-					</Show.When>
-					<Show.Else>
-						<div className='flex items-center justify-center dark:bg-gray-200 dark:text-black bg-gray-600 text-white rounded-full w-10 h-10'>
-							{(row.getValue('name') as string)
-								.split(' ')
-								.map((name) => name.charAt(0))
-								.join('')
-								.toUpperCase()}
-						</div>
-					</Show.Else>
-				</Show>
-			</div>
+			<Checkbox
+				checked={row.getIsSelected()}
+				onCheckedChange={(value) => row.toggleSelected(!!value)}
+				aria-label='Select row'
+			/>
 		),
 		enableSorting: false,
 		enableHiding: false,
@@ -120,109 +84,62 @@ export const columns: ColumnDef<TOrganization>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className='text-left'>{row.getValue('name')}</div>,
+		cell: ({ row }) => <div className='lowercase'>{row.getValue('name')}</div>,
 	},
 	{
-		accessorKey: 'owner',
+		accessorKey: 'email',
 		header: ({ column }) => {
 			return (
 				<Button
 					variant='ghost'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
-					Owner
+					Email
 					<CaretSortIcon className='ml-2 h-4 w-4' />
 				</Button>
 			);
 		},
+		cell: ({ row }) => <div className='lowercase'>{row.getValue('email')}</div>,
+	},
+	{
+		accessorKey: 'phone',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Phone
+					<CaretSortIcon className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => <div className='lowercase'>{row.getValue('phone')}</div>,
+	},
+	{
+		accessorKey: 'can_create_others',
+		header: 'Can Create Others',
 		cell: ({ row }) => (
-			<div className='text-left'>{(row.getValue('owner') as { name: string }).name}</div>
+			<div className='capitalize'>{row.getValue('can_create_others') === true ? 'Yes' : 'No'}</div>
 		),
 	},
 	{
-		accessorKey: 'industry',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-				>
-					Industry
-					<CaretSortIcon className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => <div className='text-left'>{row.getValue('industry')}</div>,
-	},
-	{
-		accessorKey: 'domain',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-				>
-					Domain
-					<CaretSortIcon className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
+		accessorKey: 'can_let_others_create',
+		header: 'Can Let Others Create',
 		cell: ({ row }) => (
-			<div className='text-left'>
-				<LinkPreview url={row.getValue('domain')}>{row.getValue('domain')}</LinkPreview>
+			<div className='capitalize'>
+				{row.getValue('can_let_others_create') === true ? 'Yes' : 'No'}
 			</div>
-		),
-	},
-	{
-		accessorKey: 'timezone',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-				>
-					Timezone
-					<CaretSortIcon className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => <div className='text-left'>{row.getValue('timezone')}</div>,
-	},
-	{
-		accessorKey: 'total_employees',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-				>
-					Employees
-					<CaretSortIcon className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => <div className='text-center'>{row.getValue('total_employees')}</div>,
-	},
-	{
-		accessorKey: 'id',
-		header: () => {
-			return <div className='text-center'>Action</div>;
-		},
-		cell: ({ row }) => (
-			<Link className='mx-auto' href={`/admin/organizations/${row.getValue('id')}/employees`}>
-				<Button className='mx-auto' variant={'outline'}>
-					Browse
-				</Button>
-			</Link>
 		),
 	},
 ];
 
-export function OrganizationTable({ data }: { data: TOrganization[] }) {
+export function EmployeeDataTable() {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = React.useState({});
+	const data = useEmployees();
 
 	const table = useReactTable({
 		data,
@@ -254,9 +171,15 @@ export function OrganizationTable({ data }: { data: TOrganization[] }) {
 						className='min-w-[250px]'
 					/>
 					<Input
-						placeholder='Filter industry...'
-						value={(table.getColumn('industry')?.getFilterValue() as string) ?? ''}
-						onChange={(event) => table.getColumn('industry')?.setFilterValue(event.target.value)}
+						placeholder='Filter emails...'
+						value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
+						onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
+						className='min-w-[250px]'
+					/>
+					<Input
+						placeholder='Filter phone...'
+						value={(table.getColumn('phone')?.getFilterValue() as string) ?? ''}
+						onChange={(event) => table.getColumn('phone')?.setFilterValue(event.target.value)}
 						className='min-w-[250px]'
 					/>
 				</div>
@@ -307,7 +230,7 @@ export function OrganizationTable({ data }: { data: TOrganization[] }) {
 							table.getRowModel().rows.map((row) => (
 								<TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell className='text-center' key={cell.id}>
+										<TableCell key={cell.id}>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
 										</TableCell>
 									))}
