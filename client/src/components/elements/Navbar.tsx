@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import Show from '../containers/show';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Button } from '../ui/button';
 import {
 	Menubar,
 	MenubarContent,
@@ -17,7 +18,7 @@ import {
 import { ThemeToggle } from '../ui/theme-toggle';
 import { LogoutButton } from './logout-button';
 
-export default function Navbar() {
+export default function Navbar({ isAdmin }: Readonly<{ isAdmin: boolean }>) {
 	const pathname = usePathname();
 	const org_id = pathname.split('/')[2];
 	const now = new Date();
@@ -122,6 +123,11 @@ export default function Navbar() {
 							</MenubarItem>
 						</MenubarContent>
 					</MenubarMenu>
+					<Link href={`/admin`}>
+						<Button size={'sm'} variant={'outline'}>
+							Browse Admin
+						</Button>
+					</Link>
 				</Show.When>
 			</Show>
 
