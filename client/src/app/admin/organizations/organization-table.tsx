@@ -70,7 +70,7 @@ export const columns: ColumnDef<TOrganization>[] = [
 		),
 		cell: ({ row }) => (
 			<div
-				className='cursor-pointer'
+				className='cursor-pointer inline-flex justify-center items-center w-full'
 				onClick={() => {
 					row.toggleSelected();
 				}}
