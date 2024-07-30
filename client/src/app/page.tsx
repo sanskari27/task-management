@@ -1,4 +1,5 @@
 import { TASKS, TASKS_MOBILE } from '@/assets/image';
+import { GridBackground } from '@/components/ui/background-grid';
 import { ContainerScroll } from '@/components/ui/container-scroll-animation';
 import { FlipWords } from '@/components/ui/flip-words';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
@@ -7,6 +8,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FeaturesSectionDemo } from './feature-section';
+import Footer from './footer';
 import { SparklesPreview } from './sparkles-text';
 
 export const metadata: Metadata = {
@@ -23,7 +25,7 @@ export default function Home() {
 				</div>
 				<SparklesPreview text='With Wautopilot Tasks' />
 
-				<div className='text-lg mt-[2rem] w-1/2 max-w-screen-lg text-center font-medium'>
+				<div className='text-lg mt-[2rem] w-1/2 max-w-screen-lg text-center font-medium text-neutral-100'>
 					From building an agile task board for a project to organizing your daily to-do lists,
 					Tasks is the perfect tool to manage work items, stay focused on what matters, and
 					consistently meet your goals on time.
@@ -32,23 +34,25 @@ export default function Home() {
 					<HoverBorderGradient>Signup for free</HoverBorderGradient>
 				</Link>
 			</LampContainer>
-
-			<ContainerScroll
-				titleComponent={
-					<>
-						<h1 className='text-4xl font-semibold text-black dark:text-white'>
-							Stay organized for <br />
-							<span className='text-4xl md:text-[6rem] font-bold mt-1 leading-none'>
-								Better productivity
-							</span>
-						</h1>
-					</>
-				}
-			>
-				<Image src={TASKS} alt='Tasks' className='w-full hidden md:block' />
-				<Image src={TASKS_MOBILE} alt='Tasks_mobile' className='w-full md:hidden block' />
-			</ContainerScroll>
-			<FeaturesSectionDemo />
+			<GridBackground>
+				<ContainerScroll
+					titleComponent={
+						<>
+							<h1 className='text-4xl font-semibold text-black dark:text-white'>
+								Stay organized for <br />
+								<span className='text-4xl md:text-[6rem] font-bold mt-1 leading-none'>
+									Better productivity
+								</span>
+							</h1>
+						</>
+					}
+				>
+					<Image src={TASKS} alt='Tasks' className='w-full hidden md:block' />
+					<Image src={TASKS_MOBILE} alt='Tasks_mobile' className='w-full md:hidden block' />
+				</ContainerScroll>
+				<FeaturesSectionDemo />
+			</GridBackground>
+			<Footer />
 		</main>
 	);
 }
