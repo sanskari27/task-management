@@ -1,6 +1,6 @@
 'use client';
-import { motion, MotionValue, useScroll, useTransform } from 'framer-motion';
 import React, { useRef } from 'react';
+import { useScroll, useTransform, motion, MotionValue } from 'framer-motion';
 
 export const ContainerScroll = ({
 	titleComponent,
@@ -36,7 +36,7 @@ export const ContainerScroll = ({
 
 	return (
 		<div
-			className='h-[60rem] md:h-[80rem] flex items-center justify-center relative p-2 md:p-20 -mb-[20rem]'
+			className='h-[60rem] md:h-[80rem] flex items-center justify-center relative p-2 md:p-20 -m-[10rem] md:-mb-[20rem]'
 			ref={containerRef}
 		>
 			<div

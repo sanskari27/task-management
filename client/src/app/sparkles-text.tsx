@@ -4,7 +4,7 @@ import { SparklesCore } from '@/components/ui/sparkles';
 export function SparklesPreview({ text }: { text: string }) {
 	return (
 		<div className='w-full bg-transparent flex flex-col items-center justify-center overflow-hidden rounded-md'>
-			<h1 className='md:text-7xl text-3xl lg:text-2xl font-bold text-center text-white relative z-20'>
+			<h1 className='md:text-7xl text-3xl lg:text-5xl font-bold text-center text-white relative z-20'>
 				{text}
 			</h1>
 			<div className='w-[40rem] relative'>

@@ -12,13 +12,13 @@ export default function Home() {
 	return (
 		<main className='flex min-h-screen w-screen flex-col items-center justify-between'>
 			<LampContainer>
-				<div className='text-3xl font-bold'>
+				<div className='text-4xl md:text-6xl font-bold w-full text-center mt-12 pb-2'>
 					Simplify
 					<FlipWords words={['Tasks', 'Projects', 'Success']} />
 				</div>
-				<SparklesPreview text='With Wautopilot Tasks'></SparklesPreview>
+				<SparklesPreview text='With Wautopilot Tasks' />
 
-				<div className='text-lg mt-[2rem] max-w-screen-lg text-center font-medium'>
+				<div className='text-lg mt-[2rem] w-1/2 max-w-screen-lg text-center font-medium'>
 					From building an agile task board for a project to organizing your daily to-do lists,
 					Tasks is the perfect tool to manage work items, stay focused on what matters, and
 					consistently meet your goals on time.
