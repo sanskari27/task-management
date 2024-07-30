@@ -26,7 +26,7 @@ import {
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { AddUpdate } from './add-update';
-import { MarkCompleted, MarkInactive, MarkInProgress } from './update-status';
+import { MarkCompleted, MarkInactive, MarkInProgress, TransferTask } from './update-status';
 
 export const metadata: Metadata = {
 	title: 'Task Details',
@@ -51,12 +51,13 @@ export default async function TaskPage({
 		<section className='mx-[5%] md:mx-[7%] mt-3'>
 			<div className='flex flex-col md:flex-row  md:items-center md:justify-between gap-y-3'>
 				<h2 className='text-3xl font-bold'>{details.title}</h2>
-				<div className='flex items-end justify-end gap-3'>
+				<div className='flex items-end justify-end gap-3 flex-wrap '>
 					<AddUpdate org_id={org_id} task_id={task_id} />
 					<MarkInactive
 						org_id={org_id}
 						task_id={details.isBatchTask ? details.batch!.batch_task_id : task_id}
 					/>
+					<TransferTask org_id={org_id} task_id={task_id} />
 					<Show>
 						<Show.When condition={details.status === 'in_progress'}>
 							<MarkCompleted org_id={org_id} task_id={task_id} />
@@ -69,7 +70,7 @@ export default async function TaskPage({
 			</div>
 			<Show>
 				<Show.When condition={details.isOverdue}>
-					<Badge variant={'destructive'} className='w-fit'>
+					<Badge variant={'destructive'} className='w-fit my-2'>
 						Overdue
 					</Badge>
 				</Show.When>

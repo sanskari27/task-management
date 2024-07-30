@@ -183,4 +183,18 @@ export default class TasksService {
 			},
 		});
 	}
+
+	static async transferTask(org_id: string, data: { task_id: string; employees: string[] }) {
+		await api.post(
+			`/tasks/${data.task_id}/transfer-task`,
+			{
+				assigned_to: data.employees,
+			},
+			{
+				headers: {
+					'X-Organization-ID': org_id,
+				},
+			}
+		);
+	}
 }

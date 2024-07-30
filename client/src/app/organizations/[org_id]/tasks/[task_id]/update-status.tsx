@@ -12,8 +12,11 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import ComboboxEmployee from '@/components/ui/combobox_employee';
+import { Label } from '@/components/ui/label';
 import TasksService from '@/services/tasks.service';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 export function MarkCompleted({ org_id, task_id }: { org_id: string; task_id: string }) {
@@ -30,11 +33,12 @@ export function MarkCompleted({ org_id, task_id }: { org_id: string; task_id: st
 	}
 
 	return (
-		<Button variant={'outline'} size={'sm'} onClick={handleClick}>
+		<Button variant={'outline'} size={'sm'} onClick={handleClick} className='flex-1'>
 			Completed
 		</Button>
 	);
 }
+
 export function MarkInactive({ org_id, task_id }: { org_id: string; task_id: string }) {
 	const router = useRouter();
 	const { is_owner } = useOrganizationDetails();
@@ -63,7 +67,7 @@ export function MarkInactive({ org_id, task_id }: { org_id: string; task_id: str
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
-				<Button variant={'destructive'} size={'sm'}>
+				<Button variant={'destructive'} size={'sm'} className='flex-1'>
 					Mark Inactive
 				</Button>
 			</AlertDialogTrigger>
@@ -83,6 +87,53 @@ export function MarkInactive({ org_id, task_id }: { org_id: string; task_id: str
 		</AlertDialog>
 	);
 }
+
+export function TransferTask({ org_id, task_id }: { org_id: string; task_id: string }) {
+	const router = useRouter();
+	const [employees, setEmployees] = useState<string[]>([]);
+
+	function handleClick() {
+		toast.promise(TasksService.transferTask(org_id, { task_id, employees }), {
+			loading: 'Transferring task...',
+			success: () => {
+				router.refresh();
+				return 'Task transferred';
+			},
+			error: 'Failed to transfer task',
+		});
+	}
+
+	return (
+		<AlertDialog>
+			<AlertDialogTrigger asChild>
+				<Button variant={'outline'} size={'sm'} className='flex-1'>
+					Transfer Task
+				</Button>
+			</AlertDialogTrigger>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Transfer this task to...</AlertDialogTitle>
+					<AlertDialogDescription>
+						Transferring this task will transfer all the subsequent tasks as well.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<div className='grid gap-2 '>
+					<Label htmlFor='email'>Assign to</Label>
+					<ComboboxEmployee
+						value={employees}
+						onChange={setEmployees}
+						placeholder='Select Employee'
+					/>
+				</div>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction onClick={handleClick}>Transfer</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+}
+
 export function MarkInProgress({ org_id, task_id }: { org_id: string; task_id: string }) {
 	const router = useRouter();
 	function handleClick() {
@@ -97,7 +148,7 @@ export function MarkInProgress({ org_id, task_id }: { org_id: string; task_id: s
 	}
 
 	return (
-		<Button variant={'outline'} size={'sm'} onClick={handleClick}>
+		<Button variant={'outline'} size={'sm'} onClick={handleClick} className='flex-1'>
 			In Progress
 		</Button>
 	);

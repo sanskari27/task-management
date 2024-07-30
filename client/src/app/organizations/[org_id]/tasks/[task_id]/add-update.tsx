@@ -121,7 +121,7 @@ export function AddUpdate({ org_id, task_id }: { org_id: string; task_id: string
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant='default' size={'sm'} ref={buttonRef}>
+				<Button variant='default' size={'sm'} ref={buttonRef} className='flex-1'>
 					Add Update
 				</Button>
 			</DialogTrigger>

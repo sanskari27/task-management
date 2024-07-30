@@ -12,8 +12,9 @@ export enum EmailSubjects {
 	Welcome = 'Welcome to Task @ Wautopilot✌️',
 	Signup = `Welcome to Task @ Wautopilot✌️`,
 	TaskCreated = 'Assigned a new task on Task @ Wautopilot',
+	TaskTransfer = 'transferred a task to you on Task @ Wautopilot',
 	TaskReminder = 'Reminder: Task @ Wautopilot',
-	TaskUpdate = 'Added an update to Task @ Wautopilot',
+	TaskUpdate = 'added an update to Task @ Wautopilot',
 	InviteToOrganization = 'You have been invited to join an organization on Task @ Wautopilot',
 }
 
@@ -24,8 +25,6 @@ export async function sendEmail(
 		html: string;
 	}
 ) {
-	Logger.debug(`Sending email to ${to} subject: ${opts.subject}`);
-
 	const { error } = await resend.emails.send({
 		from: 'Wautopilot <no-reply@wautopilot.com>',
 		to: [to],

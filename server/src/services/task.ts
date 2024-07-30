@@ -349,7 +349,7 @@ export default class TaskService {
 								},
 							}),
 						},
-						{ ...(opts.created_by && { assigned_to: { $in: opts.created_by } }) },
+						{ ...(opts.created_by && { created_by: { $in: opts.created_by } }) },
 						{ ...(opts.categories && { category: { $in: opts.categories } }) },
 						{ ...(opts.priority && { priority: opts.priority }) },
 						{ ...(opts.frequency && { 'batch.frequency': opts.frequency }) },
@@ -482,7 +482,7 @@ export default class TaskService {
 								},
 							}),
 						},
-						{ ...(opts.created_by && { assigned_to: { $in: opts.created_by } }) },
+						{ ...(opts.created_by && { created_by: { $in: opts.created_by } }) },
 						{ ...(opts.categories && { category: { $in: opts.categories } }) },
 						{ ...(opts.priority && { priority: opts.priority }) },
 						{ ...(opts.frequency && { 'batch.frequency': opts.frequency }) },
@@ -581,25 +581,24 @@ export default class TaskService {
 		assigned_to: IDType[];
 		transfer_recursively?: boolean;
 	}) {
-		const managedEmployees = await this._employeeService.managedEmployees();
-		managedEmployees.push(this._e_id);
 		const { canManage, doc } = await this.canManageTask(data.task_id);
 
 		if (!canManage) {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
 
-		if (data.transfer_recursively && doc!.batch) {
+		let due_text: string | null = null;
+		if (data.transfer_recursively && doc.batch) {
 			await TaskDB.updateMany(
 				{
 					$and: [
 						{
-							'batch.batch_task_id': doc!.batch.batch_task_id,
+							'batch.batch_task_id': doc.batch.batch_task_id,
 						},
 						{ organization: this._o_id },
 						{
-							created_by: {
-								$in: managedEmployees,
+							due_date: {
+								$gte: DateUtils.getMomentNow().toDate(),
 							},
 						},
 					],
@@ -608,10 +607,62 @@ export default class TaskService {
 					assigned_to: data.assigned_to,
 				}
 			);
+
+			const _doc = await TaskDB.findOne({
+				'batch.batch_task_id': doc.batch.batch_task_id,
+				organization: this._o_id,
+				due_date: {
+					$gte: DateUtils.getMomentNow().toDate(),
+				},
+			});
+			if (_doc) {
+				const due_date = DateUtils.getMoment(_doc.due_date).format('MMM Do, YYYY hh:mm A');
+				due_text = `${doc.batch.frequency.toUpperCase()} - Starting ${due_date}`;
+			}
 		} else {
-			doc!.assigned_to = data.assigned_to;
-			await doc!.save();
+			doc.assigned_to = data.assigned_to as any;
+			await doc.save();
+			due_text = DateUtils.getMoment(doc.due_date).format('MMM Do, YYYY hh:mm A');
 		}
+
+		if (due_text === null) {
+			return;
+		}
+
+		data.assigned_to.forEach(async (e_id) => {
+			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
+			const { name, email, phone } = userService.getDetails();
+
+			sendEmail(email, {
+				subject: `${doc.created_by.name} ${EmailSubjects.TaskTransfer}`,
+				html: EmailTemplates.taskCreated({
+					name,
+					title: doc.title,
+					due_date: due_text as string,
+					status: doc.status.toUpperCase().split('_').join(' '),
+					priority: doc.priority.toUpperCase(),
+					message: doc.description,
+					task_link: `https://task.wautopilot.com/organizations/${this._o_id}/tasks/${doc._id}`,
+				}),
+			});
+
+			sendWhatsapp(
+				WhatsappTemplates.taskCreate({
+					to: phone,
+					bodyParams: [
+						name,
+						doc.created_by.name,
+						doc.status[0].toUpperCase() + doc.status.slice(1),
+						'Task Transferred',
+						doc.category,
+						doc.title,
+						due_text as string,
+						doc.priority.toUpperCase(),
+					],
+					link: `/${this._o_id}/tasks/${doc._id}`,
+				})
+			);
+		});
 	}
 
 	async updateStatus(task_id: IDType, status: TaskStatus) {
@@ -620,12 +671,12 @@ export default class TaskService {
 		if (!canManage || !doc) {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
-		if (doc!.status === status) {
+		if (doc.status === status) {
 			return;
 		}
 
 		const created_by = await this._employeeService.getUserService();
-		doc.assigned_to.forEach(async (e_id) => {
+		doc.assigned_to.forEach(async ({ _id: e_id }) => {
 			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
 			const { name, email, phone } = userService.getDetails();
 
@@ -659,8 +710,8 @@ export default class TaskService {
 			);
 		});
 
-		doc!.status = status;
-		await doc!.save();
+		doc.status = status;
+		await doc.save();
 	}
 
 	async markInactive(task_id: string) {
@@ -683,6 +734,9 @@ export default class TaskService {
 					'batch.batch_task_id': task_id,
 					organization: this._o_id,
 					created_by: { $in: managedEmployees },
+					due_date: {
+						$gte: DateUtils.getMomentNow().toDate(),
+					},
 				},
 				{
 					inActive: true,
@@ -715,11 +769,11 @@ export default class TaskService {
 
 		if (doc.status !== details.status) {
 			doc.status = details.status;
-			await doc!.save();
+			await doc.save();
 		}
 
 		const created_by = await this._employeeService.getUserService();
-		doc.assigned_to.forEach(async (e_id) => {
+		doc.assigned_to.forEach(async ({ _id: e_id }) => {
 			const userService = await (await EmployeeService.getServiceByID(e_id)).getUserService();
 			const { name, email, phone } = userService.getDetails();
 
@@ -755,35 +809,9 @@ export default class TaskService {
 	}
 
 	async getDetails(task_id: IDType) {
-		const managedEmployees = await this._employeeService.managedEmployees();
-		managedEmployees.push(this._e_id);
+		const { canManage, doc } = await this.canManageTask(task_id);
 
-		const doc = await TaskDB.findOne({
-			$and: [
-				{ _id: task_id },
-				{ inActive: false },
-				{ organization: this._o_id },
-				{
-					$or: [
-						{
-							created_by: {
-								$in: managedEmployees,
-							},
-						},
-						{
-							assigned_to: {
-								$in: managedEmployees,
-							},
-						},
-					],
-				},
-			],
-		}).populate<{
-			assigned_to: IEmployee[];
-			created_by: IEmployee;
-		}>('assigned_to created_by');
-
-		if (!doc) {
+		if (!canManage) {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
 
@@ -878,12 +906,28 @@ export default class TaskService {
 					],
 				},
 			],
-		});
+		}).populate<{
+			assigned_to: IEmployee[];
+			created_by: IEmployee;
+		}>('assigned_to created_by');
 
-		return {
-			canManage: !!doc,
-			doc: doc,
-		};
+		if (!doc) {
+			return {
+				canManage: false,
+				doc: null,
+			} as {
+				canManage: false;
+				doc: null;
+			};
+		} else {
+			return {
+				canManage: true,
+				doc: doc,
+			} as {
+				canManage: true;
+				doc: typeof doc;
+			};
+		}
 	}
 
 	static async monthlyCreatedTasks() {
