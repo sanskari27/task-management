@@ -4,6 +4,7 @@ import { ContainerScroll } from '@/components/ui/container-scroll-animation';
 import { FlipWords } from '@/components/ui/flip-words';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import { LampContainer } from '@/components/ui/lamp';
+import { Separator } from '@radix-ui/react-separator';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';

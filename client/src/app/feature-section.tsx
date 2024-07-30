@@ -11,6 +11,7 @@ import {
 	TASKS_2,
 	TASKS_3,
 } from '@/assets/image';
+import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -114,16 +115,21 @@ const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
 
 export const SkeletonOne = () => {
 	return (
-		<div className='relative flex py-8 px-2 gap-10 h-full'>
+		<div className='relative flex py-2 px-2 gap-10 h-full'>
 			<div className='w-full  p-5  mx-auto bgbg-neutral-900 shadow-2xl group h-full'>
 				<div className='flex flex-1 w-full h-full flex-col space-y-2  select-none'>
-					{/* TODO */}
-					<Image
-						lazyRoot='image'
-						src={ORGANIZATION_PHOTO}
-						alt='header'
-						className='h-full w-full object-cover rounded-sm'
-					/>
+					<CardContainer className='inter-var'>
+						<CardBody className='bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-full rounded-xl border'>
+							<CardItem translateZ='100' className='w-full mt-4'>
+								<Image
+									lazyRoot='image'
+									src={ORGANIZATION_PHOTO}
+									alt='header'
+									className='h-full w-full object-cover rounded-sm'
+								/>
+							</CardItem>
+						</CardBody>
+					</CardContainer>
 				</div>
 			</div>
 
@@ -137,12 +143,17 @@ export const SkeletonThree = () => {
 	return (
 		<div className='w-full  mx-auto bg-transparent group h-full'>
 			<div className='flex flex-1 w-full h-full flex-col space-y-2  relative'>
-				{/* TODO */}
-				<Image
-					src={ORG_TREE}
-					alt='header'
-					className='mt-4 w-full object-center  rounded-sm  select-none'
-				/>
+				<CardContainer className='inter-var'>
+					<CardBody className='bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-full rounded-xl border'>
+						<CardItem translateZ='100' className='w-full mt-4'>
+							<Image
+								src={ORG_TREE}
+								alt='header'
+								className='mt-4 w-full object-center  rounded-sm  select-none'
+							/>
+						</CardItem>
+					</CardBody>
+				</CardContainer>
 			</div>
 		</div>
 	);
@@ -153,19 +164,18 @@ export const SkeletonTwo = () => {
 
 	const imageVariants = {
 		whileHover: {
-			scale: 1.1,
+			scale: 1.2,
 			rotate: 0,
 			zIndex: 100,
 		},
 		whileTap: {
-			scale: 1.1,
+			scale: 1.2,
 			rotate: 0,
 			zIndex: 100,
 		},
 	};
 	return (
 		<div className='relative flex flex-col w-full items-center p-8 gap-10 h-full overflow-hidden'>
-			{/* TODO */}
 			<div className='flex flex-row '>
 				{images.map((image, idx) => (
 					<motion.div
@@ -197,16 +207,21 @@ export const SkeletonTwo = () => {
 
 export const SkeletonFour = () => {
 	return (
-		<div className='relative flex py-8 px-2 gap-10 h-full'>
+		<div className='relative flex py-2 px-2 gap-10 h-full'>
 			<div className='w-full  p-5  mx-auto bg-neutral-900 shadow-2xl group h-full'>
 				<div className='flex flex-1 w-full h-full flex-col space-y-2  '>
-					{/* TODO */}
-					<Image
-						lazyRoot='image'
-						src={TASK_UPDATE}
-						alt='header'
-						className='w-full h-full object-cover rounded-sm'
-					/>
+					<CardContainer className='inter-var'>
+						<CardBody className='bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-full rounded-xl border'>
+							<CardItem translateZ='100' className='w-full mt-4'>
+								<Image
+									lazyRoot='image'
+									src={TASK_UPDATE}
+									alt='header'
+									className='w-full h-full object-cover rounded-sm'
+								/>
+							</CardItem>
+						</CardBody>
+					</CardContainer>
 				</div>
 			</div>
 
@@ -221,12 +236,12 @@ export const SkeletonFive = () => {
 
 	const imageVariants = {
 		whileHover: {
-			scale: 1.1,
+			scale: 1.2,
 			rotate: 0,
 			zIndex: 100,
 		},
 		whileTap: {
-			scale: 1.1,
+			scale: 1.2,
 			rotate: 0,
 			zIndex: 100,
 		},
