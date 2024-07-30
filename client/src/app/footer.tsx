@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const Footer = () => {
 	return (
-		<footer className='bg-oil-black w-full text-white border-t-2'>
+		<footer className='bg-oil-black w-full text-white border-t-2 border-zinc-500'>
 			<div className='pt-16 pb-4 px-[4%]'>
 				<div className='flex flex-col md:flex-row text-center md:text-left gap-12 md:gap-8'>
 					<div className='w-full md:w-1/3'>
@@ -16,7 +16,9 @@ const Footer = () => {
 							<div className='w-full md:w-[500px] pt-4 mx-auto md:mx-0 '>
 								<p>
 									A product from
-									<Link className='ml-1' href='https://wautopilot.com/'>Wautopilot</Link>
+									<Link className='ml-1' href='https://wautopilot.com/'>
+										Wautopilot
+									</Link>
 								</p>
 								<p className='pt-2'>Made with 🤍 in India</p>
 							</div>
