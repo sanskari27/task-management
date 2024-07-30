@@ -71,7 +71,7 @@ export function FeaturesSectionDemo() {
 								<FeatureTitle>{feature.title}</FeatureTitle>
 								<FeatureDescription>{feature.description}</FeatureDescription>
 							</div>
-							<div className='h-full w-full'>{feature.skeleton}</div>
+							<div className='h-full w-full select-none'>{feature.skeleton}</div>
 						</FeatureCard>
 					))}
 				</div>
@@ -104,7 +104,7 @@ const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
 			className={cn(
 				'text-sm md:text-base  max-w-4xl text-left mx-auto',
 				'text-center font-normal text-neutral-300',
-				'text-left max-w-sm mx-0 md:text-sm my-2'
+				'text-left max-w-sm mx-0 md:text-sm my-2 select-none'
 			)}
 		>
 			{children}
@@ -116,7 +116,7 @@ export const SkeletonOne = () => {
 	return (
 		<div className='relative flex py-8 px-2 gap-10 h-full'>
 			<div className='w-full  p-5  mx-auto bgbg-neutral-900 shadow-2xl group h-full'>
-				<div className='flex flex-1 w-full h-full flex-col space-y-2  '>
+				<div className='flex flex-1 w-full h-full flex-col space-y-2  select-none'>
 					{/* TODO */}
 					<Image
 						lazyRoot='image'
@@ -138,7 +138,11 @@ export const SkeletonThree = () => {
 		<div className='w-full  mx-auto bg-transparent group h-full'>
 			<div className='flex flex-1 w-full h-full flex-col space-y-2  relative'>
 				{/* TODO */}
-				<Image src={ORG_TREE} alt='header' className='mt-4 w-full object-center  rounded-sm ' />
+				<Image
+					src={ORG_TREE}
+					alt='header'
+					className='mt-4 w-full object-center  rounded-sm  select-none'
+				/>
 			</div>
 		</div>
 	);

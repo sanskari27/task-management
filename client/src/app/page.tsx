@@ -3,15 +3,20 @@ import { ContainerScroll } from '@/components/ui/container-scroll-animation';
 import { FlipWords } from '@/components/ui/flip-words';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import { LampContainer } from '@/components/ui/lamp';
+import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FeaturesSectionDemo } from './feature-section';
 import { SparklesPreview } from './sparkles-text';
 
+export const metadata: Metadata = {
+	title: 'Task Management @ Wautopilot',
+};
+
 export default function Home() {
 	return (
-		<main className='flex min-h-screen w-screen flex-col items-center justify-between'>
-			<LampContainer>
+		<main className='flex min-h-screen w-screen flex-col items-center justify-between '>
+			<LampContainer className='md:mt-[7%]'>
 				<div className='text-4xl md:text-6xl font-bold w-full text-center mt-12 pb-2'>
 					Simplify
 					<FlipWords words={['Tasks', 'Projects', 'Success']} />
