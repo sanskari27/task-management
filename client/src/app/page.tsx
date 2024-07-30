@@ -6,6 +6,7 @@ import { LampContainer } from '@/components/ui/lamp';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FeaturesSectionDemo } from './feature-section';
+import { SparklesPreview } from './sparkles-text';
 
 export default function Home() {
 	return (
@@ -15,7 +16,7 @@ export default function Home() {
 					Simplify
 					<FlipWords words={['Tasks', 'Projects', 'Success']} />
 				</div>
-				<div className='text-3xl'>With Wautopilot Tasks</div>
+				<SparklesPreview text='With Wautopilot Tasks'></SparklesPreview>
 
 				<div className='text-lg mt-[2rem] max-w-screen-lg text-center font-medium'>
 					From building an agile task board for a project to organizing your daily to-do lists,
