@@ -30,7 +30,9 @@ export default class OrganizationService {
 		}
 	}
 
-	static async createOrganization(details: z.infer<typeof organizationDetailsSchema>) {
+	static async createOrganization(details: z.infer<typeof organizationDetailsSchema> & {
+		code:string
+	}) {
 		try {
 			const { data } = await api.post('/organization/', details);
 			return data.organization.id;

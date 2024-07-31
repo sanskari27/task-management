@@ -30,6 +30,11 @@ export const inviteSchema = z.object({
 	can_let_others_create: z.boolean().default(false),
 });
 
+export const organizationCodeSchema = z.object({
+	name: z.string().min(1),
+	email: z.string().email(),
+});
+
 export const removeSchema = z.object({
 	email: z.string().email(),
 });

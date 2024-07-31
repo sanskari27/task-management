@@ -1,11 +1,13 @@
 import { StorageDB } from '@/db';
 import { COMMON_ERRORS, CustomError } from '@/errors';
+import { EmailSubjects, EmailTemplates, sendEmail } from '@/provider/email';
 import { UserService } from '@/services';
 import EmployeeService from '@/services/employee';
 import OrganizationService from '@/services/organization';
 import TaskService from '@/services/task';
-import { Respond } from '@/utils/ExpressUtils';
+import { generateCouponCode, Respond } from '@/utils/ExpressUtils';
 import { NextFunction, Request, Response } from 'express';
+import { OrganizationCodeValidatorType } from './admin.validator';
 
 export const JWT_EXPIRE_TIME = 3 * 60 * 1000;
 export const SESSION_EXPIRE_TIME = 28 * 24 * 60 * 60 * 1000;
@@ -47,11 +49,6 @@ async function listUsers(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
-const Controller = {
-	listUsers,
-	dashboardDetails,
-};
-
 async function dashboardDetails(req: Request, res: Response, next: NextFunction) {
 	try {
 		return Respond({
@@ -70,5 +67,32 @@ async function dashboardDetails(req: Request, res: Response, next: NextFunction)
 		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR));
 	}
 }
+
+async function sendOrganizationCode(req: Request, res: Response, next: NextFunction) {
+	const data = req.locals.data as OrganizationCodeValidatorType;
+	try {
+		let code = generateCouponCode();
+		await StorageDB.setString(`organization_code_${code}`, code);
+
+		code = code.substring(0, 4) + '-' + code.substring(4);
+		sendEmail(data.email, {
+			subject: EmailSubjects.CreateOrganizationCode,
+			html: EmailTemplates.createOrganizationCode(data.name, code),
+		});
+
+		return Respond({
+			res,
+			status: 200,
+		});
+	} catch (err) {
+		return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR));
+	}
+}
+
+const Controller = {
+	listUsers,
+	dashboardDetails,
+	sendOrganizationCode,
+};
 
 export default Controller;

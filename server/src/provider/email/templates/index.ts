@@ -1,3 +1,4 @@
+import createOrganizationCode from './createOrganizationCode';
 import inviteToOrganization from './inviteToOrganization';
 import resetPassword from './passwordReset';
 import resetSuccessful from './resetSuccessful';
@@ -15,6 +16,7 @@ const EmailTemplates = {
 	taskCreated,
 	taskReminder,
 	taskUpdate,
+	createOrganizationCode,
 	inviteToOrganization,
 };
 

@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { CustomError } from '../../errors';
 
 export type CreateOrganizationType = {
+	code: string;
 	name: string;
 	industry: string;
 	domain?: string;
@@ -20,10 +21,11 @@ export type CreateOrganizationType = {
 	timezone: string;
 };
 
-export type UpdateOrganizationType = Partial<CreateOrganizationType>;
+export type UpdateOrganizationType = Partial<Omit<CreateOrganizationType, 'code'>>;
 
 export async function CreateOrganizationValidator(req: Request, res: Response, next: NextFunction) {
 	const reqValidator = z.object({
+		code: z.string().length(8),
 		name: z.string().min(1),
 		industry: z.string().min(1),
 		domain: z.string().optional(),

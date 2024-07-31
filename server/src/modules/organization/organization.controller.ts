@@ -1,3 +1,4 @@
+import { StorageDB } from '@/db';
 import { AUTH_ERRORS, COMMON_ERRORS, CustomError } from '@/errors';
 import { EmailSubjects, EmailTemplates, sendEmail } from '@/provider/email';
 import { UserService } from '@/services';
@@ -30,6 +31,13 @@ async function listOrganizations(req: Request, res: Response, next: NextFunction
 async function createOrganization(req: Request, res: Response, next: NextFunction) {
 	const { user_id } = req.locals;
 	const data = req.locals.data as CreateOrganizationType;
+
+	const code = data.code;
+	if ((await StorageDB.getString(`organization_code_${code}`)) !== code) {
+		return next(new CustomError(AUTH_ERRORS.PERMISSION_DENIED));
+	} else {
+		await StorageDB.deleteKey(`organization_code_${code}`);
+	}
 	const org = await OrganizationService.createOrganization({ ...data, owner: user_id });
 
 	await org.addEmployee({

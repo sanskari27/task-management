@@ -180,9 +180,10 @@ export default function OrganizationDetailsForm({
 									<Label htmlFor='domain'>Domain</Label>
 									<Input
 										id='domain'
-										placeholder='Ex. abc.com'
+										placeholder='Ex. https://www.abc.com'
 										{...register('domain', {})}
-										onChange={() => setError('domain', { message: '' })}
+										pattern='https?://.*'
+										title='Enter a valid URL'
 									/>
 								</div>
 								<div

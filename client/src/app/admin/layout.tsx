@@ -1,6 +1,7 @@
 import PageLayout from '@/components/containers/page-layout';
 import Loading from '@/components/elements/loading';
 import Navbar from '@/components/elements/Navbar';
+import { SendOrganizationCode } from '@/components/elements/sendOrganizationCode';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 import AuthService from '@/services/auth.service';
 import { Metadata } from 'next';
@@ -21,6 +22,7 @@ export default async function OrganizationsLayout({
 			<PageLayout>
 				<Navbar isAdmin={isAdmin} />
 				{children}
+				<SendOrganizationCode />
 				<BackgroundBeams />
 			</PageLayout>
 		</Suspense>

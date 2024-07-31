@@ -1,4 +1,3 @@
-
 import api from '@/lib/api';
 
 export default class AdminService {
@@ -85,6 +84,18 @@ export default class AdminService {
 			};
 		} catch (error) {
 			return null;
+		}
+	}
+
+	static async sendOrganizationInviteCode(values: { name: string; email: string }) {
+		try {
+			await api.post('/admin/organizations/code', {
+				name: values.name,
+				email: values.email,
+			});
+			return true;
+		} catch (error) {
+			return false;
 		}
 	}
 }

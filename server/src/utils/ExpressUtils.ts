@@ -78,6 +78,15 @@ export function generateNewPassword() {
 	return crypto.randomBytes(4).toString('hex');
 }
 
+export function generateCouponCode(length: number = 8) {
+	return crypto
+		.randomBytes(length)
+		.toString('base64')
+		.replace(/[^a-zA-Z0-9]/g, '')
+		.slice(0, length)
+		.toUpperCase();
+}
+
 export function generateInvoiceID(id: string) {
 	// 23-24/Saas/000001
 	const moment_now = DateUtils.getMomentNow();

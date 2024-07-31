@@ -160,6 +160,9 @@ export default function Navbar({ isAdmin }: Readonly<{ isAdmin: boolean }>) {
 							<MenubarItem>
 								<Link href='/admin/users'>Users</Link>
 							</MenubarItem>
+							<MenubarItem>
+								<Link href='/admin/users?organization-coupon-code=true'>Create Coupon</Link>
+							</MenubarItem>
 						</MenubarContent>
 					</MenubarMenu>
 				</Show.When>

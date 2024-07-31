@@ -1,16 +1,14 @@
-import { TASKS, TASKS_MOBILE } from '@/assets/image';
+import { LOGO, TASKS, TASKS_MOBILE } from '@/assets/image';
 import { GridBackground } from '@/components/ui/background-grid';
 import { ContainerScroll } from '@/components/ui/container-scroll-animation';
 import { FlipWords } from '@/components/ui/flip-words';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import { LampContainer } from '@/components/ui/lamp';
-import { Separator } from '@radix-ui/react-separator';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FeaturesSectionDemo } from './feature-section';
-import Footer from './footer';
-import { SparklesPreview } from './sparkles-text';
+import { FeaturesSectionDemo } from '../components/elements/feature-section';
+import { SparklesPreview } from '../components/ui/sparkles-text';
 
 export const metadata: Metadata = {
 	title: 'Task Management @ Wautopilot',
@@ -53,7 +51,38 @@ export default function Home() {
 				</ContainerScroll>
 				<FeaturesSectionDemo />
 			</GridBackground>
-			<Footer />
+			<footer className='bg-oil-black w-full text-white border-t-2 border-zinc-500'>
+				<div className='pt-16 pb-4 px-[4%]'>
+					<div className='flex flex-col md:flex-row text-center md:text-left gap-12 md:gap-8'>
+						<div className='w-full md:w-1/3'>
+							<div className='flex flex-col items-center md:items-start'>
+								<div className='flex items-end justify-center md:justify-start gap-3'>
+									<Image src={LOGO} alt='Logo' width={80} height={80} />
+								</div>
+								<div className='w-full md:w-[500px] pt-4 mx-auto md:mx-0 '>
+									<p>
+										A product from
+										<Link className='ml-1' href='https://wautopilot.com/'>
+											Wautopilot
+										</Link>
+									</p>
+									<p className='pt-2'>Made with 🤍 in India</p>
+								</div>
+							</div>
+						</div>
+						<div className='w-full md:w-1/3 flex flex-col ml-auto text-center md:text-right gap-0'>
+							<span className='underline underline-offset-8 font-medium'>Get in touch</span>
+							<p className='mt-2'>Stellar Coaching & Consulting</p>
+							<p>B-502, Sahara Apartment, Plot No. 11,</p>
+							<p>Sector 6 Dwarka, Dwarka,</p>
+							<p>New Delhi, Delhi 110075, India</p>
+						</div>
+					</div>
+					<div className='flex flex-col md:flex-row items-center justify-center mt-8'>
+						<p className='px-4 text-center'>© 2024 Wautopilot, All rights reserved.</p>
+					</div>
+				</div>
+			</footer>
 		</main>
 	);
 }
