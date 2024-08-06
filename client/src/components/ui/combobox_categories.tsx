@@ -52,6 +52,7 @@ export default function ComboboxCategories({
 								items={items}
 								render={(item) => (
 									<CommandItem
+										key={item}
 										value={item}
 										onSelect={(currentValue) => {
 											if (currentValue === value) {
