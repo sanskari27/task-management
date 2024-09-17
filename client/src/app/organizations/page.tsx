@@ -17,6 +17,11 @@ export const metadata: Metadata = {
 export default async function Organizations() {
 	const details = await AuthService.details();
 
+	const start_date = new Date();
+	const end_date = new Date();
+	start_date.setHours(0, 0, 0, 0);
+	end_date.setHours(23, 59, 59, 999);
+
 	return (
 		<>
 			<PageLayout className='lg:w-3/4 mx-auto w-full p-3 mt-[3rem]'>
@@ -77,7 +82,11 @@ export default async function Organizations() {
 														<p className='text-sm text-muted-foreground'>{org.industry}</p>
 													</div>
 												</div>
-												<Link href={`/organizations/${org.org_id}/tasks`}>
+												<Link
+													href={`/organizations/${
+														org.org_id
+													}/tasks?start_date=${start_date.toISOString()}&end_date=${end_date.toISOString()}`}
+												>
 													<Button variant={'outline'}>Manage</Button>
 												</Link>
 											</div>
