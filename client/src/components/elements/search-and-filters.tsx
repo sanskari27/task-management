@@ -263,10 +263,74 @@ export default function SearchAndFilters({
 
 export function DateFilters() {
 	const router = useRouter();
-	const [selectedTag, setTag] = useState('Today');
+	const [selectedTag, setTag] = useState('');
 
 	const [startDate, setStartDate] = useState<Date>();
 	const [endDate, setEndDate] = useState<Date>();
+
+	useEffect(() => {
+		const url = new URL((window as any).location);
+		let start_date = url.searchParams.get('start_date');
+		let end_date = url.searchParams.get('end_date');
+		if (!start_date || !end_date) {
+			setTag('All Time');
+		} else {
+			setStartDate(new Date(start_date));
+			setEndDate(new Date(end_date));
+
+			start_date = format(new Date(start_date), 'PPP');
+			end_date = format(new Date(end_date), 'PPP');
+
+			const now = new Date();
+			if (start_date === '' && end_date === '') {
+				setTag('All Time');
+			} else if (start_date === format(now, 'PPP') && end_date === format(now, 'PPP')) {
+				setTag('Today');
+			} else if (
+				start_date === format(now.setDate(now.getDate() + 1), 'PPP') &&
+				end_date === format(now.setDate(now.getDate() + 1), 'PPP')
+			) {
+				setTag('Tomorrow');
+			} else if (
+				start_date === format(now.setDate(now.getDate() - 1), 'PPP') &&
+				end_date === format(now.setDate(now.getDate() - 1), 'PPP')
+			) {
+				setTag('Yesterday');
+			} else if (
+				start_date === format(now.setDate(now.getDate() - now.getDay()), 'PPP') &&
+				end_date === format(now.setDate(now.getDate() + 6), 'PPP')
+			) {
+				setTag('This Week');
+			} else if (
+				start_date === format(now.setDate(now.getDate() - now.getDay() - 7), 'PPP') &&
+				end_date === format(now.setDate(now.getDate() + 6), 'PPP')
+			) {
+				setTag('Last Week');
+			} else if (
+				start_date === format(now.setDate(now.getDate() - now.getDay() + 7), 'PPP') &&
+				end_date === format(now.setDate(now.getDate() + 6), 'PPP')
+			) {
+				setTag('Next Week');
+			} else if (
+				start_date === format(new Date(now.getFullYear(), now.getMonth(), 1), 'PPP') &&
+				end_date === format(new Date(now.getFullYear(), now.getMonth() + 1, 0), 'PPP')
+			) {
+				setTag('This Month');
+			} else if (
+				start_date === format(new Date(now.getFullYear(), now.getMonth() - 1, 1), 'PPP') &&
+				end_date === format(new Date(now.getFullYear(), now.getMonth(), 0), 'PPP')
+			) {
+				setTag('Last Month');
+			} else if (
+				start_date === format(new Date(now.getFullYear(), now.getMonth() + 1, 1), 'PPP') &&
+				end_date === format(new Date(now.getFullYear(), now.getMonth() + 2, 0), 'PPP')
+			) {
+				setTag('Next Month');
+			} else {
+				setTag('Custom');
+			}
+		}
+	}, []);
 
 	function applyFilters(start_date: string, end_date: string) {
 		const url = new URL((window as any).location);

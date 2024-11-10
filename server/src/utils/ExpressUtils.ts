@@ -60,8 +60,8 @@ export const setCookie = (
 	res.cookie(key, value, {
 		sameSite: 'none',
 		expires: new Date(Date.now() + expires),
-		httpOnly: IS_PRODUCTION,
-		secure: IS_PRODUCTION,
+		httpOnly: true,
+		secure: true,
 		domain: IS_PRODUCTION ? '.wautopilot.com' : 'localhost',
 	});
 };
